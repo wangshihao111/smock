@@ -1,6 +1,6 @@
 {
   "name": "@smock/mock",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "A free, fast and beautiful API request builder",
   "author": "王世豪<913003120@qq.com>",
   "publishConfig": {
@@ -51,7 +51,8 @@
     "lodash": "^4.17.15",
     "commander": "^5.0.0",
     "prettier": "^1.19.1",
-    "mockjs": "^1.1.0"
+    "mockjs": "^1.1.0",
+    "axios": "0.19.2"
   },
   "devDependencies": {
     "@nuxtjs/axios": "^5.9.5",
