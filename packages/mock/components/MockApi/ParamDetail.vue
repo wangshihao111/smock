@@ -165,7 +165,6 @@ body ul, body li {
   font-size: 14px;
   color: #0c8de2;
   line-height: 32px;
-  font-style: italic;
 }
 .list-item .name {
 }

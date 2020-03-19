@@ -183,7 +183,6 @@ ul, li {
   font-size: 12px;
   display: inline-block;
   color: #999;
-  font-style: italic;
 }
 .inner-api-list li {
   padding-left: 8px;
@@ -191,7 +190,7 @@ ul, li {
   color: #666;
   cursor: pointer;
 }
-.inner-api-list li.selected {
+.inner-api-list li.selected, .inner-api-list li.selected .api-method {
   color: #0295ece8;
 }
 .expand-enter, .expand-leave-to {

@@ -175,6 +175,7 @@ export default {
   opacity: 0.8;
 }
 .api-desc {
+  margin-top: 8px;
   font-size: 14px;
   color: #999;
   margin-bottom: 16px;
