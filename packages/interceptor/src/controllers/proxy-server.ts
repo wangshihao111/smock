@@ -49,7 +49,6 @@ export class ProxyServer {
 
   public run (): number {
     FileUtil.initFolder();
-    this.app.use(applyCors);
     const config = FileUtil.loadConfig();
     RequestUtil.setProxyConfig(config);
     this.config = config;

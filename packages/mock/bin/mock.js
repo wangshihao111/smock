@@ -1,4 +1,20 @@
 #!/usr/bin/env node
 
-// const commander = require('commander');
-require('../lib')
+var program = require('commander');
+var createMock = require('../lib/server/server').default;
+
+program
+  .version(require('../package.json').version)
+  .usage('<command> [options]')
+
+  program
+    .option('-p --port <port>', 'mock服务运行的端口')
+  
+  program.parse(process.argv);
+
+  let port = program.port || 4000;
+  if (port) {
+    port = Number(port);
+  }
+
+createMock({host: 'localhost', port});

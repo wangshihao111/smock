@@ -1,5 +1,5 @@
 {
-  "name": "mock-tool-chain",
+  "name": "smock",
   "private": true,
   "author": "王世豪<913003120@qq.com>",
   "scripts": {

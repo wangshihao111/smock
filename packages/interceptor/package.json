@@ -17,6 +17,7 @@
     "sproxy": "bin/proxy.js"
   },
   "scripts": {
+    "build": "tsc",
     "start": "nodemon --exec ts-node src/main.ts",
     "start:test": "nodemon --exec ts-node src/test-proxy.ts"
   },

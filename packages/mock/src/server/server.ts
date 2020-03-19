@@ -8,7 +8,7 @@ import { applyCors } from './middlewares/cors.middleware';
 export default function createMock ({
   host = 'localhost',
   port = 4000
-}) {
+}): void {
   const app: Application = express();
 
   app.all('*', applyCors);
@@ -26,4 +26,13 @@ export default function createMock ({
   app.listen(port, host, () => {
     console.log(`Mock running at: http://${host}:${port}`);
   });
+}
+
+export function runMock (app: Application, port, host): void {
+  app.use(express.static(resolve(__dirname, '../../dist')));
+
+  const mockInstance = new MockService(app, port, host);
+  const apiCorsService = new ApiCorsService(app);
+  mockInstance.init();
+  apiCorsService.init();
 }
