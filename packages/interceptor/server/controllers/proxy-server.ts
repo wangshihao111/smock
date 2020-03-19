@@ -1,3 +1,4 @@
+import { defaultConfig } from './../utils/file-util';
 import {
   Application, RequestHandler, Response, Request
 } from 'express';
@@ -8,13 +9,12 @@ import { FileUtil, ProxyConfig } from '../utils/file-util';
 export class ProxyServer {
   private app: Application;
 
-  private target: string;
-
   private config: ProxyConfig;
 
   private port: number;
 
   constructor (app: Application, port: number) {
+    this.config = defaultConfig;
     this.app = app;
     this.port = port;
     this.requestMiddleware = this.requestMiddleware.bind(this);
@@ -23,7 +23,7 @@ export class ProxyServer {
   private requestMiddleware (req: Request, res: Response): void {
     const requestConfig: AxiosRequestConfig = RequestUtil.parseRequest(req, this.config);
     // 缓存文件存储位置
-    const storagePath = FileUtil.getFilePath(requestConfig.url);
+    const storagePath = FileUtil.getFilePath(requestConfig.url as string);
     axios(requestConfig)
       .then((axiosRes: AxiosResponse) => {
         const { status, headers, data } = axiosRes;
@@ -52,13 +52,9 @@ export class ProxyServer {
   public run (): void {
     FileUtil.initFolder();
     const config = FileUtil.loadConfig();
-    // if (port) {
-    //   config.workPort = port;
-    // }
     config.workPort = this.port;
     RequestUtil.setProxyConfig(config);
     this.config = config;
-    this.target = config.target;
     this.app.use(this.requestMiddleware);
   }
 }

@@ -2,9 +2,11 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import { ProxyServer } from './controllers/proxy-server';
 import { multipartMiddleware } from './middlewares/multipart.middleware';
+import { applyCors } from './middlewares/cors.middleware';
 
 function start (port = 5000): void {
   const app = express();
+  app.use(applyCors);
   app.use(bodyParser.raw());
   app.use(bodyParser.text());
   app.use(bodyParser.json());

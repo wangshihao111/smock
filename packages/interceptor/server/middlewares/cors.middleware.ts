@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 
-export function applyCors (req: Request, res: Response, next): void {
+export function applyCors (req: Request, res: Response, next: Function): void {
   const { headers } = req;
-  console.log('applyCors', headers.origin);
-  // console.log('origin', headers.origin, headers.host)
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Origin', headers.origin || `http://${headers.host}`);
   res.header(

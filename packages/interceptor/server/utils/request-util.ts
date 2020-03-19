@@ -94,7 +94,7 @@ export class RequestUtil {
     return hash({ data, params, method });
   }
 
-  public static assignHeadersToResponse (headers: Headers, response: Response): void {
+  public static assignHeadersToResponse (headers: any, response: Response): void {
     for (const key in headers) {
       response.header(key, headers[key]);
       if (key === 'location') {
@@ -103,11 +103,11 @@ export class RequestUtil {
     }
   }
 
-  public static changeToFormData (obj = {}): string {
+  public static changeToFormData (obj = {} as any): string {
     let result = '';
 
     for (const key in obj) {
-      result += `${key}=${obj[key]}&`;
+      result += `${key}=${encodeURIComponent(obj[key])}&`;
     }
     result = result.slice(0, result.length - 1);
     return result;

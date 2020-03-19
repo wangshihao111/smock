@@ -27,7 +27,7 @@ export interface ProxyConfig {
   workPort: number;
 }
 
-const defaultConfig: ProxyConfig = {
+export const defaultConfig: ProxyConfig = {
   target: 'http://localhost:4000',
   workDir: '.api-proxy',
   workPort: 10011
@@ -71,7 +71,7 @@ export class FileUtil {
     }
   }
 
-  public static async getRequestLog (path, req: AxiosRequestConfig): Promise<any> {
+  public static async getRequestLog (path: string, req: AxiosRequestConfig): Promise<any> {
     const key = RequestUtil.getUniqueKeyFromRequest(req);
     try {
       const json = await readJSON(path);
