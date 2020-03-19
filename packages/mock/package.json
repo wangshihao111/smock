@@ -1,10 +1,10 @@
 {
   "name": "@smock/mock",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.2",
   "description": "A free, fast and beautiful API request builder",
   "author": "王世豪<913003120@qq.com>",
   "publishConfig": {
-    "registry": "https://registry.npm.taobao.org"
+    "registry": "https://registry.npmjs.org"
   },
   "repository": {
     "type": "git",
@@ -50,6 +50,7 @@
     "json5": "^2.1.1",
     "lodash": "^4.17.15",
     "commander": "^5.0.0",
+    "prettier": "^1.19.1",
     "mockjs": "^1.1.0"
   },
   "devDependencies": {
@@ -76,7 +77,6 @@
     "node-sass": "^4.13.1",
     "nuxt": "^2.12.0",
     "nuxt-i18n": "^6.6.0",
-    "prettier": "^1.19.1",
     "pretty-quick": "^2.0.1",
     "sass-loader": "^8.0.2",
     "socket.io-client": "^2.3.0",
