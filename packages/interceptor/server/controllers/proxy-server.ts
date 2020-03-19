@@ -4,7 +4,6 @@ import {
 import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import { RequestUtil } from '../utils/request-util';
 import { FileUtil, ProxyConfig } from '../utils/file-util';
-import { applyCors } from '../middlewares/cors.middleware';
 
 export class ProxyServer {
   private app: Application;

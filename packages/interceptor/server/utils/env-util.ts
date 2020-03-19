@@ -1,4 +1,3 @@
-import os from 'os';
 import execa from 'execa';
 import fs from 'fs';
 // import { NodeJs } from 'node/globals'
