@@ -14,5 +14,5 @@
     "esModuleInterop": true
   },
   "exclude": ["node_modules", "dist"],
-  "include": ["src"]
+  "include": ["./server", "index.ts"]
 }
