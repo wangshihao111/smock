@@ -58,5 +58,8 @@
       "post-merge": "git submodule update",
       "post-checkout": "git submodule update"
     }
+  },
+  "dependencies": {
+    "core-js": "2.6.5"
   }
 }
