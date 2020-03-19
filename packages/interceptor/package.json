@@ -3,7 +3,19 @@
   "version": "0.1.0",
   "private": false,
   "main": "index.js",
+  "author": "王世豪<913003120@qq.com>",
   "license": "MIT",
+  "publishConfig": {
+    "registry": "https://registry.npm.taobao.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangshihao111/smock.git"
+  },
+  "homepage": "https://github.com/wangshihao111/smock",
+  "bin": {
+    "sproxy": "bin/proxy.js"
+  },
   "scripts": {
     "start": "nodemon --exec ts-node src/main.ts",
     "start:test": "nodemon --exec ts-node src/test-proxy.ts"

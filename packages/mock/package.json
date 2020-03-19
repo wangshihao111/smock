@@ -2,7 +2,18 @@
   "name": "@smock/mock",
   "version": "0.1.0",
   "description": "A free, fast and beautiful API request builder",
-  "author": "liyasthomas",
+  "author": "王世豪<913003120@qq.com>",
+  "publishConfig": {
+    "registry": "https://registry.npm.taobao.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangshihao111/smock.git"
+  },
+  "homepage": "https://github.com/wangshihao111/smock",
+  "bin": {
+    "smock": "bin/mock.js"
+  },
   "private": false,
   "scripts": {
     "predev": "node build.js --dev",

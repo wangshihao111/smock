@@ -1,6 +1,7 @@
 {
   "name": "mock-tool-chain",
   "private": true,
+  "author": "王世豪<913003120@qq.com>",
   "scripts": {
     "build": "lerna run build",
     "start:mock": "cd packages/mock && yarn test-start",
