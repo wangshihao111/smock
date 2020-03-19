@@ -1,9 +1,9 @@
 export interface MockConfig {
-  base: string,
-  defaultArrayMockLength
+  base: string;
+  defaultArrayMockLength;
 }
 
 export const config: MockConfig = {
   base: './live-mock',
-  defaultArrayMockLength: 8,
-}
+  defaultArrayMockLength: 8
+};

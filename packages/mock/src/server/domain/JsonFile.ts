@@ -7,7 +7,7 @@ export interface MockDataItem {
 export interface ApiItem {
   name: string;
   desc: string;
-  method: 'POST' | 'GET' | "DELETE" | 'PUT' | 'OPTIONS' | 'HEAD' | 'CONNECT' | 'TRACE';
+  method: 'POST' | 'GET' | 'DELETE' | 'PUT' | 'OPTIONS' | 'HEAD' | 'CONNECT' | 'TRACE';
   url: string;
   responseType?: string; // json form-data, text, json, html, xml, javascript, binary
   body?: any;
@@ -19,5 +19,5 @@ export interface ApiItem {
 export interface MockFileContent {
   name: string;
   desc: string;
-  apis: ApiItem[]
+  apis: ApiItem[];
 }

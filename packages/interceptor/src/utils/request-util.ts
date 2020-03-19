@@ -1,31 +1,28 @@
-import { Request, Response } from "express";
-import { AxiosRequestConfig, Method, AxiosError } from "axios";
-import { FileUtil, ProxyConfig } from "./file-util";
+import { Request, Response } from 'express';
+import { AxiosRequestConfig, Method, AxiosError } from 'axios';
 import hash from 'object-hash';
 import FormData from 'form-data';
+import { FileUtil, ProxyConfig } from './file-util';
 
 export class RequestUtil {
   private static config: ProxyConfig;
-  public static setProxyConfig(config:ProxyConfig) { this.config = config } ;
-  public static parseRequest(
+
+  public static setProxyConfig (config: ProxyConfig): void { this.config = config; }
+
+  public static parseRequest (
     req: Request,
     config: ProxyConfig
   ): AxiosRequestConfig {
-    const { body, query, method, headers, cookies, path } = req;
-    let referer = '';
-    // if (/.*(\.js|\.css)$/.test(path)) {
-    //   referer = headers.referer.split('?')[0].replace(/^https?:\/\/.*\:\d+/, config.target);
-    // } else {
-    //   // referer = ;
-    // }
-    console.log('body', req.body)
+    const {
+      body, query, method, headers, path
+    } = req;
     const passedHeaders = {
       ...headers,
-      referer: (headers.referer || '').replace(/^https?:\/\/.*\:\d+/, config.target),
+      referer: (headers.referer || '').replace(/^https?:\/\/.*:\d+/, config.target),
       origin: config.target,
-      host: config.target.replace(/^https?:\/\//, ""),
-      "user-agent":
-        "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36"
+      host: config.target.replace(/^https?:\/\//, ''),
+      'user-agent':
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36'
     };
 
     let data;
@@ -33,7 +30,7 @@ export class RequestUtil {
       data = this.changeToFormData(body);
     } else if (headers['content-type'] && headers['content-type'].match('multipart/form-data')) {
       const data = new FormData();
-      for(const key in body) {
+      for (const key in body) {
         data.append(key, body[key]);
       }
     } else {
@@ -47,60 +44,57 @@ export class RequestUtil {
       data,
       withCredentials: true,
       maxRedirects: 0,
-      validateStatus: (status) => {
-        return (100 < status && status < 300) || status === 302;
-      }
+      validateStatus: (status): boolean => (status > 100 && status < 300) || status === 302
     };
   }
 
-  public static processResponseError(
+  public static processResponseError (
     error: AxiosError,
     request: Request,
     response: Response,
     storagePath: string,
     requestConfig: AxiosRequestConfig
-  ) {
+  ): void {
     // 处理axios错误
     if (error.response) {
-      const { status, headers, data } = error.response;
+      const { status, data } = error.response;
       response.status(status);
-      // FileUtil.addRequestLog(storagePath, requestConfig, {status, headers, data});
-      return response.send(data);
-    } else {
-      console.log(error)
-      this.getResponseFromHistory(request, response, requestConfig, storagePath);
+      response.send(data);
+      return;
     }
+    console.log(error);
+    this.getResponseFromHistory(request, response, requestConfig, storagePath);
   }
 
-  public static async getResponseFromHistory(
+  public static async getResponseFromHistory (
     request: Request,
     response: Response,
     reqConfig: AxiosRequestConfig,
     storagePath: string
-  ) {
+  ): Promise<void> {
     const resHis = await FileUtil.getRequestLog(storagePath, reqConfig);
     if (resHis) {
-      const { status = 200, headers={}, data } = resHis;
+      const { status = 200, headers = {}, data } = resHis;
       response.status(status);
       for (const key in headers) {
-        response.header(key, headers[key])
+        response.header(key, headers[key]);
       }
-      return response.send(data);
-    } else {
-      response.status(404);
-      return response.send({
-        success: false,
-        message: '404 未找到'
-      });
+      response.send(data);
+      return;
     }
+    response.status(404);
+    response.send({
+      success: false,
+      message: '404 未找到'
+    });
   }
 
-  public static getUniqueKeyFromRequest(config: AxiosRequestConfig) {
+  public static getUniqueKeyFromRequest (config: AxiosRequestConfig): string {
     const { data, params, method } = config;
-    return hash({data, params, method});
+    return hash({ data, params, method });
   }
 
-  public static assignHeadersToResponse(headers: any, response: Response) {
+  public static assignHeadersToResponse (headers: Headers, response: Response): void {
     for (const key in headers) {
       response.header(key, headers[key]);
       if (key === 'location') {
@@ -109,13 +103,8 @@ export class RequestUtil {
     }
   }
 
-  public static changeToFormData(obj = {}) {
-    // const result = new FormData();
-    // for (const key in obj) {
-    //   result.append(key, obj[key]);
-    // }
-    // return result;
-    let result = ''
+  public static changeToFormData (obj = {}): string {
+    let result = '';
 
     for (const key in obj) {
       result += `${key}=${obj[key]}&`;

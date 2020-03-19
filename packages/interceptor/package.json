@@ -2,7 +2,7 @@
   "name": "@smock/interceptor",
   "version": "0.1.0",
   "private": false,
-  "main": "index.js",
+  "main": "lib/index.js",
   "author": "王世豪<913003120@qq.com>",
   "license": "MIT",
   "publishConfig": {
@@ -36,5 +36,8 @@
     "@types/fs-extra": "^8.1.0",
     "@types/lodash": "^4.14.149",
     "typescript": "^3.8.3"
-  }
+  },
+  "files": [
+    "lib"
+  ]
 }

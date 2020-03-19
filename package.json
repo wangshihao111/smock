@@ -6,12 +6,57 @@
     "build": "lerna run build",
     "start:mock": "cd packages/mock && yarn test-start",
     "start:mock-dev": "cd packages/mock && yarn dev",
-    "start:int": "cd packages/interceptor && yarn start"
+    "start:int": "cd packages/interceptor && yarn start",
+    "lint-fix:src": "eslint --config .eslintrc.js --quiet --fix packages/*/src/**/*.ts",
+    "lint:fix": "npm run lint-fix:src"
   },
   "devDependencies": {
-    "lerna": "^3.20.2"
+    "@typescript-eslint/eslint-plugin": "^2.24.0",
+    "@typescript-eslint/parser": "^2.24.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "husky": "^4.2.3",
+    "lerna": "^3.20.2",
+    "lint-staged": "^10.0.8"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "prettier --write",
+      "eslint --quiet --fix "
+    ],
+    "src/**/*.less": [
+      "prettier --write",
+      "stylelint --syntax less",
+      "git add"
+    ],
+    "packages/*/src/**/*.{js,jsx}": [
+      "prettier --write",
+      "eslint --quiet --fix ",
+      "git add"
+    ],
+    "packages/*/src/**/*.less": [
+      "prettier --write",
+      "stylelint --syntax less",
+      "git add"
+    ],
+    "scripts/code-scan/{plugins,scripts,utils}/*.js": [
+      "prettier --write",
+      "eslint --quiet --fix",
+      "git add"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "post-merge": "git submodule update",
+      "post-checkout": "git submodule update"
+    }
+  }
 }
