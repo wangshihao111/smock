@@ -3,17 +3,17 @@ import bodyParser from 'body-parser';
 import { ProxyServer } from './controllers/proxy-server';
 import { multipartMiddleware } from './middlewares/multipart.middleware';
 
-function start (port: number): void {
+function start (port = 5000): void {
   const app = express();
   app.use(bodyParser.raw());
   app.use(bodyParser.text());
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(multipartMiddleware);
-  const proxyServer = new ProxyServer(app);
-  const p = port || proxyServer.run();
-  app.listen(p, () => {
-    console.log('app running at: http://localhost:10011');
+  const proxyServer = new ProxyServer(app, port);
+  proxyServer.run();
+  app.listen(port, () => {
+    console.log('Interceptor app running at: http://localhost:' + port);
   });
 }
 

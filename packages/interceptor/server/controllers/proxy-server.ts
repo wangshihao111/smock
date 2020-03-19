@@ -12,8 +12,11 @@ export class ProxyServer {
 
   private config: ProxyConfig;
 
-  constructor (app: Application) {
+  private port: number;
+
+  constructor (app: Application, port: number) {
     this.app = app;
+    this.port = port;
     this.requestMiddleware = this.requestMiddleware.bind(this);
   }
 
@@ -46,13 +49,16 @@ export class ProxyServer {
     return this.requestMiddleware;
   }
 
-  public run (): number {
+  public run (): void {
     FileUtil.initFolder();
     const config = FileUtil.loadConfig();
+    // if (port) {
+    //   config.workPort = port;
+    // }
+    config.workPort = this.port;
     RequestUtil.setProxyConfig(config);
     this.config = config;
     this.target = config.target;
     this.app.use(this.requestMiddleware);
-    return config.workPort;
   }
 }

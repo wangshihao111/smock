@@ -19,7 +19,7 @@
   "scripts": {
     "build": "tsc",
     "start": "nodemon --exec ts-node src/main.ts",
-    "start:test": "nodemon --exec ts-node src/test-proxy.ts"
+    "start:test": "nodemon --exec ts-node test-start.ts"
   },
   "dependencies": {
     "axios": "^0.19.2",
@@ -29,7 +29,8 @@
     "formidable": "^1.2.2",
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.15",
-    "object-hash": "^2.0.3"
+    "object-hash": "^2.0.3",
+    "commander": "5.0.0"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",
