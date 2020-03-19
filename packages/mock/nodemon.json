@@ -1,0 +1,25 @@
+{
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules"
+  ],
+  "verbose": true,
+  "execMap": {
+    "": "node",
+    "ts": "ts-node",
+    "js": "node --harmony"
+  },
+  "events": {
+  },
+  "watch": [
+    "src",
+    "live-mock"
+  ],
+  "env": {
+    "NODE_ENV": "development",
+    "PORT": "4000"
+  },
+  "ext": "js json5 json ts",
+  "legacy-watch": false
+}
