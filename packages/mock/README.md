@@ -11,12 +11,15 @@ npm i -g @smock/mock
 yarn add global @smock/mock
 ```
 
+在启动命令的目录创建`live-mock`文件夹,并创建mock定义文件。
+
 启动mock服务：
 ```bash
 smock # 不指定端口（默认运行在4000端口）
 smock -p 3333 # 指定运行端口
 ```
 
+修改、新建定义文件，服务将自动重启。
 
 ### Features ✨
 
@@ -116,6 +119,29 @@ smock -p 3333 # 指定运行端口
     }
 ]}
 
+```
+
+- js定义
+
+```javascript
+module.exports = {
+  name: 'hello js',
+  desc: 'js apis test',
+  apis: [
+    {
+      name: 'data',
+      desc: '',
+      method: 'POST',
+      url: '/test-js',
+      // req和res为express Request 对象和 Response对象
+      handle: (req, res) => {
+        return {
+          message: 'hello js 123456',
+        }
+      }
+    }
+  ],
+}
 ```
 
 ### $$mock
