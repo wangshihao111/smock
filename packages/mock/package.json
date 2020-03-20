@@ -1,6 +1,6 @@
 {
   "name": "@smock/mock",
-  "version": "0.1.0-alpha.3",
+  "version": "0.1.0-alpha.6",
   "description": "A free, fast and beautiful API request builder",
   "author": "王世豪<913003120@qq.com>",
   "publishConfig": {
@@ -92,6 +92,7 @@
   },
   "files": [
     "dist",
-    "lib"
+    "lib",
+    "bin"
   ]
 }
