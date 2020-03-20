@@ -5,6 +5,7 @@
   "main": "lib/index.js",
   "author": "王世豪<913003120@qq.com>",
   "license": "MIT",
+  "keywords": ["api interceptor", "api", "api control"],
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
@@ -12,7 +13,7 @@
     "type": "git",
     "url": "https://github.com/wangshihao111/smock.git"
   },
-  "homepage": "https://github.com/wangshihao111/smock",
+  "homepage": "https://github.com/wangshihao111/smock/tree/master/packages/interceptor",
   "bin": {
     "sproxy": "bin/proxy.js"
   },
