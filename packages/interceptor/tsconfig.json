@@ -23,7 +23,6 @@
     "sourceMap": true,
     "outDir": "./lib",
     "baseUrl": "./",
-    "incremental": true,
     "allowJs": true,
     "esModuleInterop": true
   },
