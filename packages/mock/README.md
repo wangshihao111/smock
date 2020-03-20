@@ -34,6 +34,94 @@ smock -p 3333 # 指定运行端口
 
 🔥 **命令行工具**: 使用命令一键启动(`$ smock -p 3333`)
 
+## 使用示例：
+
+- json5定义
+```json5
+{
+    name:"Auth",
+    desc:"user login and logout",
+    order:1,
+    apis:
+    [{
+        name:"login",
+        desc:"if user login success, will get a token",
+        method: "POST",
+        url:"/login",
+        body:{
+            username:{desc: "username", type: "string", $$mock: "name", required: true},
+            password:{desc: "password", type: 'string'}
+        },
+        response:{
+            code:{desc:"response result code", type:"int"},
+            msg:{desc:"response result message", type:"string"},
+            token:{desc:"login success, get a user token; login failed, no token", type:"string"}
+        },
+        mock_data:[
+            {
+                body:{username:"edison", password:"123"},
+                response:{code:-1, msg:"password incorrect"}
+            },
+            {
+                body:{username:"lily", password:"123"},
+                response:{code:-2, msg:"username not exist"}
+            },
+            {
+                body:{username:"root", password:"123"},
+                // {$mock:true}, token field will get mock string, the token mock rule is from response/token
+                response:{code:1, msg:"login success", token: 'xyazxdasdfad'} 
+            },
+            {
+                body:{username:"lily"},
+                response:{code:-1, msg:"password is required"}
+            },
+            {
+                body:{password:"123"},
+                response:{code:-1, msg:"username is required"}
+            }
+        ]
+    },
+    {
+        name:"user logout",
+        method:"GET",
+        url:"/logout/",
+        query:{
+            id:{desc:"user id", type: "string"},
+            username:{desc:"user id", type: "string"}
+        },
+        response:{
+            code:{desc:"response result code", type:"int", desc:"success is 1"},
+            msg:{desc:"response result message", type:"string", desc:""},
+            data: {
+                data: {desc: 'dataname', type: 'string'},
+                dataType: {desc: 'datatype', type: 'string'},
+                obj: {
+                        objId: {desc: 'objId', type: 'number'}
+                    }
+                }
+        },
+        mock_data:[
+            {
+                query:{id:1, username:"root"},
+                response:{code:1, msg:"logout success"}
+            },
+            {
+                response:{code:-1, msg:"error"}
+            },
+            {
+                query:{id:3, username:"lily"},
+                response:{code:-1, msg:"username and id not match"}
+            }
+        ]
+    }
+]}
+
+```
+
+### $$mock
+$$mock可以指定要某个字段的mock类型，$$mock的值为Mock.js里所有可用Mock类型
+
+
 ## 
 
 <div align="center">
