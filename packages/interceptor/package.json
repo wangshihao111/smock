@@ -1,11 +1,15 @@
 {
   "name": "@smock/interceptor",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "private": false,
   "main": "lib/index.js",
   "author": "王世豪<913003120@qq.com>",
   "license": "MIT",
-  "keywords": ["api interceptor", "api", "api control"],
+  "keywords": [
+    "api interceptor",
+    "api",
+    "api control"
+  ],
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
