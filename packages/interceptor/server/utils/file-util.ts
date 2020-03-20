@@ -1,5 +1,5 @@
 import {
-  stat, readJSON, writeJSON, mkdir, readJSONSync
+  stat, readJSON, writeJSON, mkdir, readJSONSync, readJson, readJsonSync, writeJSONSync
 } from 'fs-extra';
 import { AxiosRequestConfig } from 'axios';
 import path from 'path';
@@ -16,6 +16,7 @@ import { RequestUtil } from './request-util';
  */
 
 export interface StoredRequest {
+  path: string;
   status: number;
   data: any;
   headers: Headers;
@@ -39,8 +40,9 @@ export class FileUtil {
   private static config: ProxyConfig;
 
   public static getFileName (url: string): string {
-    const str = url.split('?')[0];
-    return str.replace(/[\\/?:]/g, '-');
+    // const str = url.split('?')[0];
+    // return str.replace(/[\\/?:]/g, '-');
+    return encodeURIComponent(url);
   }
 
   public static loadConfig (): ProxyConfig {
@@ -64,10 +66,10 @@ export class FileUtil {
     try {
       const json = await readJSON(path);
       if (json) {
-        writeJSON(path, { ...json, [key]: res }, { spaces: 2 });
+        writeJSON(path, { ...json, [key]: {request: {params: req.params, body: req.data}, response: res} }, { spaces: 2 });
       }
     } catch (error) {
-      writeJSON(path, { [key]: req }, { spaces: 2 });
+      writeJSON(path, { [key]: {request: {params: req.params, body: req.data}, response: res} }, { spaces: 2 });
     }
   }
 
@@ -85,18 +87,42 @@ export class FileUtil {
 
   public static getFilePath (url: string): string {
     const fileName = this.getFileName(url);
-    return path.resolve(this.cwd, `${this.config.workDir}/${fileName}.json`);
+    return path.resolve(this.cwd, `${this.config.workDir}/history/${fileName}.json`);
   }
 
   public static async initFolder (): Promise<void> {
     const config = (this.config = this.loadConfig());
+    const rootDir = path.resolve(process.cwd(), config.workDir);
+    const historyDir = path.resolve(rootDir, 'history');
     try {
-      const fldStat = await stat(path.resolve(process.cwd(), config.workDir));
+      const fldStat = await stat(rootDir);
       if (!fldStat.isDirectory()) {
-        await mkdir(path.resolve(process.cwd(), config.workDir));
+        await mkdir(rootDir);
       }
     } catch (error) {
-      await mkdir(path.resolve(process.cwd(), config.workDir));
+      await mkdir(rootDir);
     }
+    try {
+      const fldStat = await stat(historyDir);
+      if (!fldStat.isDirectory()) {
+        await mkdir(historyDir);
+      }
+    } catch (error) {
+      await mkdir(historyDir);
+    }
+    const settingFile = path.resolve(rootDir, 'settings.json');
+    try {
+      const json = await readJson(settingFile);
+    } catch(e) {
+      writeJSON(settingFile, {});
+    }
+  }
+
+  public static getSettings() {
+    return readJsonSync(path.resolve(this.cwd, this.config.workDir, 'settings.json'));
+  }
+
+  public static setSettings(json: any) {
+    return writeJSONSync(path.resolve(this.cwd, this.config.workDir, 'settings.json'), json, {spaces: 2});
   }
 }

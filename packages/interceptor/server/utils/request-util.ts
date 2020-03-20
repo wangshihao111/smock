@@ -74,7 +74,7 @@ export class RequestUtil {
   ): Promise<void> {
     const resHis = await FileUtil.getRequestLog(storagePath, reqConfig);
     if (resHis) {
-      const { status = 200, headers = {}, data } = resHis;
+      const { status = 200, headers = {}, data } = resHis.response;
       response.status(status);
       for (const key in headers) {
         response.header(key, headers[key]);
@@ -82,11 +82,16 @@ export class RequestUtil {
       response.send(data);
       return;
     }
-    response.status(404);
-    response.send({
-      success: false,
-      message: '404 未找到'
-    });
+    response.send();
+    // response.status(404);
+    // response.send({
+    //   success: false,
+    //   message: '404 未找到'
+    // });
+  }
+
+  public static processAssetsProxy(req: Request, res: Response): void {
+    
   }
 
   public static getUniqueKeyFromRequest (config: AxiosRequestConfig): string {
