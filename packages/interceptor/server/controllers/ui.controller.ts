@@ -12,7 +12,9 @@ export class UIController {
   }
 
   private getApiTree(req: Request, res: Response) {
-    
+    const apiList = DbUtil.get('apiList') || [];
+    res.status(200);
+    res.send(apiList);
   }
 
   private updateIntercept(req: Request, res: Response) {

@@ -1,3 +1,4 @@
+import { UIController } from './controllers/ui.controller';
 import express from 'express';
 import bodyParser from 'body-parser';
 import { ProxyServer } from './controllers/proxy-server';
@@ -13,6 +14,8 @@ function start (port = 5000): void {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(multipartMiddleware);
   const proxyServer = new ProxyServer(app, port);
+  const uiController = new UIController(app);
+  uiController.run();
   proxyServer.run();
   app.listen(port, () => {
     console.log('Interceptor app running at: http://localhost:' + port);

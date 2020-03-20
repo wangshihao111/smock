@@ -2,7 +2,10 @@
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
   &-header {
+    flex: 0 0 60px;
     height: 60px;
     box-sizing: border-box;
     width: 100%;

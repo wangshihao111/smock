@@ -1,0 +1,17 @@
+.page-home {
+  padding: 8px 16px;
+  width: 80%;
+  max-width: 1000px;
+  margin: 0 auto;
+  overflow: auto;
+  &-list-item {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    &-action {
+      .ant-btn {
+        margin-left: 16px;
+      }
+    }
+  }
+}
