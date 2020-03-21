@@ -61,6 +61,12 @@ const Home: FC<RouteChildrenProps> = (props) => {
             </List.Item>
           ))
         }
+        {
+          !loading && list.current && (
+          <List.Item>
+            暂无记录
+          </List.Item>)
+        }
       </List>
     </section>
   )

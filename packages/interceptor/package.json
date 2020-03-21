@@ -24,7 +24,7 @@
   "scripts": {
     "transpile": "tsc --build tsconfig-server.json",
     "prepublish": "yarn transpile",
-    "start:test": "nodemon --exec ts-node server/test-start.ts",
+    "server": "nodemon --exec ts-node server/test-start.ts",
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
