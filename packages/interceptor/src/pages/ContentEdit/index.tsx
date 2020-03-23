@@ -118,17 +118,18 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
   }
   return (
     <div className="page-edit">
-      <Tabs tabPosition="left" onChange={handleTabChange}>
+      <Tabs tabPosition="left" onChange={handleTabChange} style={{height: '100%'}}>
         {
           detail.map(({key, request}) => (
             <TabPane key={key} tab={renderTab(request)}>
               <div className="history-tab-content">
                 <div className="operation-wrap">
+                  <Button type="link" onClick={() => props.history.push('/home')}>返回上一页</Button>
                   <Button type="link" icon={<EditOutlined />} onClick={handleAction('reset')}>重置为初始值</Button>
                   <Button type="link" icon={<EditOutlined />} onClick={handleAction('save')}>保存</Button>
                 </div>
                 <AceEditor
-                  style={{width: '100%'}}
+                  style={{width: '100%', height: '100%'}}
                   placeholder="Placeholder Text"
                   mode="json"
                   theme="tomorrow"

@@ -5,6 +5,13 @@
   margin: 8px auto;
   overflow-y: auto;
   background-color: #fff;
+  
+  .ant-tabs {
+    height: 100%;
+    .ant-tabs-content, .ant-tabs-tabpane {
+      height: 100%;
+    }
+  }
   .history-tab-item-tab {
     width: 220px;
     height: 180px;
@@ -18,12 +25,18 @@
     }
   }
   .history-tab-content {
+    height: 100%;
     position: relative;
     .operation-wrap {
       position: absolute;
       right: 20px;
       top: 10px;
+      opacity: 0.5;
+      transition: all .3s;
       z-index: 5;
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }
