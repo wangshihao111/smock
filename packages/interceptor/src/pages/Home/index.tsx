@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState, useRef, ChangeEvent } from 'react'
-import { List, Input, Row, Col, Button, Form, Modal } from 'antd'
+import { List, Input, Row, Col, Button, Form, Modal, Radio } from 'antd'
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import './index.scss';
 import { getApiList } from 'src/service/mock.service';
@@ -42,9 +42,21 @@ const Home: FC<RouteChildrenProps> = (props) => {
     <section className="page-home">
       <Row className="page-home-header" gutter={16}>
         <Col span="8">
-          <Form.Item label="输入过滤条件">
+          <Form.Item label="过滤名称">
             <Input.Search placeholder="过滤列表" defaultValue="" onChange={handleValueChange} />
           </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item label="过滤类型">
+          <Radio.Group defaultValue="all" buttonStyle="solid">
+            <Radio.Button value="all">全部</Radio.Button>
+            <Radio.Button value="is">已开启拦截</Radio.Button>
+            <Radio.Button value="not">未开启拦截</Radio.Button>
+          </Radio.Group>
+          </Form.Item>
+        </Col>
+        <Col span={4}>
+          <Button>重置</Button>
         </Col>
       </Row>
       <List loading={loading}>
