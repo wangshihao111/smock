@@ -63,7 +63,9 @@ export class RequestUtil {
       return;
     }
     console.log(error);
-    this.getResponseFromHistory(request, response, requestConfig, storagePath);
+    // this.getResponseFromHistory(request, response, requestConfig, storagePath);
+    response.status(404);
+    response.send();
   }
 
   public static async getResponseFromHistory (
@@ -83,11 +85,6 @@ export class RequestUtil {
       return;
     }
     response.send();
-    // response.status(404);
-    // response.send({
-    //   success: false,
-    //   message: '404 未找到'
-    // });
   }
 
   public static processAssetsProxy(req: Request, res: Response): void {
