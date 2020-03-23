@@ -176,7 +176,7 @@ export class MockService {
         handleStr = handleStr.startsWith('handle') ? `function ${handleStr}` : handleStr;
         const data = {
           ...api,
-          handle: prettier.format(handleStr, { semi: true, tabWidth: 2, parser: 'babel' })
+          handle: prettier.format(handleStr, { semi: true, tabWidth: 2, parser: 'babylon' })
         };
         return res.send(data);
       }
