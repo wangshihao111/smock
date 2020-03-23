@@ -7,11 +7,11 @@ import ContentEdit from './pages/ContentEdit';
 
 const App: FC = () => {
   return (
-    <HashRouter>
+    <HashRouter basename="/">
       <Layout>
         <Switch>
           <Route path="/home" component={Home} />
-          <Route path="/content-edit" component={ContentEdit} />
+          <Route path="/content-edit/:api" component={ContentEdit} />
           <Route path="/about" component={About} />
           <Redirect from="/" to="home" exact />
         </Switch>

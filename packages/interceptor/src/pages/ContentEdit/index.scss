@@ -1,0 +1,29 @@
+.page-edit {
+  width: 90%;
+  height: calc(100% - 16px);
+  max-width: 1200px;
+  margin: 8px auto;
+  overflow-y: auto;
+  background-color: #fff;
+  .history-tab-item-tab {
+    width: 220px;
+    height: 180px;
+    background: #fff;
+    border-bottom: 1px solid #ccc;
+    pre {
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      text-align: left;
+    }
+  }
+  .history-tab-content {
+    position: relative;
+    .operation-wrap {
+      position: absolute;
+      right: 20px;
+      top: 10px;
+      z-index: 5;
+    }
+  }
+}
