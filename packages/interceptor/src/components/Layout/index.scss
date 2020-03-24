@@ -18,6 +18,8 @@
     &-title {
       color: #fff;
       font-size: 24px;
+      line-height: 60px;
+      margin: 0;
     }
     &-nav {
       color: #fff;
@@ -32,7 +34,7 @@
       }
       nav {
         margin: 0 4px;
-        font-size: 14px;
+        font-size: 16px;
         padding: 8px;
         transition: all .3s;
         cursor: pointer;

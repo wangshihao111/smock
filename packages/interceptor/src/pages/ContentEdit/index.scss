@@ -13,6 +13,8 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    box-sizing: border-box;
+    padding-right: 16px;
     height: 46px;
     flex: 0 0 46px;
     border-bottom: 1px solid #efefef;
