@@ -1,13 +1,51 @@
 .page-edit {
-  width: 90%;
+  // width: 90%;
+  width: calc(100% - 32px);
   height: calc(100% - 16px);
-  max-width: 1200px;
+  // max-width: 1200px;
   margin: 8px auto;
-  overflow-y: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   background-color: #fff;
-  
+  &-header {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 46px;
+    flex: 0 0 46px;
+    border-bottom: 1px solid #efefef;
+    position: relative;
+    &-title {
+      position: absolute;
+      left: 48px;
+    }
+    .back-arrow {
+      position: absolute;
+      left: 0;
+      padding: 0 16px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .operation-wrap {
+      right: 20px;
+      top: 10px;
+      transition: all .3s;
+      z-index: 5;
+    }
+  }
+  &-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+  }
   .ant-tabs {
     height: 100%;
+    width: 100%;
+    .ant-tabs-tabpane {
+      overflow: hidden;
+    }
   }
   .history-tab-item-tab {
     width: 220px;
@@ -24,18 +62,16 @@
   .history-tab-content {
     height: 100%;
     box-sizing: border-box;
-    padding-top: 32px;
-    padding-bottom: 16px;;
     position: relative;
-    .operation-wrap {
-      position: absolute;
-      right: 20px;
-      top: 10px;
-      opacity: 0.7;
-      transition: all .3s;
-      z-index: 5;
-      &:hover {
-        opacity: 1;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    overflow: hidden;
+    .content-edit {
+      flex: 1;
+      &-title {
+        color: #1890ff;
+        line-height: 42px;
       }
     }
   }
