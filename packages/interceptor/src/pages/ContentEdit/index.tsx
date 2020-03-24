@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, useCallback } from 'react'
+import React, { FC, useState, useEffect, useCallback, useLayoutEffect } from 'react'
 import { RouteChildrenProps } from 'react-router-dom'
 import { getApiDetail, saveApiData } from '../../service/mock.service';
 import { notification, Tabs, Button, Modal } from 'antd';
@@ -40,6 +40,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
   const path = decodeURIComponent((props.match?.params as any).api);
   const [form, setForm] = useState<string>('');
   const [editKey, setEditKey] = useState<string>('');
+  const [eh, setEh] = useState<number>(500);
   const [detail, setDetail] = useState<HistoryItem[]>([]);
   const fetchDetail = useCallback((saved: boolean=false) => {
     getApiDetail(path).then(res => {
@@ -107,6 +108,12 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
       
     }
   }
+  const innerHeight = window.innerHeight;
+  useLayoutEffect(() => {
+    const height = window.innerHeight;
+    const editorHeight = height - 60 - 16 - 32;
+    setEh(editorHeight);
+  }, [innerHeight])
   const renderTab = (request: any) => {
     return (
       <div className="history-tab-item-tab">
@@ -129,7 +136,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
                   <Button type="link" icon={<EditOutlined />} onClick={handleAction('save')}>保存</Button>
                 </div>
                 <AceEditor
-                  style={{width: '100%', height: '100%'}}
+                  style={{width: '100%', height: eh}}
                   placeholder="Placeholder Text"
                   mode="json"
                   theme="tomorrow"
