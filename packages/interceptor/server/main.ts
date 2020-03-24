@@ -11,7 +11,7 @@ function start (port = 5000): void {
   app.use(applyCors);
   app.use(bodyParser.raw());
   app.use(bodyParser.text());
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({limit: '50mb'}));
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(multipartMiddleware);
   app.use(express.static(path.resolve(__dirname, '../dist')))
