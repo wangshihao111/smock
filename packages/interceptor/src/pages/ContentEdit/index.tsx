@@ -6,13 +6,12 @@ import { SyncOutlined, SaveOutlined, ArrowLeftOutlined } from '@ant-design/icons
 import 'ace-builds'
 import AceEditor from 'react-ace';
 
-import "ace-builds/src-noconflict/ace";
-
+import 'ace-builds/webpack-resolver'
+import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-tomorrow";
 
 import './index.scss'
-import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import HeadersEdit from './HeadersEdit';
 
 const { TabPane } = Tabs;
@@ -68,7 +67,6 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
     })
   }, [path])
   useEffect(() => {
-    console.log('object')
     fetchDetail();
   }, [fetchDetail])
   const handleContentChange = (value: string, key: string) => {
@@ -128,9 +126,6 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
   function fitEditorHeight() {
     const height = window.innerHeight;
     let editorHeight = height - 60 - 16 - 8 - 46 - 42;
-    // if (showHeaderEdit) {
-    //   editorHeight -= 200;
-    // }
     setEh(editorHeight);
   }
   useLayoutEffect(() => {
@@ -157,11 +152,6 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
           <ArrowLeftOutlined />
         </div>
         <h3 className="page-edit-header-title">接口编辑</h3>
-        {/* <div className="page-edit-header-left">
-          <Checkbox checked={showHeaderEdit} onChange={(e: CheckboxChangeEvent) => setShowHeaderEdit(e.target.checked)}>
-            显示请求头编辑
-          </Checkbox>
-        </div> */}
         <div className="operation-wrap">
           <Button type="link" onClick={() => props.history.push('/home')}>返回上一页</Button>
           <Button type="link" icon={<SyncOutlined />} onClick={handleAction('reset')}>重置为初始值</Button>
@@ -190,7 +180,6 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
                       setOptions={{
                         useWorker: false,
                         enableBasicAutocompletion: false,
-                        enableLiveAutocompletion: false,
                         enableSnippets: false,
                         showLineNumbers: true,
                         tabSize: 2,

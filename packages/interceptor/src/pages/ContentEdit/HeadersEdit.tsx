@@ -49,7 +49,6 @@ const PairItem: FC<PairItemProps> = (props) => {
 
 const HeadersEdit: FC<HeadersEditProps> = (props) => {
   const form = useRef<FormInstance>({} as any)
-  console.log(props)
   useEffect(() => {
     const result = {} as any;
     for (const key in props.headers) {
@@ -68,7 +67,6 @@ const HeadersEdit: FC<HeadersEditProps> = (props) => {
       result[key] = value;
     })
     if (props.onChange) {
-      console.log(result)
       props.onChange(result);
     }
   }
