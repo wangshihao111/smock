@@ -74,6 +74,12 @@
       &-title {
         color: #1890ff;
         line-height: 42px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        .ant-form-item {
+          margin: 5px 5px 0;
+        }
       }
     }
   }

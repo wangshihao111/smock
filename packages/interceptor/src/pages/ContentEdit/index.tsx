@@ -1,7 +1,7 @@
-import React, { FC, useState, useEffect, useCallback, useLayoutEffect } from 'react'
+import React, { FC, useState, useEffect, useCallback, useLayoutEffect, ChangeEvent } from 'react'
 import { RouteChildrenProps } from 'react-router-dom'
 import { getApiDetail, saveApiData } from '../../service/mock.service';
-import { notification, Tabs, Button, Modal, Checkbox } from 'antd';
+import { notification, Tabs, Button, Modal, Form, InputNumber } from 'antd';
 import { SyncOutlined, SaveOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import 'ace-builds'
 import AceEditor from 'react-ace';
@@ -50,6 +50,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
   const [editKey, setEditKey] = useState<string>('');
   const [eh, setEh] = useState<number>(500);
   const [detail, setDetail] = useState<HistoryItem[]>([]);
+  const [editStatusNum, setEditStatusNum] = useState<number>(0);
   // const [showHeaderEdit, setShowHeaderEdit] = useState<boolean>(true);
   const fetchDetail = useCallback((saved: boolean=false) => {
     getApiDetail(path).then(res => {
@@ -58,6 +59,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
         setForm(data[0].response.data);
         setEditKey(data[0].key);
         editHeaders = data[0].response.headers
+        setEditStatusNum(data[0].response.status);
       }
       setDetail(data);
     }).catch(e => {
@@ -76,6 +78,8 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
     const target = detail.find(v => v.key === key);
     setForm(target?.response.data);
     setEditKey(key);
+    editHeaders = target?.response.headers;
+    setEditStatusNum(target?.response.status);
   }
   const handleAction = (type: string) => () => {
     const target = detail.find(v => v.key === editKey);
@@ -87,6 +91,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
             const target = detail.find(v => v.key === editKey);
             setForm(target?.response.data);
             editHeaders = target?.response.headers;
+            setEditStatusNum(target?.response.status);
           }
         });
       }
@@ -98,6 +103,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
           key: editKey,
           response: {
             ...target?.response,
+            status: editStatusNum,
             headers: editHeaders,
             data,
           }
@@ -165,7 +171,12 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
               <TabPane key={key} tab={renderTab(request)}>
                 <div className="history-tab-content">
                   <div className="content-edit">
-                    <header className="content-edit-title">响应体编辑</header>
+                    <header className="content-edit-title">
+                      响应体编辑
+                      <Form.Item label="响应状态码">
+                        <InputNumber size="small" value={editStatusNum} onChange={(e: number | undefined) => {setEditStatusNum(e || editStatusNum);}} />
+                      </Form.Item>
+                    </header>
                     <AceEditor
                       style={{width: '100%', height: eh, boxShadow: '-1px -1px 5px 0 #ababab'}}
                       placeholder="Placeholder Text"
