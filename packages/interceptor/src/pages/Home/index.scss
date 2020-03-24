@@ -6,6 +6,11 @@
   overflow: auto;
   background: #fff;
   height: calc(100% - 16px);
+  &-list {
+    padding-bottom: 57px;
+    box-sizing: border-box;
+    position: relative;
+  }
   &-list-item {
     width: 100%;
     display: flex;

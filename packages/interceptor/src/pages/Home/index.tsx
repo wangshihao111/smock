@@ -70,6 +70,14 @@ const Home: FC<RouteChildrenProps> = (props) => {
       type: e.target.value
     });
   }
+
+  const updateIntercepted = (targetList: string[]) => {
+    updateInterceptedList(targetList).then(res => {
+      const list = res.data.list;
+      setIntercepted(list);
+    })
+  }
+
   const handleEnableChange = (api: string) => (e: CheckboxChangeEvent) => {
     const index = intercepted.indexOf(api);
     const targetList = [...intercepted]
@@ -82,15 +90,27 @@ const Home: FC<RouteChildrenProps> = (props) => {
         targetList.splice(index, 1);
       }
     }
-    updateInterceptedList(targetList).then(res => {
-      const list = res.data.list;
-      setIntercepted(list);
-    })
+    updateIntercepted(targetList);
+  }
+  const handleSelectAll = (e: CheckboxChangeEvent) => {
+    const checked = e.target.checked;
+    if (checked) {
+      updateIntercepted(list);
+    } else {
+      updateIntercepted([])
+    }
   }
   const handleEditClick = (v: string) => {
     props.history.push(`/content-edit/${encodeURIComponent(v)}`);
   }
   const displayList = getDisplayList(list, filter, intercepted);
+  const listFooter = displayList.length ? (
+    <div className="page-home-list-item" style={{justifyContent: 'flex-end'}}>
+      <span className="page-home-list-item-action" style={{marginRight: 252}}>
+        <Checkbox checked={intercepted.length === list.length} onChange={handleSelectAll}>全选</Checkbox>
+      </span>
+    </div>
+  ) : null;
   return (
     <section className="page-home">
       <Row className="page-home-header" gutter={16}>
@@ -112,9 +132,9 @@ const Home: FC<RouteChildrenProps> = (props) => {
           <Button onClick={handleResetClick}>重置</Button>
         </Col>
       </Row>
-      <List loading={loading}>
+      <List loading={loading} className="page-home-list" footer={listFooter}>
         {
-          getDisplayList(list, filter, intercepted).map(v => (
+          displayList.map(v => (
             <List.Item key={v}>
               <div className="page-home-list-item">
                 <span className="page-home-list-item-content">{v}</span>
