@@ -105,7 +105,8 @@ const Home: FC<RouteChildrenProps> = (props) => {
   }
   const displayList = getDisplayList(list, filter, intercepted);
   const listFooter = displayList.length ? (
-    <div className="page-home-list-item" style={{justifyContent: 'flex-end'}}>
+    <div className="page-home-list-item" style={{justifyContent: 'space-between'}}>
+      <span className="page-home-list-item-content">请求记录列表：</span>
       <span className="page-home-list-item-action" style={{marginRight: 252}}>
         <Checkbox checked={intercepted.length === list.length} onChange={handleSelectAll}>全选</Checkbox>
       </span>
@@ -132,7 +133,7 @@ const Home: FC<RouteChildrenProps> = (props) => {
           <Button onClick={handleResetClick}>重置</Button>
         </Col>
       </Row>
-      <List loading={loading} className="page-home-list" footer={listFooter}>
+      <List loading={loading} className="page-home-list" header={listFooter}>
         {
           displayList.map(v => (
             <List.Item key={v}>
