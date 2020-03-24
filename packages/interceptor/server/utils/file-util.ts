@@ -56,9 +56,9 @@ export class FileUtil {
 
   public static loadConfig(): ProxyConfig {
     this.cwd = process.cwd();
-    const configFilePath = path.resolve(this.cwd, "api-proxy.json");
+    const configFilePath = path.resolve(this.cwd, ".smockrc.js");
     try {
-      const config = readJSONSync(configFilePath);
+      const config = require(configFilePath);
       return {
         ...defaultConfig,
         ...(config as ProxyConfig)
