@@ -1,28 +1,19 @@
+import { utf8Pattern, binaryPattern } from './patterns';
 import { DbUtil } from "./db-util";
 import {
   stat,
   readJSON,
   writeJSON,
   mkdir,
-  readJSONSync,
   readJson,
   readJsonSync,
   writeJSONSync,
-  removeSync
+  removeSync,
+  writeFile,
 } from "fs-extra";
-import { AxiosRequestConfig } from "axios";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
 import path from "path";
 import { RequestUtil } from "./request-util";
-
-/**
-
-  存储结构
-  // user-message
-  {
-    [hash]: {Response}
-  }
-
- */
 
 export interface StoredRequest {
   path: string;
@@ -35,12 +26,24 @@ export interface ProxyConfig {
   target: string;
   workDir: string;
   workPort: number;
+  matchRegexp: RegExp;
+  cacheStatic: boolean;
+  pathIgnore: {
+    query: string[],
+    body: string[]
+  };
 }
 
 export const defaultConfig: ProxyConfig = {
   target: "http://localhost:4000",
-  workDir: ".api-proxy",
-  workPort: 10011
+  workDir: ".smock",
+  workPort: 10011,
+  matchRegexp: /^.*$/,
+  cacheStatic: true,
+  pathIgnore: {
+    query: [],
+    body: []
+  }
 };
 
 export class FileUtil {
@@ -73,17 +76,19 @@ export class FileUtil {
   public static async addRequestLog(
     path: string,
     req: AxiosRequestConfig,
-    res: StoredRequest
+    res: StoredRequest,
   ): Promise<void> {
-    const key = RequestUtil.getUniqueKeyFromRequest(req);
+    const filePath = this.getFilePath(path);
+    const key = RequestUtil.getUniqueKeyFromRequest(req, path);
     try {
-      const json = await readJSON(path);
+      const json = await readJSON(filePath);
       if (json) {
         writeJSON(
-          path,
+          filePath,
           {
             ...json,
             [key]: {
+              method: req.method,
               request: { params: req.params, body: req.data },
               response: res
             }
@@ -93,7 +98,7 @@ export class FileUtil {
       }
     } catch (error) {
       writeJSON(
-        path,
+        filePath,
         {
           [key]: {
             request: { params: req.params, body: req.data },
@@ -107,11 +112,12 @@ export class FileUtil {
 
   public static async getRequestLog(
     path: string,
-    req: AxiosRequestConfig
+    req: AxiosRequestConfig,
   ): Promise<any> {
-    const key = RequestUtil.getUniqueKeyFromRequest(req);
+    const key = RequestUtil.getUniqueKeyFromRequest(req, path);
+    const filePath = this.getFilePath(path);
     try {
-      const json = await readJSON(path);
+      const json = await readJSON(filePath);
       if (json) {
         return json[key];
       }
@@ -120,11 +126,11 @@ export class FileUtil {
     }
   }
 
-  public static getFilePath(url: string): string {
+  public static getFilePath(url: string, asset?: boolean): string {
     const fileName = this.getFileName(url);
     return path.resolve(
       this.cwd,
-      `${this.config.workDir}/history/${fileName}.json`
+      `${this.config.workDir}/${!asset ? 'history' : 'static'}/${fileName}${asset ? '' : '.json'}`
     );
   }
 
@@ -173,25 +179,32 @@ export class FileUtil {
     }
   }
 
+  public static async storageStatic(_path: string, res: AxiosResponse) {
+    const filePath = path.resolve(this.cwd, `${this.config.workDir}/static/${this.getFileName(_path)}`);
+    if (utf8Pattern.test(_path)) {
+      await writeFile(filePath, res.data);
+    }
+    if (binaryPattern.test(_path)) {
+      await writeFile(filePath, res.data, 'binary');
+    }
+  }
+
   public static async initFolder(): Promise<void> {
     const config = (this.config = this.loadConfig());
     const rootDir = path.resolve(process.cwd(), config.workDir);
     const historyDir = path.resolve(rootDir, "history");
-    try {
-      const fldStat = await stat(rootDir);
-      if (!fldStat.isDirectory()) {
-        await mkdir(rootDir);
+    const staticDir = path.resolve(rootDir, 'static');
+    const dirs = [rootDir, historyDir, staticDir]
+    for (let i = 0; i < dirs.length; i++) {
+      const dir = dirs[i];
+      try {
+        const fldStat = await stat(dir);
+        if (!fldStat.isDirectory()) {
+          await mkdir(dir);
+        }
+      } catch (error) {
+        await mkdir(dir);
       }
-    } catch (error) {
-      await mkdir(rootDir);
-    }
-    try {
-      const fldStat = await stat(historyDir);
-      if (!fldStat.isDirectory()) {
-        await mkdir(historyDir);
-      }
-    } catch (error) {
-      await mkdir(historyDir);
     }
     const settingFile = path.resolve(rootDir, "settings.json");
     try {

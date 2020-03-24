@@ -1,3 +1,4 @@
+import { binaryPattern, staticPattern } from './patterns';
 import { Request, Response } from 'express';
 import { AxiosRequestConfig, Method, AxiosError } from 'axios';
 import hash from 'object-hash';
@@ -36,7 +37,7 @@ export class RequestUtil {
     } else {
       data = body;
     }
-    return {
+    const parsedConfig: AxiosRequestConfig = {
       url: `${config.target}${path}`,
       method: method as Method,
       headers: passedHeaders,
@@ -46,13 +47,16 @@ export class RequestUtil {
       maxRedirects: 0,
       validateStatus: (status): boolean => (status > 100 && status < 300) || status === 302
     };
+    if (binaryPattern.test(req.path)) {
+      parsedConfig.responseType = 'arraybuffer';
+    }
+    return parsedConfig;
   }
 
   public static processResponseError (
     error: AxiosError,
     request: Request,
     response: Response,
-    storagePath: string,
     requestConfig: AxiosRequestConfig
   ): void {
     // 处理axios错误
@@ -62,7 +66,12 @@ export class RequestUtil {
       response.send(data);
       return;
     }
-    console.log(error);
+    // console.log(error);
+    if (this.config.cacheStatic && staticPattern.test(request.path)) {
+      response.status(200);
+      response.sendFile(FileUtil.getFilePath(request.path, true))
+      return;
+    }
     // this.getResponseFromHistory(request, response, requestConfig, storagePath);
     response.status(404);
     response.send();
@@ -72,9 +81,9 @@ export class RequestUtil {
     request: Request,
     response: Response,
     reqConfig: AxiosRequestConfig,
-    storagePath: string
+    path: string
   ): Promise<void> {
-    const resHis = await FileUtil.getRequestLog(storagePath, reqConfig);
+    const resHis = await FileUtil.getRequestLog(path, reqConfig);
     if (resHis) {
       const { status = 200, headers = {}, data } = resHis.response;
       response.status(status);
@@ -84,23 +93,30 @@ export class RequestUtil {
       response.send(data);
       return;
     }
+    response.status(404);
     response.send();
   }
 
-  public static processAssetsProxy(req: Request, res: Response): void {
-    
-  }
-
-  public static getUniqueKeyFromRequest (config: AxiosRequestConfig): string {
+  public static getUniqueKeyFromRequest (config: AxiosRequestConfig, currentPath:string): string {
     const { data, params, method } = config;
-    return hash({ data, params, method });
+    const obj = {data, params, method};
+    const { pathIgnore: {query = [], body = []} } = this.config;
+    if (query.includes(currentPath)) {
+      delete obj.params;
+    }
+    if (body.includes(currentPath)) {
+      delete obj.data;
+    }
+    return hash(obj);
   }
 
   public static assignHeadersToResponse (headers: any, response: Response): void {
     for (const key in headers) {
       response.header(key, headers[key]);
       if (key === 'location') {
-        response.header(key, headers[key].replace(this.config.target, `http://localhost:${this.config.workPort}`));
+        const loc = headers[key].replace(this.config.target, `http://localhost:${this.config.workPort}`);
+        headers.location = loc;
+        response.header(key, loc);
       }
     }
   }

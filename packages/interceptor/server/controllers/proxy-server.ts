@@ -1,3 +1,4 @@
+import { staticPattern } from './../utils/patterns';
 import { DbUtil } from './../utils/db-util';
 import { defaultConfig } from './../utils/file-util';
 import {
@@ -24,35 +25,39 @@ export class ProxyServer {
   private requestMiddleware (req: Request, res: Response): void {
     const db = DbUtil.getDb();
     const requestConfig: AxiosRequestConfig = RequestUtil.parseRequest(req, this.config);
-    const assetsPattern = /^.*(\.js|\.css|\.png|\.svg|\.jpg|\.woff|\.ttf|\.map|\.gif)/g
-    const storagePath = FileUtil.getFilePath(req.path as string);
 
     const interceptList = db.interceptList || [];
-    if (DbUtil.hasArrayStringItem(interceptList, req.path) && !assetsPattern.test(req.path)) {
-      RequestUtil.getResponseFromHistory(req, res, requestConfig, storagePath);
+    // 如果是拦截目标，走本地缓存
+    if (DbUtil.hasArrayStringItem(interceptList, req.path)) {
+      RequestUtil.getResponseFromHistory(req, res, requestConfig, req.path);
     } else {
-      // 缓存文件存储位置
     axios(requestConfig)
       .then((axiosRes: AxiosResponse) => {
         const { status, headers, data } = axiosRes;
         res.status(status);
         RequestUtil.assignHeadersToResponse(headers, res);
-        // 只记录非静态资源的路径
-        if (!assetsPattern.test(req.path)) {
-          const apiList = db.apiList || [];
-          DbUtil.addStringArrayItem(apiList, req.path);
-          DbUtil.set('apiList', apiList);
-          FileUtil.addRequestLog(storagePath, requestConfig, {
+        // 正则匹配到的将缓存到本地
+        if (this.config.matchRegexp.test(req.path) && !staticPattern.test(req.path)) {
+          FileUtil.addRequestLog(req.path, requestConfig, {
             path: req.path,
             status,
             headers,
             data
           });
         }
+        if (this.config.cacheStatic && staticPattern.test(req.path)) {
+          FileUtil.storageStatic(req.path, axiosRes)
+        }
+        // 只记录非静态资源的路径,存放进db
+        if (!staticPattern.test(req.path)) {
+          const apiList = db.apiList || [];
+          DbUtil.addStringArrayItem(apiList, req.path);
+          DbUtil.set('apiList', apiList);
+        }
         res.send(data);
       })
       .catch((e: AxiosError) => {
-        RequestUtil.processResponseError(e, req, res, storagePath, requestConfig);
+        RequestUtil.processResponseError(e, req, res, requestConfig);
       });
     }
   }
