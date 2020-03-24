@@ -65,7 +65,7 @@ export class UIController {
       for (const key in json) {
         const value = json[key];
         data[key] = {
-          request: prettier.format(JSON.stringify(value.request), { parser: 'json' }),
+          request: prettier.format(JSON.stringify(value.request), { parser: 'json', printWidth: 40 }),
           response: {
             ...(value.response || {}),
             data: prettier.format(JSON.stringify(value.response?.data || {}), {
