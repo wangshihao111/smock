@@ -3,6 +3,7 @@
   "version": "0.1.0-alpha.2",
   "private": false,
   "main": "lib/index.js",
+  "description": "Api interceptor, based on proxy.",
   "author": "王世豪<913003120@qq.com>",
   "license": "MIT",
   "keywords": [

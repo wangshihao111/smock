@@ -1,7 +1,7 @@
 {
   "name": "@smock/mock",
   "version": "0.1.0-alpha.6",
-  "description": "A free, fast and beautiful API request builder",
+  "description": "A useful mock tool.",
   "author": "王世豪<913003120@qq.com>",
   "keywords": ["mock", "mock-tool", "mock document", "commandLine tools"],
   "publishConfig": {
