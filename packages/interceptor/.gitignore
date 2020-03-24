@@ -3,3 +3,5 @@ yarn.lock
 yarn-error.log
 .api-proxy
 api-proxy.json
+.smockrc.js
+.smock/
