@@ -1,17 +1,17 @@
-import React, { FC, useState, useEffect, useCallback, useLayoutEffect, ChangeEvent } from 'react'
+import React, { FC, useState, useEffect, useCallback, useLayoutEffect } from 'react'
 import { RouteChildrenProps } from 'react-router-dom'
-import { getApiDetail, saveApiData } from '../../service/mock.service';
 import { notification, Tabs, Button, Modal, Form, InputNumber } from 'antd';
 import { SyncOutlined, SaveOutlined, ArrowLeftOutlined } from '@ant-design/icons';
+import { AxiosError } from 'axios';
 import 'ace-builds'
 import AceEditor from 'react-ace';
-
 import 'ace-builds/webpack-resolver'
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-tomorrow";
 
 import './index.scss'
+import { getApiDetail, saveApiData } from '../../service/mock.service';
 import HeadersEdit from './HeadersEdit';
 
 const { TabPane } = Tabs;
@@ -37,6 +37,7 @@ function parseResponseData(data: any): HistoryItem[] {
   return result;
 }
 
+// 正在编辑的头信息，中间变量
 let editHeaders = {}
 
 function getModeByHeader(headers = {} as any): string {
@@ -62,9 +63,15 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
         setEditStatusNum(data[0].response.status);
       }
       setDetail(data);
-    }).catch(e => {
+    }).catch((e: AxiosError) => {
+      let message = '';
+      if (e.response && e.response.data) {
+        message = e.response.data.message;
+      } else {
+        message = '获取失败，请重试';
+      }
       notification.error({
-        message: '获取失败，请重试',
+        message,
       })
     })
   }, [path])
@@ -112,17 +119,22 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
           notification.success({
             message: '保存成功。'
           })
-        }).catch(() => {
+        }).catch((e: AxiosError) => {
+          let message = '';
+          if (e.response && e.response.data) {
+            message = e.response.data.message;
+          } else {
+            message = '保存失败。';
+          }
           notification.error({
-            message: '保存失败。'
-          })
+            message,
+          });
         });
       } catch (error) {
         notification.error({
           message: "格式化失败，请检查内容格式！"
         })
       }
-      
     }
   }
 
@@ -141,7 +153,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
       window.removeEventListener('resize', fitEditorHeight);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, []);
   const renderTab = (request: any) => {
     return (
       <div className="history-tab-item-tab">

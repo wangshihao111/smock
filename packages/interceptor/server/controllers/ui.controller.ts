@@ -1,5 +1,4 @@
 import { FileUtil } from './../utils/file-util';
-import { RequestUtil } from './../utils/request-util';
 import { DbUtil } from './../utils/db-util';
 import { Application, Request, Response } from 'express';
 import prettier from 'prettier';
@@ -22,7 +21,9 @@ export class UIController {
 
   private updateIntercept(req: Request, res: Response) {
     const { body } = req;
-    DbUtil.set('interceptList', body as string[]);
+    const apiList: string[] = DbUtil.getDb().apiList;
+    const safeList = (body as string[]).filter(i => apiList.includes(i)); // 确保拦截api在缓存api列表中
+    DbUtil.set('interceptList', safeList);
     res.status(200);
     res.send({
       code: 0,
@@ -77,7 +78,10 @@ export class UIController {
       res.send(data);
     } catch (e) {
       res.status(500);
-      res.send();
+      res.send({
+        code: -1,
+        message: '未发现接口信息，请返回首页刷新后重试。'
+      });
     }
   }
 
@@ -90,9 +94,11 @@ export class UIController {
         message: 'success'
       })
     }).catch(e => {
-      console.log(e)
       res.status(500);
-      res.send();
+      res.send({
+        code: -1,
+        message: '未发现api信息，请返回首页刷新后重试。'
+      });
     })
   }
 

@@ -116,7 +116,7 @@ const Home: FC<RouteChildrenProps> = (props) => {
     <section className="page-home">
       <Row className="page-home-header" gutter={16}>
       <Col span={12}>
-          <Form.Item label="过滤类型">
+        <Form.Item label="过滤类型">
           <Radio.Group defaultValue="all" buttonStyle="solid" onChange={handleStatusChange} value={filter.type}>
             <Radio.Button value="all">全部</Radio.Button>
             <Radio.Button value="enabled">已开启拦截</Radio.Button>
@@ -147,7 +147,7 @@ const Home: FC<RouteChildrenProps> = (props) => {
               </div>
             </List.Item>
           ))
-        }
+        }      
         {
           !loading  && displayList.length === 0 && (
           <List.Item>
