@@ -1,0 +1,1 @@
+require('@smock/interceptor/bin/proxy')

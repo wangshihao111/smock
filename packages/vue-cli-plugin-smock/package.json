@@ -1,0 +1,63 @@
+
+{
+  "name": "@smock/vue-cli-plugin-smock",
+  "version": "0.1.0-alpha.0",
+  "private": false,
+  "main": "index.js",
+  "description": "Vue cli plugin of @smock/mock",
+  "author": "王世豪<913003120@qq.com>",
+  "license": "MIT",
+  "keywords": [
+    "Vue CLI plugin",
+    "mock tool"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangshihao111/smock.git"
+  },
+  "homepage": "https://github.com/wangshihao111/smock/tree/master/packages/vue-cli-plugin-smock",
+  "scripts": {
+  },
+  "dependencies": {
+    "@smock/mock": "latest",
+    "tree-kill": "^1.2.2"
+  },
+  "devDependencies": {
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ],
+    "plugins": [
+      [
+        "import",
+        {
+          "libraryName": "antd",
+          "libraryDirectory": "es",
+          "style": "css"
+        }
+      ]
+    ]
+  },
+  "files": [
+    "index.js",
+    "smock.js",
+    "package.json",
+    "README.md"
+  ]
+}

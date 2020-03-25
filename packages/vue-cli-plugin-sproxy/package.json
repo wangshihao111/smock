@@ -1,0 +1,64 @@
+
+{
+  "name": "@smock/vue-cli-plugin-sproxy",
+  "version": "0.1.0-alpha.0",
+  "private": false,
+  "main": "index.js",
+  "description": "vue cli plugin of @smock/interceptor",
+  "author": "王世豪<913003120@qq.com>",
+  "license": "MIT",
+  "keywords": [
+    "Vue CLI plugin",
+    "API Interceptor",
+    "API Control"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangshihao111/smock.git"
+  },
+  "homepage": "https://github.com/wangshihao111/smock/tree/master/packages/vue-cli-plugin-sproxy",
+  "scripts": {
+  },
+  "dependencies": {
+    "@smock/interceptor": "latest",
+    "tree-kill": "^1.2.2"
+  },
+  "devDependencies": {
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ],
+    "plugins": [
+      [
+        "import",
+        {
+          "libraryName": "antd",
+          "libraryDirectory": "es",
+          "style": "css"
+        }
+      ]
+    ]
+  },
+  "files": [
+    "index.js",
+    "sproxy.js",
+    "package.json",
+    "README.md"
+  ]
+}
