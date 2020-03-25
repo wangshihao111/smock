@@ -13,7 +13,7 @@ npm i @smock/vue-cli-plugin-sproxy
 {
   // ...
   "scripts": {
-    "sproxy": "vue-cli-service sproxy -p 5000"
+    "sproxy": "vue-cli-service sproxy --port 5000"
   }
   // ...
 }

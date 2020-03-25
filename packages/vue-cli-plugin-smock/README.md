@@ -13,7 +13,7 @@ npm i @smock/vue-cli-plugin-smock
 {
   // ...
   "scripts": {
-    "smock": "vue-cli-service smock -p 6000"
+    "smock": "vue-cli-service smock --port 6000"
   }
   // ...
 }
