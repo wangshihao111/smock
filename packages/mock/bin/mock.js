@@ -71,4 +71,10 @@ process.on("SIGINT", () => {
   })
 })
 
+process.on('SIGHUP', () => {
+  kill(child, () => {
+    process.exit();
+  })
+});
+
 startMock()
