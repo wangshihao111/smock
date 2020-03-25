@@ -2741,6 +2741,39 @@
   resolved "https://registry.npmjs.org/@sheerun/mutationobserver-shim/-/mutationobserver-shim-0.3.3.tgz#5405ee8e444ed212db44e79351f0c70a582aae25"
   integrity sha512-DetpxZw1fzPD5xUBrIAoplLChO2VB8DlL5Gg+I1IR9b2wPqYIca2WSUxL5g1vLeR4MsQq1NeWriXAVffV+U1Fw==
 
+"@smock/interceptor@latest":
+  version "0.1.0-beta.2"
+  resolved "https://registry.npmjs.org/@smock/interceptor/-/interceptor-0.1.0-beta.2.tgz#c61fe10df4916b6ff068da2e175a1f85f151125f"
+  integrity sha512-F/VOb+dQ0UhY5YDfIyGZ3DtORcUUOq8eB9Q/xOPT47qhmBni5B/Jv145hW+lRr3hRRK0K5ZhdmtR6Mg9MbihWA==
+  dependencies:
+    "@types/object-hash" "^1.3.1"
+    axios "^0.19.2"
+    commander "5.0.0"
+    execa "^4.0.0"
+    express "^4.17.1"
+    form-data "^3.0.0"
+    formidable "^1.2.2"
+    fs-extra "^8.1.0"
+    lodash "^4.17.15"
+    object-hash "^2.0.3"
+    prettier "2.0.2"
+
+"@smock/mock@latest":
+  version "0.1.0-alpha.6"
+  resolved "https://registry.npmjs.org/@smock/mock/-/mock-0.1.0-alpha.6.tgz#2de785e729cfbeb6084745bcd9f182e60e5f7d90"
+  integrity sha512-P2luih6y2Nl4uQG1pJuuh89wajwG5a0//oVY5DhynRGLD7BDwPOFUODudqMPrbQI4zBAhS9eB5Ol9SffA8efjg==
+  dependencies:
+    axios "0.19.2"
+    body-parser "^1.19.0"
+    commander "^5.0.0"
+    execa "^4.0.0"
+    express "^4.17.1"
+    fs-extra "^8.1.0"
+    json5 "^2.1.1"
+    lodash "^4.17.15"
+    mockjs "^1.1.0"
+    prettier "^1.19.1"
+
 "@svgr/babel-plugin-add-jsx-attribute@^4.2.0":
   version "4.2.0"
   resolved "https://registry.npmjs.org/@svgr/babel-plugin-add-jsx-attribute/-/babel-plugin-add-jsx-attribute-4.2.0.tgz#dadcb6218503532d6884b210e7f3c502caaa44b1"
@@ -12997,6 +13030,11 @@ prepend-http@^1.0.0, prepend-http@^1.0.1:
   resolved "https://registry.npm.taobao.org/prepend-http/download/prepend-http-1.0.4.tgz#d4f4562b0ce3696e41ac52d0e002e57a635dc6dc"
   integrity sha1-1PRWKwzjaW5BrFLQ4ALlemNdxtw=
 
+prettier@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/prettier/-/prettier-2.0.2.tgz#1ba8f3eb92231e769b7fcd7cb73ae1b6b74ade08"
+  integrity sha512-5xJQIPT8BraI7ZnaDwSbu5zLrB6vvi8hVV58yHQ+QK64qrY40dULy0HSRlQ2/2IdzeBpjhDkqdcFBnFeDEMVdg==
+
 prettier@^1.18.2, prettier@^1.19.1:
   version "1.19.1"
   resolved "https://registry.npm.taobao.org/prettier/download/prettier-1.19.1.tgz?cache=0&sync_timestamp=1573302169507&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fprettier%2Fdownload%2Fprettier-1.19.1.tgz#f7d7f5ff8a9cd872a7be4ca142095956a60797cb"
@@ -15823,6 +15861,11 @@ tr46@^1.0.1:
   integrity sha1-qLE/1r/SSJUZZ0zN5VujaTtwbQk=
   dependencies:
     punycode "^2.1.0"
+
+tree-kill@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.npmjs.org/tree-kill/-/tree-kill-1.2.2.tgz#4ca09a9092c88b73a7cdc5e8a01b507b0790a0cc"
+  integrity sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A==
 
 trim-newlines@^1.0.0:
   version "1.0.0"
