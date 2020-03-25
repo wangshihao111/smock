@@ -66,12 +66,15 @@ export class ProxyServer {
     return this.requestMiddleware;
   }
 
-  public run (): void {
+  public run (): number {
     FileUtil.initFolder();
     const config = FileUtil.loadConfig();
-    config.workPort = this.port;
+    if (this.port) {
+      config.workPort = this.port;
+    }
     RequestUtil.setProxyConfig(config);
     this.config = config;
     this.app.use(this.requestMiddleware);
+    return this.config.workPort;
   }
 }

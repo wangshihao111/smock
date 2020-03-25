@@ -12,7 +12,7 @@ program
   
   program.parse(process.argv);
 
-  let port = program.port || 4000;
+  let port = program.port;
   if (port) {
     port = Number(port);
   }
