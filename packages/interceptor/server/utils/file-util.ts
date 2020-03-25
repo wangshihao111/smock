@@ -38,7 +38,7 @@ export const defaultConfig: ProxyConfig = {
   target: "http://localhost:4000",
   workDir: ".smock",
   workPort: 10011,
-  matchRegexp: /^.*$/,
+  matchRegexp: /.*/,
   cacheStatic: true,
   pathIgnore: {
     query: [],
