@@ -1,12 +1,12 @@
 import { staticPattern } from './../utils/patterns';
 import { DbUtil } from './../utils/db-util';
-import { defaultConfig } from './../utils/file-util';
 import {
   Application, RequestHandler, Response, Request
 } from 'express';
 import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import { RequestUtil } from '../utils/request-util';
 import { FileUtil, ProxyConfig } from '../utils/file-util';
+import { defaultConfig } from '../config/config';
 
 export class ProxyServer {
   private app: Application;

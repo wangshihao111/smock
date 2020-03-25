@@ -14,6 +14,7 @@ import {
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import path from "path";
 import { RequestUtil } from "./request-util";
+import { defaultConfig } from '../config/config';
 
 export interface StoredRequest {
   path: string;
@@ -33,18 +34,6 @@ export interface ProxyConfig {
     body: string[]
   };
 }
-
-export const defaultConfig: ProxyConfig = {
-  target: "http://localhost:4000",
-  workDir: ".smock",
-  workPort: 10011,
-  matchRegexp: /.*/,
-  cacheStatic: true,
-  pathIgnore: {
-    query: [],
-    body: []
-  }
-};
 
 export class FileUtil {
   private static cwd: string;
