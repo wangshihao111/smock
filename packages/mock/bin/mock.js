@@ -5,27 +5,11 @@ var program = require('commander');
 const path = require("path")
 const execa = require("execa")
 const _ = require('lodash')
+const kill = require('tree-kill');
 
 const cwd = process.cwd()
 
 console.log('开始运行mock工具...')
-async function kill(child, callback) {
-  if (process.platform === "win32") {
-    const _child = execa('taskkill /pid ' + child.pid + ' /T /F', [], {
-      shell: true,
-      cwd
-    });
-    try {
-      await _child;
-    } catch (e) {
-      console.log('error: ', e);
-    }
-    callback();
-  } else {
-    child.kill();
-    callback();
-  }
-}
 
 program
 .version(require('../package.json').version)
@@ -58,7 +42,7 @@ function startMock() {
 
 const restart = _.debounce(() => {
   console.log('准备重启中...')
-  kill(child,  () => {
+  kill(child.pid,  () => {
     startMock()
   })
 }, 500)
@@ -66,13 +50,19 @@ const restart = _.debounce(() => {
 fs.watch(watchPath, restart);
 
 process.on("SIGINT", () => {
-  kill(child, () => {
+  kill(child.pid, () => {
     process.exit();
   })
 })
 
 process.on('SIGHUP', () => {
-  kill(child, () => {
+  kill(child.pid, () => {
+    process.exit();
+  })
+});
+
+process.on('SIGTERM', () => {
+  kill(child.pid, () => {
     process.exit();
   })
 });
