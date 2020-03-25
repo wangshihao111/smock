@@ -3,6 +3,7 @@
   "version": "0.1.0-alpha.6",
   "description": "A useful mock tool.",
   "author": "王世豪<913003120@qq.com>",
+  "license": "MIT",
   "keywords": ["mock", "mock-tool", "mock document", "commandLine tools"],
   "publishConfig": {
     "registry": "https://registry.npmjs.org"

@@ -2,6 +2,7 @@
   "name": "smock",
   "private": true,
   "author": "王世豪<913003120@qq.com>",
+  "license": "MIT",
   "scripts": {
     "build": "lerna run build",
     "start:mock": "cd packages/mock && yarn test-start",
