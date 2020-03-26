@@ -32,7 +32,7 @@
 
     ul {
       display: flex;
-      width: 0px;
+      // width: 0px;
     }
 
     li {
