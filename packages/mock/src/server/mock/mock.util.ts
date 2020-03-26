@@ -60,10 +60,20 @@ export class MockUtil {
     }
     if (isArray(typeDef)) {
       if (isArray(data)) return data;
-      result = []
-      Array.from({ length: typeDef[0].length || config.defaultArrayMockLength }).forEach(() => {
-        const {length, ...rest} = typeDef[0]
-        result.push(this.getMockedData(rest, undefined))
+      result = [];
+      let length = config.defaultArrayMockLength;
+      const defLength = typeDef[0].length;
+      const isDefLength = isNumber(defLength) || isNumber(Number(defLength))
+      if (isDefLength) {
+        length = defLength;
+      }
+      Array.from({ length }).forEach(() => {
+        let thisDef = typeDef[0];
+        if (isDefLength) {
+          const { length: _, ...rest } = typeDef[0];
+          thisDef = rest;
+        }
+        result.push(this.getMockedData(thisDef, undefined));
       })
       return result
     }
