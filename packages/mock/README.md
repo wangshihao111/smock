@@ -1,6 +1,9 @@
 A mock tool with UI. Powered by Postwoman an Mock.js.
 ---
 
+### 注意：当前仍然为alpha测试版，后期可能会有较大的改动。
+在使用过程中如果遇到问题，欢迎在github提issue, 非常感谢。
+
 ## Usage
 
 安装：
@@ -11,7 +14,7 @@ npm i -g @smock/mock
 yarn add global @smock/mock
 ```
 
-在启动命令的目录创建`live-mock`文件夹,并创建mock定义文件。(不创建文件夹会报错)
+如果启动命令的目录中不存在live-mock文件夹，工具会自动创建live-mock文件夹，并创建demo文件。
 
 启动mock服务：
 ```bash
