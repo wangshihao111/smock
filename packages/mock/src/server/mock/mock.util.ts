@@ -2,7 +2,8 @@ import { readFileSync, readdirSync, statSync } from 'fs-extra';
 import { resolve } from 'path';
 import { parse } from 'json5';
 import {
-  isArray, isObject, cloneDeep, isEqual
+  isArray, isObject,
+  isString, isNumber,
 } from 'lodash';
 import { Random } from 'mockjs';
 import { MockFileContent } from '../domain/JsonFile';
@@ -31,6 +32,7 @@ export class MockUtil {
       const isDirectory = stat.isDirectory();
       if (isJs && !isDirectory) {
         try {
+          // eslint-disable-next-line @typescript-eslint/no-var-requires
           const jsDef = require(filePath);
           if (jsDef) {
             this.jsDefMap.set(jsDef.name, jsDef);
@@ -49,7 +51,7 @@ export class MockUtil {
     return [this.jsonDefMap, this.jsDefMap];
   }
 
-  public static getMockedData (typeDef, data) {
+  public static getMockedData (typeDef, data): any {
     let result = {} as any;
     if (typeDef.type) {
       if (!typeDef.required) return data;
@@ -59,12 +61,10 @@ export class MockUtil {
     }
     if (isArray(typeDef)) {
       if (isArray(data)) return data;
-
       result = [];
       Array.from({ length: typeDef[0].length || config.defaultArrayMockLength }).forEach(() => {
         result.push(this.getMockedData(typeDef[0], undefined));
       });
-
       return result;
     }
 
@@ -76,12 +76,12 @@ export class MockUtil {
     return result;
   }
 
-  private static getOneMock (conf) {
+  private static getOneMock (conf): any {
     let mockedValue;
     const randomFun = Random[conf.$$mock];
     if (randomFun) {
       const params = conf.params || [];
-      mockedValue = Random[conf.$$mock](...params);
+      mockedValue = randomFun(...params);
     } else {
       mockedValue = '没有找到mock类型，请检查您的$$mock配置';
     }
@@ -98,8 +98,9 @@ export class MockUtil {
     if (apiType.type) { // 只有个单值
       const { type, required } = apiType;
       let typeValid = type === getVariableType(obj);
-      if (isQuery && type === ParamType.INT) {
-        typeValid = getVariableType(parseInt(obj)) === ParamType.INT;
+      if (isQuery && type === ParamType.NUMBER) {
+        const pType = getVariableType(Number(obj));
+        typeValid = pType === ParamType.NUMBER;
       }
       const requiredValid = (required && obj !== undefined && typeValid) ||
           (!required && typeValid);
@@ -113,7 +114,7 @@ export class MockUtil {
     }
     if (isObject(apiType) && isObject(obj)) {
       const keys = Object.keys(apiType);
-      return keys.every((key) => this.validateParams(apiType[key], obj[key]));
+      return keys.every((key) => this.validateParams(apiType[key], obj[key], isQuery));
     } return apiType === obj;
   }
 
@@ -123,13 +124,13 @@ export class MockUtil {
    * 所有要进行一个转换
    * @param query
    */
-  public static changeQueryToString (query = {}) {
+  public static changeQueryToString (query = {}): any {
     const result = {};
     for (const key in query) {
-      if (typeof query[key] === 'string' || 'number') {
+      if (isString(query[key]) || isNumber(query[key])) {
         result[key] = String(query[key]);
       } else if (isArray(query[key])) {
-        result[key] = query[key].map((v) => (typeof v === 'string' || 'number' ? v : MockUtil.changeQueryToString(v)));
+        result[key] = query[key].map((v) => (isString(v) || isNumber(v) ? v : MockUtil.changeQueryToString(v)));
       } else {
         result[key] = MockUtil.changeQueryToString(query[key]);
       }

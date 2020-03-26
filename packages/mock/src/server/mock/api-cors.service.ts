@@ -16,14 +16,11 @@ export class ApiCorsService {
     const proxyUrl = '/__api-proxy';
     const handle = async (request: Request, response: Response, next) => {
       const { body } = request;
-      console.log(body);
       try {
         const res = await axios(body);
-        console.log('res', res.data);
         response.send(res.data);
         next();
       } catch (e) {
-        console.log('err', e);
         if (e.response) {
           response.status(e.response.status);
           response.send(e.response.data);

@@ -1,6 +1,6 @@
 import createMock from './server/server';
 
 createMock({
-  port: 5006,
+  port: 4000,
   host: '0.0.0.0'
 });
