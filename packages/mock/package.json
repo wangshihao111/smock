@@ -55,7 +55,8 @@
     "prettier": "^1.19.1",
     "mockjs": "^1.1.0",
     "axios": "0.19.2",
-    "tree-kill": "^1.2.2"
+    "tree-kill": "^1.2.2",
+    "chalk": "^2.4.2"
   },
   "devDependencies": {
     "@nuxtjs/axios": "^5.9.5",

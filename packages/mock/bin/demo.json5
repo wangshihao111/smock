@@ -1,0 +1,97 @@
+{
+  name: "array-params-test",
+  desc: "user login and logout",
+  order: 1,
+  apis: [
+    {
+      name: "test array params",
+      desc: "if user login success, will get a token",
+      method: "POST",
+      url: "/array",
+      responseType: "json", // form-data, text, json, html, xml, javascript, binary
+      body: {
+        username: { name: "username", type: "string" },
+        password: { name: "password", type: "string" },
+      },
+      response: {
+        code: { name: "response result code", type: "number", desc: "success is 1" },
+        arrValue: [{ name: "arr value", type: "string", $$mock: "color", required: true }],
+        msg: {
+          name: "response result message",
+          type: "string",
+          desc: "",
+          $$mock: "csentence",
+          required: true,
+        },
+        token: {
+          name: "login success, get a user token; login failed, no token",
+          type: "string",
+          $$mock: "string",
+          params: [18, 18],
+          required: true,
+        },
+        obj: {
+          prop1: { name: "prop1", type: "string", required: true, $$mock: "csentence" },
+          prop2: { name: "prop2", type: "string", required: true, $$mock: "time" },
+        },
+        arrObj: [
+          {
+            length: 2,
+            prop1: { name: "prop1", type: "string", required: true, $$mock: "csentence" },
+            prop2: { name: "prop2", type: "string", required: true, $$mock: "time" },
+          },
+        ],
+      },
+      mock_data: [
+        {
+          body: { username: ["edison"], password: "123" },
+          response: { code: -1, msg: "password incorrect1" },
+        },
+      ],
+    },
+    {
+      name: "原始类型",
+      desc: "测试单值情况",
+      method: "POST",
+      url: "/array1",
+      responseType: "json", // form-data, text, json, html, xml, javascript, binary
+      body: { type: "string", required: true },
+      response: {
+        type: "string",
+        required: true,
+        $$mock: "time",
+      },
+    },
+    {
+      name: "原始类型数组",
+      desc: "测试单值情况",
+      method: "POST",
+      url: "/array2",
+      responseType: "json", // form-data, text, json, html, xml, javascript, binary
+      body: [{ type: "string", required: true }],
+      response: {
+        type: "string",
+        required: true,
+        $$mock: "time",
+      },
+    },
+    {
+      name: "对象数组",
+      desc: "测试单值情况",
+      method: "POST",
+      url: "/array3",
+      responseType: "json", // form-data, text, json, html, xml, javascript, binary
+      body: [
+        {
+          name: { type: "string", required: true },
+          age: { type: "number", required: true },
+        },
+      ],
+      response: {
+        type: "string",
+        required: true,
+        $$mock: "time",
+      },
+    },
+  ],
+}

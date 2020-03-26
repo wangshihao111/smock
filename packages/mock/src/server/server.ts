@@ -3,7 +3,8 @@ import express, { Application } from 'express';
 import { resolve } from 'path';
 import { MockService } from './mock/mock.service';
 import { ApiCorsService } from './mock/api-cors.service';
-import { applyCors } from './middlewares/cors.middleware';
+import { applyCors } from './middlewares/cors.middleware'
+import chalk from 'chalk';
 
 export default function createMock ({
   host = 'localhost',
@@ -24,7 +25,8 @@ export default function createMock ({
   apiCorsService.init();
 
   app.listen(port, host, () => {
-    console.log(`Mock running at: http://${host}:${port}`);
+    console.log(`${chalk.blue('Mock 服务运行在: ')}${chalk.green(`http://${host}:${port}`)}`);
+    console.log(`${chalk.greenBright('您可以打开此地址以查看接口文档。')}`);
   });
 }
 

@@ -3115,11 +3115,6 @@
   resolved "https://registry.npm.taobao.org/@types/parse-json/download/@types/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
   integrity sha1-L4u0QUNNFjs1+4/9zNcTiSf/uMA=
 
-"@types/prettier@1.12.0":
-  version "1.12.0"
-  resolved "https://registry.npmjs.org/@types/prettier/-/prettier-1.12.0.tgz#61ed6bdc64386f49c9e1f179cf84ef26ddc4740c"
-  integrity sha512-W8/kDBciImLUfX/VLBm7Tbs6Gh3ZP8wU6iJA2qraVrTMHF9jj1hZ1x2f2+P8RuvQk/Zvi4CifXRIl4/LcTvzyQ==
-
 "@types/prop-types@*":
   version "15.7.3"
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
