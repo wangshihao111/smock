@@ -12,11 +12,9 @@
       <h3 class="request-title">
         请求 query
       </h3>
-      <ParamDetail :params="apiDef.body"/>
+      <ParamDetail :params="apiDef.query"/>
       <pre ref="query">
-        <code class="json">
-          {{parseDefObj(apiDef.query)}}
-        </code>
+        <code class="json">{{parseDefObj(apiDef.query)}}</code>
       </pre>
     </div>
     <div class="api-request" v-if="apiDef.body">
@@ -186,6 +184,7 @@ export default {
 }
 .api-request pre code {
   line-height: 22px;
+  color: #fff;
 }
 .request-title {
   margin: 8px 0;
