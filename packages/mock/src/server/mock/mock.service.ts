@@ -71,14 +71,13 @@ export class MockService {
         return;
       }
       const data = this.findOne(body, query, api);
-      // TODO: 将数据中需要mock的数据换成mock数据
+      // 将数据中需要mock的数据换成mock数据
       if (data) {
         const responseData = MockUtil.getMockedData(response, data.response);
         res.send(responseData);
         return;
       }
       // 如果参数类型不匹配
-
       if (!queryValid || !bodyValid) {
         res.status(400);
         res.send({
@@ -87,7 +86,7 @@ export class MockService {
         });
         return;
       }
-      // TODO: 其它情况，返回模拟数据
+      // 其它情况，返回模拟数据
       const mocked = MockUtil.getMockedData(response, {});
       res.send(mocked);
     };
@@ -123,7 +122,13 @@ export class MockService {
     this.jsDefinitions.set(obj.name, obj);
     const createHandler = (api: JsApiItem) => (req: Request, res: Response): void => {
       const result = api.handle(req, res);
-      res.send(result);
+      // 有返回体时，将其发送给客户端
+      if (result) {
+        const { status = 200, data } = result;
+        res.status(status);
+        res.send(data);
+        console.log(status, data);
+      }
     };
     obj.apis.forEach((api) => this.app[toLower(api.method)](api.url, createHandler(api)));
   }

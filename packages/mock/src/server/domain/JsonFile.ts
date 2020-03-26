@@ -8,6 +8,7 @@ export interface ApiItem {
   name: string;
   desc: string;
   method: 'POST' | 'GET' | 'DELETE' | 'PUT' | 'OPTIONS' | 'HEAD' | 'CONNECT' | 'TRACE';
+  status: number;
   url: string;
   responseType?: string; // json form-data, text, json, html, xml, javascript, binary
   body?: any;
