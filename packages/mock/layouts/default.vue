@@ -86,7 +86,6 @@ export default {
     },
     handleBgClick(e) {
       this.showRequest = false;
-      console.log(e)
       e.stopPropagation()
       e.preventDefault()
     }
