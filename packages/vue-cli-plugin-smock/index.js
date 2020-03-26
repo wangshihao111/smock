@@ -12,10 +12,14 @@ module.exports = (api, projectOptions) => {
     // 或返回通过 webpack-merge 合并的配置对象
   })
 
-  api.registerCommand('smock', {}, args => {
+  api.registerCommand('smock', {
+    options: {
+      '-p --port <port>': 'specify working port<指定运行端口>'
+    }
+  }, args => {
     const cwd = process.cwd();
     console.log('work dir:', cwd)
-    const cmd = `node ${scriptPath} -p ${args.port}`;
+    const cmd = `node ${scriptPath} -p ${args.port || 4000}`;
     const child = execa(cmd, [], {
       shell: true,
       cwd: process.cwd()

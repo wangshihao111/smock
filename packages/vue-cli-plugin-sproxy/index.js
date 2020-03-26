@@ -11,7 +11,11 @@ module.exports = (api, projectOptions) => {
     // 或返回通过 webpack-merge 合并的配置对象
   })
 
-  api.registerCommand('sproxy', {}, args => {
+  api.registerCommand('sproxy', {
+    options: {
+      '-p --port <port>': '指定运行端口'
+    }
+  }, args => {
     const cmd = `node ${scriptPath} -p ${args.port}`;
     const child = execa(cmd, [], {
       shell: true,
