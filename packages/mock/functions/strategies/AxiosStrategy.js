@@ -1,6 +1,17 @@
 import axios from "axios"
 import { baseUrl } from '../../assets/js/config';
 
+function getFilteredHeaders(config = {}) {
+  const { headers = {} } = config;
+  const ret = {};
+  for (const key in headers) {
+    if (key) {
+      ret[key] = headers[key];
+    }
+  }
+  return ret;
+}
+
 const axiosWithProxy = async (req, { state }) => {
   const { data } = await axios.post(
     state.postwoman.settings.PROXY_URL || "https://postwoman.apollosoftware.xyz/",
@@ -13,7 +24,10 @@ const axiosWithoutProxy = async (req, _store) => {
   // console.log(req)
   // const res = await axios(req)
   const requestUrl = `${baseUrl}/__api-proxy`;
-  const res = await axios.post(requestUrl, req)
+  const res = await axios.post(requestUrl, {
+    ...(req || {}),
+    headers: getFilteredHeaders(req)
+  })
   return res
 }
 
