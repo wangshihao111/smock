@@ -1,44 +1,40 @@
 {
   name: "array-params-test",
   desc: "user login and logout",
-  order: 1,
   apis: [
     {
       name: "test array params",
       desc: "if user login success, will get a token",
-      method: "POST",
+      method: "GET",
       url: "/array",
-      responseType: "json", // form-data, text, json, html, xml, javascript, binary
-      body: {
-        username: { name: "username", type: "string" },
-        password: { name: "password", type: "string" },
+      query: {
+        username: { type: "string", desc: "xxxxx", required: true },
+        password: { type: "string" },
       },
       response: {
-        code: { name: "response result code", type: "number", desc: "success is 1" },
-        arrValue: [{ name: "arr value", type: "string", $$mock: "color", required: true }],
+        code: { desc: "response result code", type: "number" },
+        arrValue: [{ desc: "arr value", type: "string", $$mock: "color", required: true }],
         msg: {
-          name: "response result message",
           type: "string",
           desc: "",
           $$mock: "csentence",
           required: true,
         },
         token: {
-          name: "login success, get a user token; login failed, no token",
           type: "string",
           $$mock: "string",
           params: [18, 18],
           required: true,
         },
         obj: {
-          prop1: { name: "prop1", type: "string", required: true, $$mock: "csentence" },
-          prop2: { name: "prop2", type: "string", required: true, $$mock: "time" },
+          prop1: { type: "string", required: true, $$mock: "csentence" },
+          prop2: { type: "string", required: true, $$mock: "time" },
         },
         arrObj: [
           {
             length: 2,
-            prop1: { name: "prop1", type: "string", required: true, $$mock: "csentence" },
-            prop2: { name: "prop2", type: "string", required: true, $$mock: "time" },
+            prop1: { type: "string", required: true, $$mock: "csentence" },
+            prop2: { type: "string", required: true, $$mock: "time" },
           },
         ],
       },
@@ -54,7 +50,6 @@
       desc: "测试单值情况",
       method: "POST",
       url: "/array1",
-      responseType: "json", // form-data, text, json, html, xml, javascript, binary
       body: { type: "string", required: true },
       response: {
         type: "string",
@@ -67,7 +62,6 @@
       desc: "测试单值情况",
       method: "POST",
       url: "/array2",
-      responseType: "json", // form-data, text, json, html, xml, javascript, binary
       body: [{ type: "string", required: true }],
       response: {
         type: "string",
@@ -80,7 +74,6 @@
       desc: "测试单值情况",
       method: "POST",
       url: "/array3",
-      responseType: "json", // form-data, text, json, html, xml, javascript, binary
       body: [
         {
           name: { type: "string", required: true },

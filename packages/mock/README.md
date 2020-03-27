@@ -1,7 +1,7 @@
 A mock tool with UI. Powered by Postwoman an Mock.js.
 ---
 
-### 注意：当前仍然为alpha测试版，后期可能会有较大的改动。
+### 注意：当前仍然为beta测试版，可能存在bug。
 在使用过程中如果遇到问题，欢迎在github提issue, 非常感谢。
 
 ## Usage
