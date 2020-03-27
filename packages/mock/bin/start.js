@@ -20,7 +20,7 @@ function bootstrap() {
     port = Number(port);
   }
 
-  createMock({host: 'localhost', port});
+  createMock({host: '0.0.0.0', port});
 }
 
 bootstrap();

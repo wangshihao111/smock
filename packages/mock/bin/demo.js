@@ -5,7 +5,7 @@ module.exports = {
     {
       name: 'hello one',
       desc: 'example 1',
-      method: 'POST',
+      method: 'GET',
       url: '/test-js-1',
       handle: (req, res) => {
         res.status(200);

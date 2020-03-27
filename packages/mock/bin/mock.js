@@ -11,7 +11,7 @@ const kill = require('tree-kill');
 function initFolder(cwd) {
   const targetDirPath = path.resolve(cwd, 'live-mock')
   fs.mkdirSync(targetDirPath);
-  console.log(`${chalk.blue('文件夹创建成功，文件夹位置：')}${chalk.green(targetDirPath)}`);
+  console.log(`${chalk.yellow('文件夹创建成功，文件夹位置：')}${chalk.green(targetDirPath)}`);
   console.log(chalk.yellow('创建demo文件中...'));
   fs.createReadStream(path.resolve(__dirname, 'demo.json5')).pipe(fs.createWriteStream(path.resolve(cwd, 'live-mock/demo.json5')));
   fs.createReadStream(path.resolve(__dirname, 'demo.js')).pipe(fs.createWriteStream(path.resolve(cwd, 'live-mock/demo.js')));
@@ -38,18 +38,18 @@ function boot() {
   let child
   
   function startMock() {
-    console.log(chalk.blue('启动Mock服务...'))
+    console.log(chalk.yellow('启动Mock服务...\n'))
     child = execa(`node ${scriptPath}`, args, {
       shell: true,
       cwd
     })
-    child.stdout.on("data", buf => console.log(chalk.blue(buf.toString())))
-    child.stderr.on("data", buf => console.log(chalk.blue(buf.toString())))
+    child.stdout.on("data", buf => console.log(chalk.yellow(buf.toString())))
+    child.stderr.on("data", buf => console.log(chalk.yellow(buf.toString())))
     child.catch(e => {console.log()});
   }
   
   const restart = _.debounce(() => {
-    console.log(chalk.blue('准备重启中...'))
+    console.log(chalk.yellow('准备重启中...'))
     kill(child.pid,  () => {
       startMock()
     })
@@ -57,9 +57,9 @@ function boot() {
   
   try {
     fs.watch(watchPath, restart);
-    console.log(`${chalk.blue('正在监听文件夹变动：')}${chalk.green(watchPath)}`)
+    console.log(`${chalk.yellow('正在监听文件夹变动：')}${chalk.green(watchPath)}\n`)
   } catch (error) {
-    console.log(`${chalk.blue('文件夹')} ${chalk.yellow('live-mock')} ${chalk.blue('不存在，准备创建文件夹...')}`)
+    console.log(`${chalk.yellow('文件夹')} ${chalk.yellow('live-mock')} ${chalk.yellow('不存在，准备创建文件夹...')}\n`)
     initFolder(cwd);
   }
   

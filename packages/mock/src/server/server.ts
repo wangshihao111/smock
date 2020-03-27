@@ -7,7 +7,7 @@ import { applyCors } from './middlewares/cors.middleware'
 import chalk from 'chalk';
 
 export default function createMock ({
-  host = 'localhost',
+  host = '0.0.0.0',
   port = 4000
 }): void {
   const app: Application = express();
@@ -25,7 +25,7 @@ export default function createMock ({
   apiCorsService.init();
 
   app.listen(port, host, () => {
-    console.log(`${chalk.blue('Mock 服务运行在: ')}${chalk.green(`http://${host}:${port}`)}`);
+    console.log(`${chalk.blue('Mock 服务运行在: ')}${chalk.green(`http://127.0.0.1:${port}`)}`);
     console.log(`${chalk.greenBright('您可以打开此地址以查看接口文档。')}`);
   });
 }
