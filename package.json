@@ -28,28 +28,14 @@
     "packages/*"
   ],
   "lint-staged": {
-    "src/**/*.{js,jsx}": [
-      "prettier --write",
-      "eslint --quiet --fix "
-    ],
-    "src/**/*.less": [
-      "prettier --write",
-      "stylelint --syntax less",
-      "git add"
-    ],
-    "packages/*/src/**/*.{js,jsx}": [
+    "packages/*/server/**/*.{ts,tsx}": [
       "prettier --write",
       "eslint --quiet --fix ",
       "git add"
     ],
-    "packages/*/src/**/*.less": [
+    "packages/*/src/**/*.{ts,tsx}": [
       "prettier --write",
-      "stylelint --syntax less",
-      "git add"
-    ],
-    "scripts/code-scan/{plugins,scripts,utils}/*.js": [
-      "prettier --write",
-      "eslint --quiet --fix",
+      "eslint --quiet --fix ",
       "git add"
     ]
   },
