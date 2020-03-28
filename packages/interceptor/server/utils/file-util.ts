@@ -41,8 +41,6 @@ export class FileUtil {
   private static config: ProxyConfig;
 
   public static getFileName (url: string): string {
-    // const str = url.split('?')[0];
-    // return str.replace(/[\\/?:]/g, '-');
     return encodeURIComponent(url);
   }
 
@@ -120,7 +118,9 @@ export class FileUtil {
     const fileName = this.getFileName(url);
     return path.resolve(
       this.cwd,
-      `${this.config.workDir}/${!asset ? 'history' : 'static'}/${fileName}${asset ? '' : '.json'}`
+      `${this.config.workDir}/${!asset ? 'history' : 'static'}/${fileName}${
+        asset ? '' : '.json'
+      }`
     );
   }
 
@@ -170,7 +170,10 @@ export class FileUtil {
   }
 
   public static async storageStatic (_path: string, res: AxiosResponse) {
-    const filePath = path.resolve(this.cwd, `${this.config.workDir}/static/${this.getFileName(_path)}`);
+    const filePath = path.resolve(
+      this.cwd,
+      `${this.config.workDir}/static/${this.getFileName(_path)}`
+    );
     if (utf8Pattern.test(_path)) {
       await writeFile(filePath, res.data);
     }
