@@ -1,5 +1,5 @@
 import { utf8Pattern, binaryPattern } from './patterns';
-import { DbUtil } from "./db-util";
+import { DbUtil } from './db-util';
 import {
   stat,
   readJSON,
@@ -9,11 +9,11 @@ import {
   readJsonSync,
   writeJSONSync,
   removeSync,
-  writeFile,
-} from "fs-extra";
-import { AxiosRequestConfig, AxiosResponse } from "axios";
-import path from "path";
-import { RequestUtil } from "./request-util";
+  writeFile
+} from 'fs-extra';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import path from 'path';
+import { RequestUtil } from './request-util';
 import { defaultConfig } from '../config/config';
 
 export interface StoredRequest {
@@ -30,8 +30,8 @@ export interface ProxyConfig {
   matchRegexp: RegExp;
   cacheStatic: boolean;
   pathIgnore: {
-    query: string[],
-    body: string[]
+    query: string[];
+    body: string[];
   };
 }
 
@@ -40,16 +40,17 @@ export class FileUtil {
 
   private static config: ProxyConfig;
 
-  public static getFileName(url: string): string {
+  public static getFileName (url: string): string {
     // const str = url.split('?')[0];
     // return str.replace(/[\\/?:]/g, '-');
     return encodeURIComponent(url);
   }
 
-  public static loadConfig(): ProxyConfig {
+  public static loadConfig (): ProxyConfig {
     this.cwd = process.cwd();
-    const configFilePath = path.resolve(this.cwd, ".smockrc.js");
+    const configFilePath = path.resolve(this.cwd, '.smockrc.js');
     try {
+      // eslint-disable-next-line
       const config = require(configFilePath);
       return {
         ...defaultConfig,
@@ -62,10 +63,10 @@ export class FileUtil {
     }
   }
 
-  public static async addRequestLog(
+  public static async addRequestLog (
     path: string,
     req: AxiosRequestConfig,
-    res: StoredRequest,
+    res: StoredRequest
   ): Promise<void> {
     const filePath = this.getFilePath(path);
     const key = RequestUtil.getUniqueKeyFromRequest(req, path);
@@ -99,9 +100,9 @@ export class FileUtil {
     }
   }
 
-  public static async getRequestLog(
+  public static async getRequestLog (
     path: string,
-    req: AxiosRequestConfig,
+    req: AxiosRequestConfig
   ): Promise<any> {
     const key = RequestUtil.getUniqueKeyFromRequest(req, path);
     const filePath = this.getFilePath(path);
@@ -115,7 +116,7 @@ export class FileUtil {
     }
   }
 
-  public static getFilePath(url: string, asset?: boolean): string {
+  public static getFilePath (url: string, asset?: boolean): string {
     const fileName = this.getFileName(url);
     return path.resolve(
       this.cwd,
@@ -123,12 +124,12 @@ export class FileUtil {
     );
   }
 
-  public static getOneHistory(api: string) {
+  public static getOneHistory (api: string) {
     const path = this.getFilePath(api);
     return readJsonSync(path);
   }
 
-  public static deleteOneLog(api: string) {
+  public static deleteOneLog (api: string) {
     const path = this.getFilePath(api);
     removeSync(path);
     const db = DbUtil.getDb();
@@ -140,11 +141,11 @@ export class FileUtil {
     const intepIndex = interceptList.indexOf(api);
     if (apiIndex > -1) apiList.splice(apiIndex, 1);
     if (intepIndex > -1) interceptList.splice(intepIndex, 1);
-    DbUtil.set("apiList", apiList);
-    DbUtil.set("interceptList", interceptList);
+    DbUtil.set('apiList', apiList);
+    DbUtil.set('interceptList', interceptList);
   }
 
-  public static async updateRequestLog(data: any) {
+  public static async updateRequestLog (data: any) {
     const { path, key, response } = data;
     try {
       const filePath = this.getFilePath(path);
@@ -157,18 +158,18 @@ export class FileUtil {
             ...json,
             [key]: {
               ...target,
-              response,
+              response
             }
           },
           { spaces: 2 }
         );
       }
     } catch (error) {
-      throw new Error("failed");
+      throw new Error('failed');
     }
   }
 
-  public static async storageStatic(_path: string, res: AxiosResponse) {
+  public static async storageStatic (_path: string, res: AxiosResponse) {
     const filePath = path.resolve(this.cwd, `${this.config.workDir}/static/${this.getFileName(_path)}`);
     if (utf8Pattern.test(_path)) {
       await writeFile(filePath, res.data);
@@ -178,12 +179,12 @@ export class FileUtil {
     }
   }
 
-  public static async initFolder(): Promise<void> {
+  public static async initFolder (): Promise<void> {
     const config = (this.config = this.loadConfig());
     const rootDir = path.resolve(process.cwd(), config.workDir);
-    const historyDir = path.resolve(rootDir, "history");
+    const historyDir = path.resolve(rootDir, 'history');
     const staticDir = path.resolve(rootDir, 'static');
-    const dirs = [rootDir, historyDir, staticDir]
+    const dirs = [rootDir, historyDir, staticDir];
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
       try {
@@ -195,7 +196,7 @@ export class FileUtil {
         await mkdir(dir);
       }
     }
-    const settingFile = path.resolve(rootDir, "settings.json");
+    const settingFile = path.resolve(rootDir, 'settings.json');
     try {
       const json = await readJson(settingFile);
     } catch (e) {
@@ -203,15 +204,15 @@ export class FileUtil {
     }
   }
 
-  public static getSettings() {
+  public static getSettings () {
     return readJsonSync(
-      path.resolve(this.cwd, this.config.workDir, "settings.json")
+      path.resolve(this.cwd, this.config.workDir, 'settings.json')
     );
   }
 
-  public static setSettings(json: any) {
+  public static setSettings (json: any) {
     return writeJSONSync(
-      path.resolve(this.cwd, this.config.workDir, "settings.json"),
+      path.resolve(this.cwd, this.config.workDir, 'settings.json'),
       json,
       { spaces: 2 }
     );

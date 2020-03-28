@@ -1,5 +1,3 @@
-// @ts-ignore
-
 import formidable from 'formidable';
 import { Request, Response } from 'express';
 

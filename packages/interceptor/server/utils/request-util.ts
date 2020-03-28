@@ -69,7 +69,7 @@ export class RequestUtil {
     // console.log(error);
     if (this.config.cacheStatic && staticPattern.test(request.path)) {
       response.status(200);
-      response.sendFile(FileUtil.getFilePath(request.path, true))
+      response.sendFile(FileUtil.getFilePath(request.path, true));
       return;
     }
     // this.getResponseFromHistory(request, response, requestConfig, storagePath);
@@ -97,10 +97,10 @@ export class RequestUtil {
     response.send();
   }
 
-  public static getUniqueKeyFromRequest (config: AxiosRequestConfig, currentPath:string): string {
+  public static getUniqueKeyFromRequest (config: AxiosRequestConfig, currentPath: string): string {
     const { data, params, method } = config;
-    const obj = {data, params, method};
-    const { pathIgnore: {query = [], body = []} } = this.config;
+    const obj = { data, params, method };
+    const { pathIgnore: { query = [], body = [] } } = this.config;
     if (query.includes(currentPath)) {
       delete obj.params;
     }
