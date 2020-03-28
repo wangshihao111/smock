@@ -1,3 +1,4 @@
+import { GlobalContext } from './utils/context-util';
 import { UIController } from './controllers/ui.controller';
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -11,16 +12,19 @@ function start (port: number): void {
   app.use(applyCors);
   app.use(bodyParser.raw());
   app.use(bodyParser.text());
-  app.use(bodyParser.json({limit: '50mb'}));
+  app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(multipartMiddleware);
-  app.use(express.static(path.resolve(__dirname, '../dist')))
-  const proxyServer = new ProxyServer(app, port);
-  const uiController = new UIController(app);
+  app.use(express.static(path.resolve(__dirname, '../dist')));
+  const ctx = new GlobalContext(app, port);
+  const proxyServer = new ProxyServer(ctx);
+  const uiController = new UIController(ctx);
   uiController.run();
-  const workPort = proxyServer.run();
-  app.listen(workPort, () => {
-    console.log('Interceptor app running at: http://localhost:' + workPort);
+  proxyServer.run();
+  app.listen(ctx.config.workPort, () => {
+    console.log(
+      'Interceptor app running at: http://localhost:' + ctx.config.workPort
+    );
   });
 }
 

@@ -1,29 +1,30 @@
-import { FileUtil } from './../utils/file-util';
-import { DbUtil } from './../utils/db-util';
-import { Application, Request, Response } from 'express';
-import prettier from 'prettier';
+import { Request, Response } from 'express';
+import { GlobalContext } from '../utils/context-util';
+import { AbstractController } from '../definitions/AbstractController';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const prettier = require('prettier');
 
 const baseUrl = '/__api';
 
-export class UIController {
-  private app: Application;
-  constructor (app: Application) {
-    this.app = app;
+export class UIController extends AbstractController {
+  constructor (ctx: GlobalContext) {
+    super(ctx);
     this.getApiTree = this.getApiTree.bind(this);
     this.updateIntercept = this.updateIntercept.bind(this);
   }
 
-  private getApiTree (req: Request, res: Response) {
-    const apiList = DbUtil.get('apiList') || [];
+  private getApiTree (req: Request, res: Response): void {
+    const apiList = this.ctx.db.get('apiList') || [];
     res.status(200);
     res.send(apiList);
   }
 
-  private updateIntercept (req: Request, res: Response) {
+  private updateIntercept (req: Request, res: Response): void {
     const { body } = req;
-    const apiList: string[] = DbUtil.getDb().apiList;
-    const safeList = (body as string[]).filter(i => apiList.includes(i)); // 确保拦截api在缓存api列表中
-    DbUtil.set('interceptList', safeList);
+    const apiList: string[] = this.ctx.db.getDb().apiList;
+    const safeList = (body as string[]).filter((i) => apiList.includes(i)); // 确保拦截api在缓存api列表中
+    this.ctx.db.set('interceptList', safeList);
     res.status(200);
     res.send({
       code: 0,
@@ -32,16 +33,16 @@ export class UIController {
     });
   }
 
-  private getIntercept (req: Request, res: Response) {
-    const list = DbUtil.get('interceptList') || [];
+  private getIntercept (req: Request, res: Response): void {
+    const list = this.ctx.db.get('interceptList') || [];
     res.status(200);
     res.send(list);
   }
 
-  private deleteHistory (req: Request, res: Response) {
+  private deleteHistory (req: Request, res: Response): void {
     const api = req.body.path as string;
     try {
-      FileUtil.deleteOneLog(api);
+      this.ctx.file.deleteOneLog(api);
       res.status(200);
       res.send({
         code: 0,
@@ -57,16 +58,19 @@ export class UIController {
     }
   }
 
-  private getApiDetail (req: Request, res: Response) {
+  private getApiDetail (req: Request, res: Response): void {
     const { query } = req;
     const { api } = query as { api: string };
     try {
-      const json = FileUtil.getOneHistory(api) as any;
+      const json = this.ctx.file.getOneHistory(api) as any;
       const data: any = {};
       for (const key in json) {
         const value = json[key];
         data[key] = {
-          request: prettier.format(JSON.stringify(value.request), { parser: 'json', printWidth: 40 }),
+          request: prettier.format(JSON.stringify(value.request), {
+            parser: 'json',
+            printWidth: 40
+          }),
           response: {
             ...(value.response || {}),
             data: prettier.format(JSON.stringify(value.response?.data || {}), {
@@ -85,29 +89,32 @@ export class UIController {
     }
   }
 
-  private apiSave (req: Request, res: Response) {
+  private apiSave (req: Request, res: Response): void {
     const { body } = req;
-    FileUtil.updateRequestLog(body).then(() => {
-      res.status(200);
-      res.send({
-        code: 0,
-        message: 'success'
+    this.ctx.file
+      .updateRequestLog(body)
+      .then(() => {
+        res.status(200);
+        res.send({
+          code: 0,
+          message: 'success'
+        });
+      })
+      .catch((e) => {
+        res.status(500);
+        res.send({
+          code: -1,
+          message: '未发现api信息，请返回首页刷新后重试。'
+        });
       });
-    }).catch(e => {
-      res.status(500);
-      res.send({
-        code: -1,
-        message: '未发现api信息，请返回首页刷新后重试。'
-      });
-    });
   }
 
   public run (): void {
-    this.app.get(`${baseUrl}/tree`, this.getApiTree);
-    this.app.post(`${baseUrl}/update-intercept`, this.updateIntercept);
-    this.app.get(`${baseUrl}/intercepted`, this.getIntercept);
-    this.app.post(`${baseUrl}/delete-history`, this.deleteHistory);
-    this.app.get(`${baseUrl}/api-detail`, this.getApiDetail);
-    this.app.post(`${baseUrl}/api-save`, this.apiSave);
+    this.ctx.app.get(`${baseUrl}/tree`, this.getApiTree);
+    this.ctx.app.post(`${baseUrl}/update-intercept`, this.updateIntercept);
+    this.ctx.app.get(`${baseUrl}/intercepted`, this.getIntercept);
+    this.ctx.app.post(`${baseUrl}/delete-history`, this.deleteHistory);
+    this.ctx.app.get(`${baseUrl}/api-detail`, this.getApiDetail);
+    this.ctx.app.post(`${baseUrl}/api-save`, this.apiSave);
   }
 }
