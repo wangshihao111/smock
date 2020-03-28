@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { GlobalContext } from '../utils/context-util';
 import { AbstractController } from '../definitions/AbstractController';
+import { bind } from 'lodash-decorators';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const prettier = require('prettier');
@@ -8,18 +8,14 @@ const prettier = require('prettier');
 const baseUrl = '/__api';
 
 export class UIController extends AbstractController {
-  constructor (ctx: GlobalContext) {
-    super(ctx);
-    this.getApiTree = this.getApiTree.bind(this);
-    this.updateIntercept = this.updateIntercept.bind(this);
-  }
-
+  @bind()
   private getApiTree (req: Request, res: Response): void {
     const apiList = this.ctx.db.get('apiList') || [];
     res.status(200);
     res.send(apiList);
   }
 
+  @bind()
   private updateIntercept (req: Request, res: Response): void {
     const { body } = req;
     const apiList: string[] = this.ctx.db.getDb().apiList;
@@ -33,12 +29,14 @@ export class UIController extends AbstractController {
     });
   }
 
+  @bind()
   private getIntercept (req: Request, res: Response): void {
     const list = this.ctx.db.get('interceptList') || [];
     res.status(200);
     res.send(list);
   }
 
+  @bind()
   private deleteHistory (req: Request, res: Response): void {
     const api = req.body.path as string;
     try {
@@ -58,6 +56,7 @@ export class UIController extends AbstractController {
     }
   }
 
+  @bind()
   private getApiDetail (req: Request, res: Response): void {
     const { query } = req;
     const { api } = query as { api: string };
@@ -89,6 +88,7 @@ export class UIController extends AbstractController {
     }
   }
 
+  @bind()
   private apiSave (req: Request, res: Response): void {
     const { body } = req;
     this.ctx.file
