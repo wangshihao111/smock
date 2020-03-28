@@ -3,7 +3,7 @@ import express, { Application } from 'express';
 import { resolve } from 'path';
 import { MockService } from './mock/mock.service';
 import { ApiCorsService } from './mock/api-cors.service';
-import { applyCors } from './middlewares/cors.middleware'
+import { applyCors } from './middlewares/cors.middleware';
 import chalk from 'chalk';
 
 export default function createMock ({
