@@ -1,3 +1,4 @@
+import { PluginApi } from './plugin-api';
 import { FileUtil, ProxyConfig } from './file-util';
 import { DbUtil } from './db-util';
 import { Application, Request, Response } from 'express';
@@ -8,9 +9,10 @@ export interface GlobalContextInterface {
   file: FileUtil;
   config: ProxyConfig;
   cwd: string;
+  pluginApi: PluginApi;
 }
 
-export interface ScopedContext {
+export interface ScopedContextInterface {
   request: Request;
   response: Response;
 }
@@ -21,6 +23,7 @@ export class GlobalContext implements GlobalContextInterface {
   public readonly file: FileUtil;
   public readonly config: ProxyConfig;
   public readonly cwd: string;
+  public readonly pluginApi: PluginApi;
 
   constructor (app: Application, port: number) {
     this.app = app;
@@ -29,6 +32,17 @@ export class GlobalContext implements GlobalContextInterface {
     this.file = new FileUtil(this);
     const config = this.file.loadConfig();
     this.config = { ...config, workPort: port || config.workPort };
+    this.pluginApi = new PluginApi(this);
+  }
+}
+
+export class ScopedContext implements ScopedContextInterface {
+  request: Request;
+  response: Response;
+
+  constructor (req: Request, res: Response) {
+    this.request = req;
+    this.response = res;
   }
 }
 

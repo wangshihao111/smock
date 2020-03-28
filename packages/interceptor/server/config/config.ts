@@ -9,5 +9,6 @@ export const defaultConfig: ProxyConfig = {
   pathIgnore: {
     query: [],
     body: []
-  }
+  },
+  plugins: []
 };

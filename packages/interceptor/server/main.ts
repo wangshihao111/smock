@@ -1,14 +1,14 @@
 import { GlobalContext } from './utils/context-util';
 import { UIController } from './controllers/ui.controller';
-import express from 'express';
+import express, { Application } from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
 import { ProxyServer } from './controllers/proxy-server';
 import { multipartMiddleware } from './middlewares/multipart.middleware';
 import { applyCors } from './middlewares/cors.middleware';
+import chalk from 'chalk';
 
-function start (port: number): void {
-  const app = express();
+function applyBaseMiddleware (app: Application): void {
   app.use(applyCors);
   app.use(bodyParser.raw());
   app.use(bodyParser.text());
@@ -16,6 +16,12 @@ function start (port: number): void {
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(multipartMiddleware);
   app.use(express.static(path.resolve(__dirname, '../dist')));
+}
+
+function start (port = 10011): void {
+  const app = express();
+  applyBaseMiddleware(app);
+  // Create a universal context
   const ctx = new GlobalContext(app, port);
   const proxyServer = new ProxyServer(ctx);
   const uiController = new UIController(ctx);
@@ -23,7 +29,7 @@ function start (port: number): void {
   proxyServer.run();
   app.listen(ctx.config.workPort, () => {
     console.log(
-      'Interceptor app running at: http://localhost:' + ctx.config.workPort
+      chalk.yellow('Interceptor app running at:') + chalk.greenBright(` http://127.0.0.1:${ctx.config.workPort}`)
     );
   });
 }

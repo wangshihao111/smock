@@ -1,3 +1,4 @@
+import { PluginAPiFunc } from './plugin-api';
 import { GlobalContext } from './context-util';
 import { utf8Pattern, binaryPattern } from './patterns';
 import { DB } from './db-util';
@@ -34,6 +35,7 @@ export interface ProxyConfig {
     query: string[];
     body: string[];
   };
+  plugins: PluginAPiFunc[];
 }
 
 export class FileUtil {
