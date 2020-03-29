@@ -8,6 +8,7 @@
 - 在未开启拦截的时候，工具将从服务器去请求数据。并且把响应体缓存到本地以作不时之需。
 - 如果开启拦截，那么会从我们缓存过的历史记录中去查找结果，返回给前端。我们也可以编辑接口返回内容和状态码，来模拟服务器所有可能的返回情况，来达到调试的目的。
 - 另外，如果服务器出现了故障或者是网络出了问题，我们也可以直接开启所有接口的拦截。使用本地的缓存内容来进行调试。
+- 还有 一个小用途（跨域）。如果接口有跨域问题，可以将此工具当做代理服务器，用来跨域。
 
 ## Usage
 
@@ -18,6 +19,13 @@ npm i -g @smock/interceptor
 #或
 yarn add global @smock/interceptor
 ```
+## 命令可用选项：
+
+- `-p` , `--port`, 指定端口。示例： `sproxy -port 8000`
+- `-i`, `--init`，是否在运行时生成一个默认配置文件。
+- `-V`, `--version` 查看版本
+- `-h` 显示帮助信息。
+
 ## 配置文件示例：
 在启动命令的目录创建`.smockrc.js`文件, 加入如下形式的配置：
 (下面包含所有可配置项)
@@ -50,7 +58,8 @@ module.exports = {
     body: [
       '/oauth/login'
     ]
-  }
+  },
+  plugins: []
 }
 ```
 
@@ -65,7 +74,8 @@ module.exports = {
   pathIgnore: {
     query: [],
     body: []
-  }
+  },
+  plugins: []
 };
 ```
 
@@ -84,3 +94,70 @@ sproxy -p 10011 # 指定运行端口, 会覆盖.smockrc.js里的定义
 - 在接口编辑页面可以对拦截历史进行编辑和保存（包括响应体、响应头和响应状态码的编辑），保存操作会更改本地的缓存记录。但关闭拦截后，仍然会使用服务器返回的结果替换现有记录。
 - 缓存文件的的存储文件名是根据请求路径得到，是将路径进行encode后得到。每个请求路径对应一个json文件。对于同一个路径的请求，会根据请求method、query和body计算得到一个哈希，使用这个哈希作为键名存放一条请求记录。
 - 对于请求query或body中含有随机数或经常变化的值，例如token和时间戳。此时每一次请求的哈希都是全新的值，每个缓存记录都会是新的记录。如果开启了拦截，将不会如期取到缓存结果。为了解决这个问题，在配置文件里添加了忽略路径的选项，可以根据需要配置忽略query的路径和忽略body的路径(例如：/login, /logout等)；这个忽略只是在计算哈希时忽略，缓存记录中仍然会存在这些信息。
+
+## 插件系统
+
+工具支持插件系统，使用插件可以为工具添加一些额外的中间件，和生命周期处理。这些中间件会在被插入拦截中间件之前，基础中间件（bodyParser等）之后。生命周期支持：`created, beforeRequest, afterSend`。
+
+### 插件写法示例：
+```javascript
+module.exports = (api) => {
+  api.registerMiddleware((ctx) => {
+    return function (req, res, next) {
+      console.log('请求：', req.url);
+      next();
+    }
+  });
+  api.transformResponse((data) => {
+    return {
+      ...data,
+      prop1: 'a example value'
+    }
+  });
+  api.on('created', (ctx, scope) => {
+    console.log('Created called. logged in log-middleware');
+  });
+  api.on('beforeRequest', (ctx, scope) => {
+    console.log('BeforeRequest called. logged in log-middleware');
+  });
+  api.on('afterSend', (ctx, scope) => {
+    console.log('AfterSend called. logged in log-middleware');
+  });
+}
+```
+然后在.smockrc.js中添加如下代码：
+```javascript
+module.exports {
+  // ...
+  plugins: [require('path/to/log-middleware')]
+}
+```
+
+### 可用接口(api对象上的方法)：
+
+- `on(hook: string): void;` 注册一个生命周期处理函数。` hook = 'created' | 'beforeRequest' | 'afterSend'`
+
+- `registerMiddleware(creator: (ctx: GlobalContext) => RequestHandler)` 注册一个中间件
+
+- `transformResponse(transformer: (data: any) => any)` 返回数据处理器
+
+### context的接口定义如下：
+
+```typescript
+interface GlobalContextInterface {
+  app: Application;
+  db: DbUtil;
+  file: FileUtil;
+  config: ProxyConfig;
+  cwd: string;
+  pluginApi: PluginApi;
+}
+
+export interface ScopedContextInterface {
+  request: Request;
+  response: Response;
+}
+
+```
+
+注意： 余下方法为app内部调用准备。在中间件内调用可能会引起一些意想不到的结果。请勿随意使用。
