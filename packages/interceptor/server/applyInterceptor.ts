@@ -3,9 +3,11 @@ import bodyParser from 'body-parser';
 import { ProxyServer } from './controllers/proxy-server';
 import { multipartMiddleware } from './middlewares/multipart.middleware';
 import { applyCors } from './middlewares/cors.middleware';
+import { GlobalContext } from './utils/context-util';
 
 export function applyInterceptor (app: Application, port: number): void {
-  const proxyServer = new ProxyServer(app, port);
+  const ctx = new GlobalContext(app, port);
+  const proxyServer = new ProxyServer(ctx);
   proxyServer.run();
 }
 

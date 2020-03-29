@@ -34,6 +34,7 @@ function start (port = 10011): void {
       chalk.yellow('Interceptor app running at:') +
         chalk.greenBright(` http://127.0.0.1:${ctx.config.workPort}`)
     );
+    console.log(chalk.gray('您可以打开此地址以进入可视化页面。'));
   });
 }
 

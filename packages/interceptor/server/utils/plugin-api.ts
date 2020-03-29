@@ -1,5 +1,4 @@
 import { GlobalContext, ScopedContext } from './context-util';
-import { AxiosResponse } from 'axios';
 import { RequestHandler } from 'express';
 
 export enum Hooks {
@@ -9,7 +8,7 @@ export enum Hooks {
 }
 
 export interface TransformerFunc {
-  (body: AxiosResponse): void;
+  (body: any): void;
 }
 
 export interface HookParamFunc {
@@ -42,6 +41,11 @@ export class PluginApi {
 
   public transformResponse (transformer: TransformerFunc): void {
     this.transformer.push(transformer);
+  }
+
+  public applyTransformer (res: any): any {
+    this.transformer.forEach((t) => t(res));
+    return res;
   }
 
   public emit (hook: Hooks, scopedContext?: ScopedContext): void {

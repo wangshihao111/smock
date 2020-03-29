@@ -98,7 +98,8 @@ export class RequestUtil {
       for (const key in headers) {
         response.header(key, headers[key]);
       }
-      response.send(data);
+      const transformedData = this.ctx.pluginApi.applyTransformer(data);
+      response.send(transformedData);
       return;
     }
     response.status(404);

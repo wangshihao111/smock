@@ -60,7 +60,8 @@ export class ProxyServer extends AbstractController {
             this.ctx.db.addStringArrayItem(apiList, req.path);
             this.ctx.db.set('apiList', apiList);
           }
-          res.send(data);
+          const transformedData = this.ctx.pluginApi.applyTransformer(data);
+          res.send(transformedData);
         })
         .catch((e: AxiosError) => {
           this.requestUtil.processResponseError(e, req, res, requestConfig);
