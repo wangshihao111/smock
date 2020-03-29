@@ -1,9 +1,10 @@
-import { GlobalContext } from './../utils/context-util';
+import { GlobalContext, ScopedContext } from './../utils/context-util';
 import { staticPattern } from './../utils/patterns';
 import { RequestHandler, Response, Request } from 'express';
 import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
 import { RequestUtil } from '../utils/request-util';
 import { AbstractController } from '../definitions/AbstractController';
+import { Hooks } from '../utils/plugin-api';
 
 export class ProxyServer extends AbstractController {
   private requestUtil: RequestUtil;
@@ -15,6 +16,9 @@ export class ProxyServer extends AbstractController {
   }
 
   private requestMiddleware (req: Request, res: Response): void {
+    const scopedCtx = new ScopedContext(req, res);
+    this.ctx.pluginApi.emit(Hooks.BEFORE_REQUEST, scopedCtx);
+
     const db = this.ctx.db.getDb();
     const requestConfig: AxiosRequestConfig = this.requestUtil.parseRequest(
       req
@@ -61,6 +65,7 @@ export class ProxyServer extends AbstractController {
         .catch((e: AxiosError) => {
           this.requestUtil.processResponseError(e, req, res, requestConfig);
         });
+      this.ctx.pluginApi.emit(Hooks.AFTER_SEND, scopedCtx);
     }
   }
 

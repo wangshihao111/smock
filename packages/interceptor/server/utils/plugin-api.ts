@@ -5,7 +5,7 @@ import { RequestHandler } from 'express';
 export enum Hooks {
   BEFORE_REQUEST = 'beforeRequestHooks',
   AFTER_SEND = 'afterSend',
-  CREATED = 'created'
+  CREATED = 'created',
 }
 
 export interface TransformerFunc {
@@ -13,7 +13,7 @@ export interface TransformerFunc {
 }
 
 export interface HookParamFunc {
-  (globalCtx: GlobalContext, scopedCtx: ScopedContext): void;
+  (globalCtx: GlobalContext, scopedCtx?: ScopedContext): void;
 }
 
 export interface PluginAPiFunc {
@@ -44,8 +44,8 @@ export class PluginApi {
     this.transformer.push(transformer);
   }
 
-  public emit (hook: Hooks, scopedContext: ScopedContext): void {
-    this[hook].forEach(func => func(this.ctx, scopedContext));
+  public emit (hook: Hooks, scopedContext?: ScopedContext): void {
+    this[hook].forEach((func) => func(this.ctx, scopedContext));
   }
 
   public on (hook: Hooks, handler: HookParamFunc): void {
@@ -60,11 +60,11 @@ export class PluginApi {
     const {
       config: { plugins = [] }
     } = ctx;
-    plugins.forEach(pluginFun => {
+    plugins.forEach((pluginFun) => {
       if (typeof pluginFun === 'function') {
         pluginFun(this);
       }
     });
-    this.middleware.forEach(m => ctx.app.use(m));
+    this.middleware.forEach((m) => ctx.app.use(m));
   }
 }

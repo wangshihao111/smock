@@ -7,6 +7,7 @@ import { ProxyServer } from './controllers/proxy-server';
 import { multipartMiddleware } from './middlewares/multipart.middleware';
 import { applyCors } from './middlewares/cors.middleware';
 import chalk from 'chalk';
+import { Hooks } from './utils/plugin-api';
 
 function applyBaseMiddleware (app: Application): void {
   app.use(applyCors);
@@ -27,9 +28,11 @@ function start (port = 10011): void {
   const uiController = new UIController(ctx);
   uiController.run();
   proxyServer.run();
+  ctx.pluginApi.emit(Hooks.CREATED);
   app.listen(ctx.config.workPort, () => {
     console.log(
-      chalk.yellow('Interceptor app running at:') + chalk.greenBright(` http://127.0.0.1:${ctx.config.workPort}`)
+      chalk.yellow('Interceptor app running at:') +
+        chalk.greenBright(` http://127.0.0.1:${ctx.config.workPort}`)
     );
   });
 }
