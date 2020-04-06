@@ -1,6 +1,6 @@
 export interface MockConfig {
   base: string;
-  defaultArrayMockLength;
+  defaultArrayMockLength: number;
 }
 
 export const config: MockConfig = {
