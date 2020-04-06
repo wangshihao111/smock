@@ -62,7 +62,6 @@ export class MockUtil {
       if (isArray(data)) return data;
       result = [];
       let length = config.defaultArrayMockLength;
-      console.log(config)
       const defLength = typeDef[0].length;
       const isDefLength = isNumber(defLength);
       if (isDefLength) {
