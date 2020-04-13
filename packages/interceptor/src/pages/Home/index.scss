@@ -3,10 +3,17 @@
   width: 80%;
   max-width: 1000px;
   margin: 8px auto;
-  overflow: auto;
+  overflow: hidden;
   background: #fff;
   height: calc(100% - 16px);
+  display: flex;
+  flex-direction: column;
+  &-header {
+    flex-grow: 0;
+  }
   &-list {
+    flex: 1;
+    overflow-y: auto;
     padding-bottom: 57px;
     box-sizing: border-box;
     position: relative;
@@ -17,7 +24,7 @@
     justify-content: space-between;
     &-action {
       .ant-btn {
-        margin-left: 16px;
+        margin-right: 16px;
       }
     }
   }

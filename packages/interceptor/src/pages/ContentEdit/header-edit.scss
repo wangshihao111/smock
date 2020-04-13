@@ -9,6 +9,10 @@
     line-height: 42px;
     font-size: 14px;
     color: #1890ff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
   }
   .ant-row {
     width: 100%;

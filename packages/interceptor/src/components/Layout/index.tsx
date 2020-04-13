@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import { NavLink } from "react-router-dom";
 import "./index.scss";
 
-const Layout: FC = props => {
+const Layout: FC = (props) => {
   return (
     <section className="basic-layout">
       <header className="basic-layout-header">

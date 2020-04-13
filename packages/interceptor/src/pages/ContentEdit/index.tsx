@@ -4,26 +4,26 @@ import React, {
   useEffect,
   useCallback,
   useLayoutEffect,
-  ReactElement
-} from 'react';
-import { RouteChildrenProps } from 'react-router-dom';
-import { notification, Tabs, Button, Modal, Form, InputNumber } from 'antd';
+  ReactElement,
+} from "react";
+import { RouteChildrenProps } from "react-router-dom";
+import { notification, Tabs, Button, Modal, Form, InputNumber } from "antd";
 import {
   SyncOutlined,
   SaveOutlined,
-  ArrowLeftOutlined
-} from '@ant-design/icons';
-import { AxiosError } from 'axios';
-import 'ace-builds';
-import AceEditor from 'react-ace';
-import 'ace-builds/webpack-resolver';
-import 'ace-builds/src-noconflict/mode-html';
-import 'ace-builds/src-noconflict/mode-json';
-import 'ace-builds/src-noconflict/theme-tomorrow';
+  ArrowLeftOutlined,
+} from "@ant-design/icons";
+import { AxiosError } from "axios";
+import "ace-builds";
+import AceEditor from "react-ace";
+import "ace-builds/webpack-resolver";
+import "ace-builds/src-noconflict/mode-html";
+import "ace-builds/src-noconflict/mode-json";
+import "ace-builds/src-noconflict/theme-tomorrow";
 
-import './index.scss';
-import { getApiDetail, saveApiData } from '../../service/mock.service';
-import HeadersEdit from './HeadersEdit';
+import "./index.scss";
+import { getApiDetail, saveApiData } from "../../service/mock.service";
+import HeadersEdit, { RowData } from "./HeadersEdit";
 
 const { TabPane } = Tabs;
 
@@ -36,13 +36,13 @@ interface HistoryItem {
   response: any;
 }
 
-function parseResponseData (data: any): HistoryItem[] {
+function parseResponseData(data: any): HistoryItem[] {
   const result: HistoryItem[] = [];
   for (const key in data) {
     result.push({
       key,
       request: data[key].request,
-      response: data[key].response
+      response: data[key].response,
     });
   }
   return result;
@@ -51,16 +51,10 @@ function parseResponseData (data: any): HistoryItem[] {
 // 正在编辑的头信息，中间变量
 let editHeaders = {};
 
-// function getModeByHeader (headers = {} as any): string {
-//   const contentType = headers['content-type'] || 'application/json';
-//   console.log(contentType.split('/')[1]);
-//   return contentType.split('/')[1] || 'json';
-// }
-
-const ContentEdit: FC<RouteChildrenProps> = props => {
+const ContentEdit: FC<RouteChildrenProps> = (props) => {
   const path = decodeURIComponent((props.match?.params as any).api);
-  const [form, setForm] = useState<string>('');
-  const [editKey, setEditKey] = useState<string>('');
+  const [form, setForm] = useState<string>("");
+  const [editKey, setEditKey] = useState<string>("");
   const [eh, setEh] = useState<number>(500);
   const [detail, setDetail] = useState<HistoryItem[]>([]);
   const [editStatusNum, setEditStatusNum] = useState<number>(0);
@@ -68,7 +62,7 @@ const ContentEdit: FC<RouteChildrenProps> = props => {
   const fetchDetail = useCallback(
     (saved = false) => {
       getApiDetail(path)
-        .then(res => {
+        .then((res) => {
           const data = parseResponseData(res.data);
           if (!saved) {
             setForm(data[0].response.data);
@@ -79,14 +73,14 @@ const ContentEdit: FC<RouteChildrenProps> = props => {
           setDetail(data);
         })
         .catch((e: AxiosError) => {
-          let message = '';
+          let message = "";
           if (e.response && e.response.data) {
             message = e.response.data.message;
           } else {
-            message = '获取失败，请重试';
+            message = "获取失败，请重试";
           }
           notification.error({
-            message
+            message,
           });
         });
     },
@@ -99,24 +93,24 @@ const ContentEdit: FC<RouteChildrenProps> = props => {
     setForm(value);
   };
   const handleTabChange = (key: string): void => {
-    const target = detail.find(v => v.key === key);
+    const target = detail.find((v) => v.key === key);
     setForm(target?.response.data);
     setEditKey(key);
     editHeaders = target?.response.headers;
     setEditStatusNum(target?.response.status);
   };
   const handleAction = (type: string) => (): void => {
-    const target = detail.find(v => v.key === editKey);
-    if (type === 'reset') {
+    const target = detail.find((v) => v.key === editKey);
+    if (type === "reset") {
       if (form !== target?.response.data) {
         Modal.confirm({
-          title: '重置将放弃所有更改，确定吗？',
+          title: "重置将放弃所有更改，确定吗？",
           onOk: () => {
-            const target = detail.find(v => v.key === editKey);
+            const target = detail.find((v) => v.key === editKey);
             setForm(target?.response.data);
             editHeaders = target?.response.headers;
             setEditStatusNum(target?.response.status);
-          }
+          },
         });
       }
     } else {
@@ -129,47 +123,49 @@ const ContentEdit: FC<RouteChildrenProps> = props => {
             ...target?.response,
             status: editStatusNum,
             headers: editHeaders,
-            data
-          }
+            data,
+          },
         })
-          .then(res => {
+          .then((res) => {
             fetchDetail(true);
             notification.success({
-              message: '保存成功。'
+              message: "保存成功。",
             });
           })
           .catch((e: AxiosError) => {
-            let message = '';
+            let message = "";
             if (e.response && e.response.data) {
               message = e.response.data.message;
             } else {
-              message = '保存失败。';
+              message = "保存失败。";
             }
             notification.error({
-              message
+              message,
             });
           });
       } catch (error) {
         notification.error({
-          message: '格式化失败，请检查内容格式！'
+          message: "格式化失败，请检查内容格式！",
         });
       }
     }
   };
 
-  const handleHeadersChange = (values: any): void => {
-    editHeaders = values;
+  const handleHeadersChange = (values: RowData[]): void => {
+    const headers = {} as any;
+    values.forEach((v) => (headers[v.key] = v.value));
+    editHeaders = headers;
   };
-  function fitEditorHeight (): void {
+  function fitEditorHeight(): void {
     const height = window.innerHeight;
     const editorHeight = height - 60 - 16 - 8 - 46 - 42;
     setEh(editorHeight);
   }
   useLayoutEffect(() => {
     fitEditorHeight();
-    window.addEventListener('resize', fitEditorHeight);
+    window.addEventListener("resize", fitEditorHeight);
     return (): void => {
-      window.removeEventListener('resize', fitEditorHeight);
+      window.removeEventListener("resize", fitEditorHeight);
     };
   }, []);
   const renderTab = (request: any): ReactElement => {
@@ -179,28 +175,36 @@ const ContentEdit: FC<RouteChildrenProps> = props => {
       </div>
     );
   };
+
+  const getHeadersArr = (headers: any = {}) => {
+    return Object.keys(headers).map((h) => ({ key: h, value: headers[h] }));
+  };
+
   return (
     <div className="page-edit">
       <header className="page-edit-header">
-        <div className="back-arrow" onClick={(): void => props.history.push('/home')}>
+        <div
+          className="back-arrow"
+          onClick={(): void => props.history.push("/home")}
+        >
           <ArrowLeftOutlined />
         </div>
         <h3 className="page-edit-header-title">接口编辑</h3>
         <div className="operation-wrap">
-          <Button type="link" onClick={(): void => props.history.push('/home')}>
+          <Button type="link" onClick={(): void => props.history.push("/home")}>
             返回上一页
           </Button>
           <Button
             type="link"
             icon={<SyncOutlined />}
-            onClick={handleAction('reset')}
+            onClick={handleAction("reset")}
           >
             重置为初始值
           </Button>
           <Button
             type="link"
             icon={<SaveOutlined />}
-            onClick={handleAction('save')}
+            onClick={handleAction("save")}
           >
             保存
           </Button>
@@ -226,9 +230,9 @@ const ContentEdit: FC<RouteChildrenProps> = props => {
                   </header>
                   <AceEditor
                     style={{
-                      width: '100%',
+                      width: "100%",
                       height: eh,
-                      boxShadow: '-1px -1px 5px 0 #ababab'
+                      boxShadow: "-1px -1px 5px 0 #ababab",
                     }}
                     placeholder="Placeholder Text"
                     mode="json"
@@ -244,14 +248,14 @@ const ContentEdit: FC<RouteChildrenProps> = props => {
                       enableBasicAutocompletion: false,
                       enableSnippets: false,
                       showLineNumbers: true,
-                      tabSize: 2
+                      tabSize: 2,
                     }}
                   />
                 </div>
                 {
                   <HeadersEdit
                     style={{ height: eh }}
-                    headers={response.headers}
+                    headers={getHeadersArr(response.headers)}
                     onChange={handleHeadersChange}
                   />
                 }
