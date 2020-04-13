@@ -1,27 +1,27 @@
 module.exports = {
-    "env": {
-        "browser": true,
-        "es6": true,
-        "node": true
-    },
-    "extends": ["standard", "plugin:@typescript-eslint/recommended"],
-    "globals": {
-        "Atomics": "readonly",
-        "SharedArrayBuffer": "readonly"
-    },
     "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaVersion": 2018,
-        "sourceType": "module"
-    },
-    "plugins": [
-        "@typescript-eslint"
+    // "parserOptions": {
+    //   "project": "tsconfig.json",
+    //   "sourceType": "module"
+    // },
+    "plugins": ["@typescript-eslint/eslint-plugin"],
+    "extends": [
+      "react-app",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "prettier",
+      "prettier/@typescript-eslint"
     ],
+    "root": true,
+    "env": {
+      "node": true,
+      "jest": true
+    },
     "rules": {
-        "import/prefer-default-export": 0,
-        "class-methods-use-this": 0,
-        "linebreak-style": 0,
-        "import/extensions": 0,
-        "semi": ["error", "always"],
+      "@typescript-eslint/interface-name-prefix": "off",
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "jsx-a11y/anchor-is-valid": "off"
     }
-};
+  }
+  

@@ -8,13 +8,12 @@
     "start:mock": "cd packages/mock && yarn test-start",
     "start:mock-dev": "cd packages/mock && yarn dev",
     "start:int": "cd packages/interceptor && yarn start",
-    "lint-fix:src": "eslint --config .eslintrc.js --quiet --fix packages/*/src/**/*.ts packages/*/server/**/*.ts",
-    "lint:fix": "npm run lint-fix:src"
+    "lint-fix": "eslint --config .eslintrc.js --quiet --fix packages/*/src/**/*.tsx packages/*/server/**/*.ts"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^2.24.0",
     "@typescript-eslint/parser": "^2.24.0",
-    "eslint": "^6.8.0",
+    "eslint": "^6.6.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-node": "^11.0.0",
