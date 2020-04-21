@@ -1,21 +1,21 @@
-import { GlobalContext, ScopedContext } from './../utils/context-util';
-import { staticPattern } from './../utils/patterns';
-import { RequestHandler, Response, Request } from 'express';
-import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from 'axios';
-import { RequestUtil } from '../utils/request-util';
-import { AbstractController } from '../definitions/AbstractController';
-import { Hooks } from '../utils/plugin-api';
+import { GlobalContext, ScopedContext } from "./../utils/context-util";
+import { staticPattern } from "./../utils/patterns";
+import { RequestHandler, Response, Request } from "express";
+import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from "axios";
+import { RequestUtil } from "../utils/request-util";
+import { AbstractController } from "../definitions/AbstractController";
+import { Hooks } from "../utils/plugin-api";
 
-export class ProxyServer extends AbstractController {
+export class ProxyServerController extends AbstractController {
   private requestUtil: RequestUtil;
 
-  constructor (ctx: GlobalContext) {
+  constructor(ctx: GlobalContext) {
     super(ctx);
     this.requestMiddleware = this.requestMiddleware.bind(this);
     this.requestUtil = new RequestUtil(ctx);
   }
 
-  private requestMiddleware (req: Request, res: Response): void {
+  private requestMiddleware(req: Request, res: Response): void {
     const scopedCtx = new ScopedContext(req, res);
     this.ctx.pluginApi.emit(Hooks.BEFORE_REQUEST, scopedCtx);
 
@@ -48,7 +48,7 @@ export class ProxyServer extends AbstractController {
               path: req.path,
               status,
               headers,
-              data
+              data,
             });
           }
           if (this.ctx.config.cacheStatic && staticPattern.test(req.path)) {
@@ -58,7 +58,7 @@ export class ProxyServer extends AbstractController {
           if (!staticPattern.test(req.path)) {
             const apiList = db.apiList || [];
             this.ctx.db.addStringArrayItem(apiList, req.path);
-            this.ctx.db.set('apiList', apiList);
+            this.ctx.db.set("apiList", apiList);
           }
           const transformedData = this.ctx.pluginApi.applyTransformer(data);
           res.send(transformedData);
@@ -70,11 +70,11 @@ export class ProxyServer extends AbstractController {
     }
   }
 
-  public asMiddleware (): RequestHandler {
+  public asMiddleware(): RequestHandler {
     return this.requestMiddleware;
   }
 
-  public run (): void {
+  public run(): void {
     this.ctx.file.initFolder();
     this.ctx.app.use(this.requestMiddleware);
   }
