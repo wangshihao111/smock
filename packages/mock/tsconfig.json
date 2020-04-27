@@ -11,7 +11,8 @@
     "baseUrl": "./",
     "incremental": true,
     "allowJs": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "types": []
   },
   "exclude": ["node_modules", "dist"],
   "include": ["src"]
