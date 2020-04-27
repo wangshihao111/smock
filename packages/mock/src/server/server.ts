@@ -60,6 +60,9 @@ export function createExpressMiddleware(port) {
     console.log("文件变动，重新加载mock文件")
     instance.reset()
   })
+  console.log(chalk.green(`mock服务运行在：http://127.0.0.1:${port}`))
+  console.log(chalk.green(`你可以在浏览器打开：http://127.0.0.1:${port}/__doc__`))
+  console.log(chalk.green(`以查看文档`))
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const serveStatic = require("../utils/serve-static")
   const staticMiddleware = serveStatic(resolve(__dirname, "../../dist"))
