@@ -20,7 +20,7 @@
   "scripts": {
     "predev": "node build.js --dev",
     "server": "nodemon --exec ts-node src/test-start.ts",
-    "prepublish": "tsc",
+    "prepublish": "yarn build",
     "dev": "nuxt",
     "prebuild": "node build.js",
     "build": "nuxt build && tsc",

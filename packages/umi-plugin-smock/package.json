@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/wangshihao111/smock/tree/master/packages/vue-cli-plugin-smock",
   "scripts": {
+    "prepublish": "tsc"
   },
   "dependencies": {
     "@smock/mock": "0.1.0",
@@ -58,6 +59,7 @@
   },
   "files": [
     "index.js",
+    "index.d.ts",
     "package.json",
     "README.md"
   ]
