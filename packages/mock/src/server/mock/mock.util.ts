@@ -1,13 +1,28 @@
-import { readFileSync, readdirSync, statSync } from 'fs-extra';
-import { resolve } from 'path';
-import { parse } from 'json5';
-import { isArray, isObject, isString, isNumber } from 'lodash';
-import { Random } from 'mockjs';
-import { MockFileContent } from '../domain/JsonFile';
-import { ParamType } from '../enums/ParamType';
-import { JsDefinition } from '../domain/JsDefinition';
-import { config } from '../config/variables';
-import { getVariableType } from '../../utils/utils';
+import { readFileSync, statSync } from "fs-extra"
+import { resolve } from "path"
+import { parse } from "json5"
+import { isArray, isObject, isString, isNumber } from "lodash"
+import { Random } from "mockjs"
+import { MockFileContent } from "../domain/JsonFile"
+import { ParamType } from "../enums/ParamType"
+import { JsDefinition } from "../domain/JsDefinition"
+import { config } from "../config/variables"
+import { getVariableType } from "../../utils/utils"
+import glob, { IOptions } from "glob"
+
+const globOptions: IOptions = {
+  ignore: ["**/node_modules/**"],
+}
+
+function getAllFiles(root: string): string[] {
+  function getFileFromExt(ext: string): string[] {
+    return [
+      ...glob.sync(`**/smock/**/*.${ext}`, { ...globOptions, root }),
+      // ...glob.sync(`packages/**/smock/**/*.${ext}`, {...globOptions, root})
+    ]
+  }
+  return [...getFileFromExt("json5"), ...getFileFromExt("json"), ...getFileFromExt("js")]
+}
 
 export class MockUtil {
   private static jsonDefMap = new Map<string, MockFileContent>()
@@ -18,84 +33,90 @@ export class MockUtil {
    * 递归读取本地文件
    * @param path
    */
-  public static readLocalFile (
+  public static readLocalFile(
     path: string
   ): [Map<string, MockFileContent>, Map<string, JsDefinition>] {
-    const dirPath = resolve(process.cwd(), path);
-    const files: string[] = readdirSync(dirPath);
-    files.forEach(file => {
-      const isJs = /^.+\.js$/.test(file);
-      const isJson = /^.+(\.json|\.json5)$/.test(file);
-      const filePath = resolve(dirPath, file);
-      const stat = statSync(filePath);
-      const isDirectory = stat.isDirectory();
+    const dirPath = process.cwd()
+    let files: string[] = [
+      ...glob.sync("live-mock/**/*.json5", globOptions),
+      ...glob.sync("live-mock/**/*.json", globOptions),
+      ...glob.sync("live-mock/**/*.js", globOptions),
+    ]
+    files = files.concat(getAllFiles(process.cwd()))
+    files.forEach((file) => {
+      const isJs = /^.+\.js$/.test(file)
+      const isJson = /^.+(\.json|\.json5)$/.test(file)
+      const filePath = resolve(dirPath, file)
+      const stat = statSync(filePath)
+      const isDirectory = stat.isDirectory()
       if (isJs && !isDirectory) {
         try {
+          delete require.cache[require.resolve(filePath)]
           // eslint-disable-next-line @typescript-eslint/no-var-requires
-          const jsDef = require(filePath);
+          const jsDef = require(filePath)
           if (jsDef) {
-            this.jsDefMap.set(jsDef.name, jsDef);
+            this.jsDefMap.set(jsDef.name, jsDef)
           }
         } catch (e) {
-          console.log(e);
+          console.log(e)
         }
       } else if (!isDirectory && isJson) {
-        const content = readFileSync(resolve(dirPath, file), 'utf8');
-        const obj = parse(content) as MockFileContent;
-        this.jsonDefMap.set(obj.name, obj);
+        const content = readFileSync(resolve(dirPath, file), "utf8")
+        const obj = parse(content) as MockFileContent
+        this.jsonDefMap.set(obj.name, obj)
       } else if (isDirectory) {
-        this.readLocalFile(filePath);
+        this.readLocalFile(filePath)
       }
-    });
-    return [this.jsonDefMap, this.jsDefMap];
+    })
+    return [this.jsonDefMap, this.jsDefMap]
   }
 
-  public static getMockedData (typeDef, data): any {
-    let result = {} as any;
+  public static getMockedData(typeDef, data): any {
+    let result = {} as any
     if (typeDef.type) {
-      if (!typeDef.required) return data;
+      if (!typeDef.required) return data
       if (typeDef.required && typeDef.$$mock) {
-        return this.getOneMock(typeDef);
+        return this.getOneMock(typeDef)
       }
     }
     if (isArray(typeDef)) {
-      if (isArray(data)) return data;
-      result = [];
-      let length = config.defaultArrayMockLength;
-      const defLength = typeDef[0].length;
-      const isDefLength = isNumber(defLength);
+      if (isArray(data)) return data
+      result = []
+      let length = config.defaultArrayMockLength
+      const defLength = typeDef[0].length
+      const isDefLength = isNumber(defLength)
       if (isDefLength) {
-        length = defLength;
+        length = defLength
       }
       Array.from({ length }).forEach(() => {
-        let thisDef = typeDef[0];
+        let thisDef = typeDef[0]
         if (isDefLength) {
-          const { length: _, ...rest } = typeDef[0];
-          thisDef = rest;
+          const { length: _, ...rest } = typeDef[0]
+          thisDef = rest
         }
-        result.push(this.getMockedData(thisDef, undefined));
-      });
-      return result;
+        result.push(this.getMockedData(thisDef, undefined))
+      })
+      return result
     }
 
     for (const key in typeDef) {
-      const defValue = typeDef[key];
-      const value = data ? data[key] : undefined;
-      result[key] = this.getMockedData(defValue, value);
+      const defValue = typeDef[key]
+      const value = data ? data[key] : undefined
+      result[key] = this.getMockedData(defValue, value)
     }
-    return result;
+    return result
   }
 
-  private static getOneMock (conf): any {
-    let mockedValue;
-    const randomFun = Random[conf.$$mock];
+  private static getOneMock(conf): any {
+    let mockedValue
+    const randomFun = Random[conf.$$mock]
     if (randomFun) {
-      const params = conf.params || [];
-      mockedValue = Random[conf.$$mock](...params);
+      const params = conf.params || []
+      mockedValue = Random[conf.$$mock](...params)
     } else {
-      mockedValue = '没有找到mock类型，请检查您的$$mock配置';
+      mockedValue = "没有找到mock类型，请检查您的$$mock配置"
     }
-    return mockedValue;
+    return mockedValue
   }
 
   /**
@@ -104,30 +125,30 @@ export class MockUtil {
    * @param obj // 需要判断类型的对象
    * @param isQuery // 是否是query参数，因为query参数要做特殊处理（关于数字和字符串）
    */
-  public static validateParams (apiType, obj, isQuery = false): boolean {
+  public static validateParams(apiType, obj, isQuery = false): boolean {
     if (apiType.type) {
       // 只有个单值
-      const { type, required } = apiType;
-      let typeValid = type === getVariableType(obj);
+      const { type, required } = apiType
+      let typeValid = type === getVariableType(obj)
       if (isQuery && type === ParamType.NUMBER) {
-        const pType = getVariableType(Number(obj));
-        typeValid = pType === ParamType.NUMBER;
+        const pType = getVariableType(Number(obj))
+        typeValid = pType === ParamType.NUMBER
       }
-      const requiredValid = (required && obj !== undefined && typeValid) || (!required && typeValid);
-      return typeValid && requiredValid;
+      const requiredValid = (required && obj !== undefined && typeValid) || (!required && typeValid)
+      return typeValid && requiredValid
     }
     if (isArray(apiType)) {
       // 是定义是数组的情况
       if (isArray(obj)) {
-        return obj.every(o => MockUtil.validateParams(apiType[0], o, isQuery));
+        return obj.every((o) => MockUtil.validateParams(apiType[0], o, isQuery))
       }
-      return false;
+      return false
     }
     if (isObject(apiType) && isObject(obj)) {
-      const keys = Object.keys(apiType);
-      return keys.every(key => this.validateParams(apiType[key], obj[key], isQuery));
+      const keys = Object.keys(apiType)
+      return keys.every((key) => this.validateParams(apiType[key], obj[key], isQuery))
     }
-    return apiType === obj;
+    return apiType === obj
   }
 
   /**
@@ -136,19 +157,19 @@ export class MockUtil {
    * 所有要进行一个转换
    * @param query
    */
-  public static changeQueryToString (query = {}): any {
-    const result = {};
+  public static changeQueryToString(query = {}): any {
+    const result = {}
     for (const key in query) {
       if (isString(query[key]) || isNumber(query[key])) {
-        result[key] = String(query[key]);
+        result[key] = String(query[key])
       } else if (isArray(query[key])) {
-        result[key] = query[key].map(v =>
+        result[key] = query[key].map((v) =>
           isString(v) || isNumber(v) ? v : MockUtil.changeQueryToString(v)
-        );
+        )
       } else {
-        result[key] = MockUtil.changeQueryToString(query[key]);
+        result[key] = MockUtil.changeQueryToString(query[key])
       }
     }
-    return result;
+    return result
   }
 }

@@ -20,7 +20,7 @@ export const routerBase =
       }
     : {
         router: {
-          base: "/",
+          base: "./",
         },
       }
 export default {
