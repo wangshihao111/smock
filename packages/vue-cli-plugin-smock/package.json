@@ -22,7 +22,7 @@
   "scripts": {
   },
   "dependencies": {
-    "@smock/mock": "latest",
+    "@smock/mock": "0.1.0",
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {

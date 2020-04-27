@@ -23,7 +23,7 @@
   "scripts": {
   },
   "dependencies": {
-    "@smock/interceptor": "latest",
+    "@smock/interceptor": "0.1.0-beta.3",
     "tree-kill": "^1.2.2"
   },
   "devDependencies": {
