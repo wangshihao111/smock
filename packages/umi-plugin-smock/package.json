@@ -22,10 +22,7 @@
     "prepublish": "tsc"
   },
   "dependencies": {
-    "@smock/mock": "0.1.2",
-    "commander": "5.0.0",
-    "tree-kill": "^1.2.2",
-    "typescript": "^3.8.3"
+    "@smock/mock": "0.1.2"
   },
   "browserslist": {
     "production": [
