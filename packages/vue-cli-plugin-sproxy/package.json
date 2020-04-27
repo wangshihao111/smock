@@ -1,7 +1,6 @@
-
 {
   "name": "@smock/vue-cli-plugin-sproxy",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0",
   "private": false,
   "main": "index.js",
   "description": "vue cli plugin of @smock/interceptor",
@@ -20,13 +19,10 @@
     "url": "https://github.com/wangshihao111/smock.git"
   },
   "homepage": "https://github.com/wangshihao111/smock/tree/master/packages/vue-cli-plugin-sproxy",
-  "scripts": {
-  },
+  "scripts": {},
   "dependencies": {
-    "@smock/interceptor": "0.1.0-beta.3",
+    "@smock/interceptor": "0.1.0",
     "tree-kill": "^1.2.2"
-  },
-  "devDependencies": {
   },
   "browserslist": {
     "production": [
