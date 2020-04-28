@@ -1,6 +1,6 @@
 {
   "name": "@smock/mock",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A useful mock tool.",
   "author": "王世豪<913003120@qq.com>",
   "license": "MIT",
@@ -50,6 +50,7 @@
     "printWidth": 100
   },
   "dependencies": {
+    "@smock/utils": "0.1.1",
     "axios": "0.19.2",
     "body-parser": "^1.19.0",
     "chalk": "^2.4.2",
@@ -64,8 +65,7 @@
     "mockjs": "^1.1.0",
     "object-hash": "^2.0.3",
     "prettier": "^1.19.1",
-    "tree-kill": "^1.2.2",
-    "@smock/utils": "^0.1.0"
+    "tree-kill": "^1.2.2"
   },
   "devDependencies": {
     "@nuxtjs/axios": "^5.9.5",
