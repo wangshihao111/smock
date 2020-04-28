@@ -9,18 +9,17 @@ import { JsDefinition } from "../domain/JsDefinition"
 import { config } from "../config/variables"
 import { getVariableType } from "../../utils/utils"
 import glob, { IOptions } from "glob"
+import BabelRegister from "@smock/utils/lib/BabelRegister"
 
 const globOptions: IOptions = {
   ignore: ["**/node_modules/**"],
+  root: process.cwd(),
+}
+function getFileFromExt(ext: string): string[] {
+  return [...glob.sync(`**/smock/**/*.${ext}`, { ...globOptions })]
 }
 
-function getAllFiles(root: string): string[] {
-  function getFileFromExt(ext: string): string[] {
-    return [
-      ...glob.sync(`**/smock/**/*.${ext}`, { ...globOptions, root }),
-      // ...glob.sync(`packages/**/smock/**/*.${ext}`, {...globOptions, root})
-    ]
-  }
+function getAllFiles(): string[] {
   return [...getFileFromExt("json5"), ...getFileFromExt("json"), ...getFileFromExt("js")]
 }
 
@@ -37,19 +36,29 @@ export class MockUtil {
     path: string
   ): [Map<string, MockFileContent>, Map<string, JsDefinition>] {
     const dirPath = process.cwd()
+    const tsFiles = [...getFileFromExt("ts"), ...glob.sync("**/**/_smock.ts", globOptions)]
     let files: string[] = [
       ...glob.sync("live-mock/**/*.json5", globOptions),
       ...glob.sync("live-mock/**/*.json", globOptions),
       ...glob.sync("live-mock/**/*.js", globOptions),
+      ...glob.sync("**/**/_smock.js", globOptions),
+      ...tsFiles,
     ]
-    files = files.concat(getAllFiles(process.cwd()))
+    const register = new BabelRegister()
+    register.setOnlyMap({
+      key: "smock",
+      value: tsFiles,
+    })
+    register.register()
+    files = files.concat(getAllFiles())
     files.forEach((file) => {
       const isJs = /^.+\.js$/.test(file)
       const isJson = /^.+(\.json|\.json5)$/.test(file)
+      const isTsFile = /^.+\.tsx?$/.test(file)
       const filePath = resolve(dirPath, file)
       const stat = statSync(filePath)
       const isDirectory = stat.isDirectory()
-      if (isJs && !isDirectory) {
+      if ((isJs || isTsFile) && !isDirectory) {
         try {
           delete require.cache[require.resolve(filePath)]
           // eslint-disable-next-line @typescript-eslint/no-var-requires

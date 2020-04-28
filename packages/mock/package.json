@@ -64,7 +64,8 @@
     "mockjs": "^1.1.0",
     "object-hash": "^2.0.3",
     "prettier": "^1.19.1",
-    "tree-kill": "^1.2.2"
+    "tree-kill": "^1.2.2",
+    "@smock/utils": "^0.1.0"
   },
   "devDependencies": {
     "@nuxtjs/axios": "^5.9.5",
