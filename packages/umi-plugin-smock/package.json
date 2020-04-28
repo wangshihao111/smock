@@ -22,34 +22,7 @@
     "prepublish": "tsc"
   },
   "dependencies": {
-    "@smock/mock": "0.1.2"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "babel": {
-    "presets": [
-      "react-app"
-    ],
-    "plugins": [
-      [
-        "import",
-        {
-          "libraryName": "antd",
-          "libraryDirectory": "es",
-          "style": "css"
-        }
-      ]
-    ]
+    "@smock/mock": "^0.1.2"
   },
   "files": [
     "index.js",
