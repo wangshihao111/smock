@@ -61,9 +61,7 @@ export class MockService {
   private async seUpWatcher() {
     this.memoLength = await getWatchLength()
     const watchHandler = debounce(async (e: string, fileName: string) => {
-      console.log(e, fileName)
       const length = await getWatchLength()
-      console.log(length, this.memoLength)
       if (length !== this.memoLength) {
         this.memoLength = length
         console.log(`检测到文件夹变动或${mockFilePrefix}文件变动, 重新加载文件`)
