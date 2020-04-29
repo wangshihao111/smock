@@ -9,6 +9,15 @@ import objectHash from "object-hash"
 import glob from "glob"
 import { watch, unwatchFile } from "fs-extra"
 import { debounce } from "lodash"
+import asyncGlob from "@smock/utils/lib/asyncGlob"
+import { mockFilePrefix, mockDir, globOptions } from "./_constant"
+
+async function getWatchLength() {
+  const dirs = await asyncGlob(`**/${mockDir}`, globOptions)
+  const files = await asyncGlob(`**/**/${mockFilePrefix}.ts`, globOptions)
+  const tsFiles = await asyncGlob(`**/**/${mockFilePrefix}.js`, globOptions)
+  return dirs.length + files.length + tsFiles.length
+}
 
 export class MockService {
   private jsonDefinitions: Map<string, MockFileContent>
@@ -27,6 +36,7 @@ export class MockService {
   private docHandler: RequestHandler
   private watchedDirs: string[]
   private watchHandler: any
+  private memoLength: number
 
   constructor(app: Application, port: number, host: string) {
     this.jsonDefinitions = new Map()
@@ -39,6 +49,7 @@ export class MockService {
     this.host = host
     this.watchedDirs = []
     this.watchHandler = null
+    this.memoLength = 0
     this.docHandler = this.createDocMiddleware()
   }
 
@@ -47,19 +58,34 @@ export class MockService {
     this.app.use(handleMiddleware)
   }
 
+  private async seUpWatcher() {
+    this.memoLength = await getWatchLength()
+    const watchHandler = debounce(async (e: string, fileName: string) => {
+      console.log(e, fileName)
+      const length = await getWatchLength()
+      console.log(length, this.memoLength)
+      if (length !== this.memoLength) {
+        this.memoLength = length
+        console.log(`检测到文件夹变动或${mockFilePrefix}文件变动, 重新加载文件`)
+        this.reset()
+      }
+    }, 1000)
+    watch(process.cwd(), watchHandler)
+  }
+
   private watchMockFiles(callback: (event: string, filename: string) => void): void {
     const liveMocks = glob.sync("**/live-mock", {
       ignore: ["**/node_modules/**"],
       root: process.cwd(),
     })
-    const mockFiles = glob.sync("**/**/_smock.js", {
-      ignore: ["**/node_modules/**"],
-      root: process.cwd(),
-    })
+    const mockTsFiles = glob.sync(`**/**/${mockFilePrefix}.ts`, globOptions)
+    console.log("watch TS", mockTsFiles)
+    const mockFiles = glob.sync(`**/**/${mockFilePrefix}.js`, globOptions)
     this.watchedDirs = glob
-      .sync("**/smock", { ignore: ["**/node_modules/**"], root: process.cwd() })
+      .sync("**/smock", globOptions)
       .concat(liveMocks)
       .concat(mockFiles)
+      .concat(mockTsFiles)
     this.watchHandler = debounce((event: string, filename: string) => {
       callback(event, filename)
     }, 800)
@@ -79,6 +105,7 @@ export class MockService {
   }
 
   public createMiddleware() {
+    this.seUpWatcher()
     this.reset()
     return this.handle.bind(this)
   }
@@ -136,11 +163,6 @@ export class MockService {
       }
       // 如果没有匹配到的路由
       if (!hasMatch) {
-        // res.status(404)
-        // res.send({
-        //   status: 404,
-        //   message: `Not Found:${url}`,
-        // })
         return next()
       }
       const data = this.findOne(body, query, api)
@@ -163,7 +185,6 @@ export class MockService {
       const mocked = MockUtil.getMockedData(response, {})
       res.send(mocked)
     }
-    // this.app[toLower(method)](url, handleRequest);
     const hash = objectHash({ url, method: method.toLowerCase() })
     return [hash, handleRequest]
   }

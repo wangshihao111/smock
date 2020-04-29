@@ -10,13 +10,14 @@ import { config } from "../config/variables"
 import { getVariableType } from "../../utils/utils"
 import glob, { IOptions } from "glob"
 import BabelRegister from "@smock/utils/lib/BabelRegister"
+import { mockFilePrefix, mockDir } from "./_constant"
 
 const globOptions: IOptions = {
   ignore: ["**/node_modules/**"],
   root: process.cwd(),
 }
 function getFileFromExt(ext: string): string[] {
-  return [...glob.sync(`**/smock/**/*.${ext}`, { ...globOptions })]
+  return [...glob.sync(`**/${mockDir}/**/*.${ext}`, { ...globOptions })]
 }
 
 function getAllFiles(): string[] {
@@ -29,19 +30,22 @@ export class MockUtil {
   private static jsDefMap = new Map<string, JsDefinition>()
 
   /**
-   * 递归读取本地文件
+   * 读取本地文件
    * @param path
    */
   public static readLocalFile(
     path: string
   ): [Map<string, MockFileContent>, Map<string, JsDefinition>] {
     const dirPath = process.cwd()
-    const tsFiles = [...getFileFromExt("ts"), ...glob.sync("**/**/_smock.ts", globOptions)]
+    const tsFiles = [
+      ...getFileFromExt("ts"),
+      ...glob.sync(`**/**/${mockFilePrefix}.ts`, globOptions),
+    ]
     let files: string[] = [
       ...glob.sync("live-mock/**/*.json5", globOptions),
       ...glob.sync("live-mock/**/*.json", globOptions),
       ...glob.sync("live-mock/**/*.js", globOptions),
-      ...glob.sync("**/**/_smock.js", globOptions),
+      ...glob.sync(`**/**/${mockFilePrefix}.js`, globOptions),
       ...tsFiles,
     ]
     const register = new BabelRegister()
