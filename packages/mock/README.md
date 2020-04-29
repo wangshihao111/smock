@@ -3,7 +3,12 @@ A mock tool with UI. Powered by Postwoman and Mock.js.
 
 在使用过程中如果遇到问题，欢迎在github提issue, 非常感谢。
 
+## Break Changes
+
+相比0.1.x版本，mock文件夹变为_smock（为了不与业务代码冲突）
+
 ## Usage
+(工具会以当前启动命令的文件夹作为根路径。扫描_smock文件夹内所有文件(不区分文件名)，也会扫描所有_smock.js或_smock.ts文件)
 
 安装：
 ```bash
@@ -13,7 +18,8 @@ npm i -g @smock/mock
 yarn add global @smock/mock
 ```
 
-如果启动命令的目录中不存在live-mock文件夹，工具会自动创建live-mock文件夹，并创建demo文件。
+如果启动命令的目录中不存在_smock文件夹，工具会自动创建_smock文件夹，并创建demo文件。
+(原来的live-mock文件夹仍然支持，但可能会在后续的版本中去除。)
 
 启动mock服务：
 ```bash
@@ -35,7 +41,7 @@ smock -p 3333 # 指定运行端口
 {
   "scripts": {
     "smock": "vue-cli-service smock -p 5000"
-  } 
+  }
 }
 ```
 
@@ -58,7 +64,7 @@ smock -p 3333 # 指定运行端口
 
 - [x] string 字符串类型
 - [x] boolean 布尔类型
-- [x] number 类型 
+- [x] number 类型
 - [x] 对象类型
 - [x] 数组类型
 
@@ -176,7 +182,7 @@ module.exports = {
 }
 ```
 
-## 
+##
 
 <div align="center">
   <br>
