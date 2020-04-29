@@ -77,7 +77,6 @@ export class MockService {
       root: process.cwd(),
     })
     const mockTsFiles = glob.sync(`**/**/${mockFilePrefix}.ts`, globOptions)
-    console.log("watch TS", mockTsFiles)
     const mockFiles = glob.sync(`**/**/${mockFilePrefix}.js`, globOptions)
     this.watchedDirs = glob
       .sync("**/smock", globOptions)
