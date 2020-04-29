@@ -1,5 +1,5 @@
 import bodyParser from "body-parser"
-import express, { Application, Request, Response } from "express"
+import express, { Application, Request, Response, request } from "express"
 import { resolve } from "path"
 import { MockService } from "./mock/mock.service"
 import { ApiCorsService } from "./mock/api-cors.service"
@@ -30,11 +30,18 @@ export function createExpressMiddleware(port) {
   console.log(chalk.green(`你可以在浏览器打开此地址以查看文档：http://127.0.0.1:${port}/__doc__`))
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const serveStatic = require("../utils/serve-static")
+  const apiCorsMiddleware = new ApiCorsService().createMiddleware()
   const staticMiddleware = serveStatic(resolve(__dirname, "../../dist"))
   const mockMiddleware = instance.createMiddleware()
   return (request: Request, response: Response, next) => {
-    if (request.path.startsWith("/__doc__")) {
+    const requestPath = request.path || ""
+    if (requestPath.startsWith("/__doc__")) {
       staticMiddleware(request, response, next)
+    } else if (requestPath.startsWith("/__api-proxy")) {
+      apiCorsMiddleware(request, response, next)
+    } else if (requestPath.startsWith("/__reset__")) {
+      instance.reset()
+      response.status(200).send("success")
     } else {
       mockMiddleware(request, response, next)
     }

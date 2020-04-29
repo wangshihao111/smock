@@ -80,7 +80,6 @@ export class MockService {
 
   public createMiddleware() {
     this.reset()
-    this.resetWatchFiles()
     return this.handle.bind(this)
   }
 
@@ -100,6 +99,7 @@ export class MockService {
     this.jsDefinitions = new Map()
     this.jsonApiMap = new Map<string, RequestHandler>()
     this.jsApiMap = new Map<string, RequestHandler>()
+    this.resetWatchFiles()
     this.createControllers()
   }
 
