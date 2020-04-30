@@ -20,7 +20,7 @@
   "homepage": "https://github.com/wangshihao111/smock/tree/master/packages/vue-cli-plugin-smock",
   "scripts": {},
   "dependencies": {
-    "@smock/mock": "0.1.4",
+    "@smock/mock": "^0.2.0",
     "tree-kill": "^1.2.2"
   },
   "browserslist": {

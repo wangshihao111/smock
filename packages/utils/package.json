@@ -1,6 +1,6 @@
 {
   "name": "@smock/utils",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "private": false,
   "main": "lib/index.js",
   "description": "Vue cli plugin of @smock/mock",
@@ -27,8 +27,7 @@
     "lodash": "4.17.15"
   },
   "files": [
-    "index.js",
-    "index.d.ts",
+    "lib",
     "package.json",
     "README.md"
   ]

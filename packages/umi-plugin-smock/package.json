@@ -22,7 +22,7 @@
     "prepublish": "tsc"
   },
   "dependencies": {
-    "@smock/mock": "0.1.4"
+    "@smock/mock": "^0.2.0"
   },
   "files": [
     "index.js",
