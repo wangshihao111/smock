@@ -2,11 +2,6 @@
   "npmClient": "yarn",
   "version": "independent",
   "useWorkspaces": true,
-  "command": {
-    "version": {
-      "exact": true
-    }
-  },
   "packages": [
     "packages/*"
   ]
