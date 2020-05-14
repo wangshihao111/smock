@@ -1,0 +1,33 @@
+{
+  "name": "@smock/umi-plugin-sproxy",
+  "version": "0.1.0",
+  "private": false,
+  "main": "index.js",
+  "description": "umi cli plugin of @smock/sproxy",
+  "author": "王世豪<913003120@qq.com>",
+  "license": "MIT",
+  "keywords": [
+    "umi plugin",
+    "proxy tool"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangshihao111/smock.git"
+  },
+  "homepage": "https://github.com/wangshihao111/smock/tree/master/packages/umi-plugin-smock",
+  "scripts": {
+    "prepublish": "tsc"
+  },
+  "dependencies": {
+    "@smock/interceptor": "^0.1.1"
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "package.json",
+    "README.md"
+  ]
+}
