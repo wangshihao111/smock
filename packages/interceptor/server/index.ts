@@ -1,2 +1,1 @@
-export { default as startInterceptor } from './main';
-export * from './applyInterceptor';
+export { default as startInterceptor } from "./main";

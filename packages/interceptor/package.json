@@ -25,7 +25,7 @@
   "scripts": {
     "transpile": "tsc --build tsconfig-server.json",
     "prepublish": "yarn build && yarn transpile",
-    "server": "nodemon --exec ts-node server/test-start.ts",
+    "server": "cross-env NODE_ENV=development nodemon --exec ts-node server/test-start.ts",
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
@@ -44,7 +44,8 @@
     "lodash": "^4.17.15",
     "lodash-decorators": "6.0.1",
     "object-hash": "^2.0.3",
-    "prettier": "^1.19.1"
+    "prettier": "2.0.4",
+    "@smock/utils": "^0.1.5"
   },
   "devDependencies": {
     "@babel/core": "7.8.4",
@@ -99,7 +100,6 @@
     "postcss-normalize": "8.0.1",
     "postcss-preset-env": "6.7.0",
     "postcss-safe-parser": "4.0.1",
-    "prettier": "2.0.4",
     "react": "^16.13.0",
     "react-ace": "^8.1.0",
     "react-app-polyfill": "^1.0.6",

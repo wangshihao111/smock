@@ -1,7 +1,7 @@
-import { PluginAPiFunc } from './plugin-api';
-import { GlobalContext } from './context-util';
-import { utf8Pattern, binaryPattern } from './patterns';
-import { DB } from './db-util';
+import { PluginAPiFunc } from "./plugin-api";
+import { GlobalContext } from "./context-util";
+import { utf8Pattern, binaryPattern } from "./patterns";
+import { DB } from "./db-util";
 import {
   stat,
   readJSON,
@@ -11,12 +11,12 @@ import {
   readJsonSync,
   writeJSONSync,
   removeSync,
-  writeFile
-} from 'fs-extra';
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
-import path from 'path';
-import hash from 'object-hash';
-import { defaultConfig } from '../config/config';
+  writeFile,
+} from "fs-extra";
+import { AxiosRequestConfig, AxiosResponse } from "axios";
+import path from "path";
+import hash from "object-hash";
+import { defaultConfig } from "../config/config";
 
 export interface StoredRequest {
   path: string;
@@ -41,22 +41,22 @@ export interface ProxyConfig {
 export class FileUtil {
   private ctx: GlobalContext;
 
-  constructor (ctx: GlobalContext) {
+  constructor(ctx: GlobalContext) {
     this.ctx = ctx;
   }
 
-  public getFileName (url: string): string {
+  public getFileName(url: string): string {
     return encodeURIComponent(url);
   }
 
-  public getUniqueKeyFromRequest (
+  public getUniqueKeyFromRequest(
     config: AxiosRequestConfig,
     currentPath: string
   ): string {
     const { data, params, method } = config;
     const obj = { data, params, method };
     const {
-      pathIgnore: { query = [], body = [] }
+      pathIgnore: { query = [], body = [] },
     } = this.ctx.config;
     if (query.includes(currentPath)) {
       delete obj.params;
@@ -67,23 +67,24 @@ export class FileUtil {
     return hash(obj);
   }
 
-  public loadConfig (): ProxyConfig {
-    const configFilePath = path.resolve(this.ctx.cwd, '.smockrc.js');
+  public loadConfig(): ProxyConfig {
+    const configFilePath = path.resolve(this.ctx.cwd, ".smockrc.js");
     try {
       // eslint-disable-next-line
       const config = require(configFilePath);
       return {
         ...defaultConfig,
-        ...(config as ProxyConfig)
+        ...(config as ProxyConfig),
       };
     } catch (e) {
+      console.error("Load config error", e);
       return {
-        ...defaultConfig
+        ...defaultConfig,
       } as ProxyConfig;
     }
   }
 
-  public async addRequestLog (
+  public async addRequestLog(
     path: string,
     req: AxiosRequestConfig,
     res: StoredRequest
@@ -100,8 +101,8 @@ export class FileUtil {
             [key]: {
               method: req.method,
               request: { params: req.params, body: req.data },
-              response: res
-            }
+              response: res,
+            },
           },
           { spaces: 2 }
         );
@@ -112,15 +113,15 @@ export class FileUtil {
         {
           [key]: {
             request: { params: req.params, body: req.data },
-            response: res
-          }
+            response: res,
+          },
         },
         { spaces: 2 }
       );
     }
   }
 
-  public async getRequestLog (
+  public async getRequestLog(
     path: string,
     req: AxiosRequestConfig
   ): Promise<any> {
@@ -136,22 +137,22 @@ export class FileUtil {
     }
   }
 
-  public getFilePath (url: string, asset?: boolean): string {
+  public getFilePath(url: string, asset?: boolean): string {
     const fileName = this.getFileName(url);
     return path.resolve(
       this.ctx.cwd,
-      `${this.ctx.config.workDir}/${!asset ? 'history' : 'static'}/${fileName}${
-        asset ? '' : '.json'
+      `${this.ctx.config.workDir}/${!asset ? "history" : "static"}/${fileName}${
+        asset ? "" : ".json"
       }`
     );
   }
 
-  public getOneHistory (api: string): any {
+  public getOneHistory(api: string): any {
     const path = this.getFilePath(api);
     return readJsonSync(path);
   }
 
-  public deleteOneLog (api: string): void {
+  public deleteOneLog(api: string): void {
     const path = this.getFilePath(api);
     removeSync(path);
     const db = this.ctx.db.getDb();
@@ -163,11 +164,11 @@ export class FileUtil {
     const intepIndex = interceptList.indexOf(api);
     if (apiIndex > -1) apiList.splice(apiIndex, 1);
     if (intepIndex > -1) interceptList.splice(intepIndex, 1);
-    this.ctx.db.set('apiList', apiList);
-    this.ctx.db.set('interceptList', interceptList);
+    this.ctx.db.set("apiList", apiList);
+    this.ctx.db.set("interceptList", interceptList);
   }
 
-  public async updateRequestLog (data: any): Promise<void> {
+  public async updateRequestLog(data: any): Promise<void> {
     const { path, key, response } = data;
     try {
       const filePath = this.getFilePath(path);
@@ -180,18 +181,18 @@ export class FileUtil {
             ...json,
             [key]: {
               ...target,
-              response
-            }
+              response,
+            },
           },
           { spaces: 2 }
         );
       }
     } catch (error) {
-      throw new Error('failed');
+      throw new Error("failed");
     }
   }
 
-  public async storageStatic (_path: string, res: AxiosResponse): Promise<void> {
+  public async storageStatic(_path: string, res: AxiosResponse): Promise<void> {
     const filePath = path.resolve(
       this.ctx.cwd,
       `${this.ctx.config.workDir}/static/${this.getFileName(_path)}`
@@ -200,15 +201,15 @@ export class FileUtil {
       await writeFile(filePath, res.data);
     }
     if (binaryPattern.test(_path)) {
-      await writeFile(filePath, res.data, 'binary');
+      await writeFile(filePath, res.data, "binary");
     }
   }
 
-  public async initFolder (): Promise<void> {
+  public async initFolder(): Promise<void> {
     const { config } = this.ctx;
     const rootDir = path.resolve(process.cwd(), config.workDir);
-    const historyDir = path.resolve(rootDir, 'history');
-    const staticDir = path.resolve(rootDir, 'static');
+    const historyDir = path.resolve(rootDir, "history");
+    const staticDir = path.resolve(rootDir, "static");
     const dirs = [rootDir, historyDir, staticDir];
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
@@ -221,7 +222,7 @@ export class FileUtil {
         await mkdir(dir);
       }
     }
-    const settingFile = path.resolve(rootDir, 'settings.json');
+    const settingFile = path.resolve(rootDir, "settings.json");
     try {
       await readJson(settingFile);
     } catch (e) {
@@ -229,15 +230,15 @@ export class FileUtil {
     }
   }
 
-  public getSettings (): DB {
+  public getSettings(): DB {
     return readJsonSync(
-      path.resolve(this.ctx.cwd, this.ctx.config.workDir, 'settings.json')
+      path.resolve(this.ctx.cwd, this.ctx.config.workDir, "settings.json")
     );
   }
 
-  public setSettings (json: any): void {
+  public setSettings(json: any): void {
     return writeJSONSync(
-      path.resolve(this.ctx.cwd, this.ctx.config.workDir, 'settings.json'),
+      path.resolve(this.ctx.cwd, this.ctx.config.workDir, "settings.json"),
       json,
       { spaces: 2 }
     );

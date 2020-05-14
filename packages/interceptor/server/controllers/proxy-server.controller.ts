@@ -5,6 +5,7 @@ import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from "axios";
 import { RequestUtil } from "../utils/request-util";
 import { AbstractController } from "../definitions/AbstractController";
 import { Hooks } from "../utils/plugin-api";
+import { apiPrefix } from "../utils/constant";
 
 export class ProxyServerController extends AbstractController {
   private requestUtil: RequestUtil;
@@ -15,7 +16,7 @@ export class ProxyServerController extends AbstractController {
     this.requestUtil = new RequestUtil(ctx);
   }
 
-  private requestMiddleware(req: Request, res: Response): void {
+  private requestMiddleware(req: Request, res: Response, next: any): void {
     const scopedCtx = new ScopedContext(req, res);
     this.ctx.pluginApi.emit(Hooks.BEFORE_REQUEST, scopedCtx);
 
@@ -23,7 +24,6 @@ export class ProxyServerController extends AbstractController {
     const requestConfig: AxiosRequestConfig = this.requestUtil.parseRequest(
       req
     );
-
     const interceptList = db.interceptList || [];
     // 如果是拦截目标，走本地缓存
     if (this.ctx.db.hasArrayStringItem(interceptList, req.path)) {
@@ -37,7 +37,6 @@ export class ProxyServerController extends AbstractController {
       axios(requestConfig)
         .then((axiosRes: AxiosResponse) => {
           const { status, headers, data } = axiosRes;
-          res.status(status);
           this.requestUtil.assignHeadersToResponse(headers, res);
           // 正则匹配到的将缓存到本地
           if (
@@ -61,7 +60,7 @@ export class ProxyServerController extends AbstractController {
             this.ctx.db.set("apiList", apiList);
           }
           const transformedData = this.ctx.pluginApi.applyTransformer(data);
-          res.send(transformedData);
+          res.status(status).send(transformedData);
         })
         .catch((e: AxiosError) => {
           this.requestUtil.processResponseError(e, req, res, requestConfig);
@@ -71,7 +70,8 @@ export class ProxyServerController extends AbstractController {
   }
 
   public asMiddleware(): RequestHandler {
-    return this.requestMiddleware;
+    this.ctx.file.initFolder();
+    return this.requestMiddleware.bind(this);
   }
 
   public run(): void {
