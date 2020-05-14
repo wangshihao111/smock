@@ -59,7 +59,6 @@ export class RequestUtil {
     if (binaryPattern.test(req.path)) {
       parsedConfig.responseType = "arraybuffer";
     }
-    console.log(`${config.target}${getRequestPath(path)}`);
     return parsedConfig;
   }
 
