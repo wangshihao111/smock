@@ -3,11 +3,11 @@
   "version": "0.1.7",
   "private": false,
   "main": "index.js",
-  "description": "Vue cli plugin of @smock/mock",
+  "description": "umi cli plugin of @smock/mock",
   "author": "王世豪<913003120@qq.com>",
   "license": "MIT",
   "keywords": [
-    "Vue CLI plugin",
+    "umi plugin",
     "mock tool"
   ],
   "publishConfig": {
