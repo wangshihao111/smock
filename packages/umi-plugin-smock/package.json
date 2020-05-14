@@ -17,7 +17,7 @@
     "type": "git",
     "url": "https://github.com/wangshihao111/smock.git"
   },
-  "homepage": "https://github.com/wangshihao111/smock/tree/master/packages/vue-cli-plugin-smock",
+  "homepage": "https://github.com/wangshihao111/smock/tree/master/packages/umi-plugin-smock",
   "scripts": {
     "prepublish": "tsc"
   },
