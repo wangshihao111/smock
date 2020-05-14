@@ -114,7 +114,7 @@ export class RequestUtil {
       if (key === "location") {
         const loc = value.replace(
           this.ctx.config.target,
-          `http://localhost:${this.ctx.config.workPort}/__intercept_api`
+          `http://localhost:${this.ctx.config.workPort}/${apiPrefix}`
         );
         // console.log('原始的__:', headers.location);
         // console.log('替换过的__:', loc)
