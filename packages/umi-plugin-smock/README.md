@@ -10,10 +10,10 @@ npm i @smock/umi-plugin-smock
 yarn add @smock/umi-plugin-smock
 ```
 
-指定NO_MOCK环境变量可禁用mock
+指定NO_SMOCK环境变量可禁用mock
 例如:
 ```bash
-export NO_MOCK=true
+export NO_SMOCK=true
 ```
 
 smock工具参考文档：
