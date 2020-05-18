@@ -25,7 +25,7 @@ export class GlobalContext implements GlobalContextInterface {
   public readonly cwd: string;
   public readonly pluginApi: PluginApi;
 
-  constructor(app: Application, port: number) {
+  constructor(app: Application, port?: number) {
     this.app = app;
     this.cwd = process.cwd();
     this.db = new DbUtil(this);

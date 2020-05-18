@@ -22,7 +22,7 @@ function applyBaseMiddleware(app: Application): void {
   app.use(express.static(path.resolve(__dirname, "../dist")));
 }
 
-export function createExpressMiddleware(port: number) {
+export function createExpressMiddleware(port?: number) {
   // 初始化配置文件
   initConfigFile();
   // Create a universal context
@@ -58,7 +58,7 @@ export function createExpressMiddleware(port: number) {
   return { middleware, ctx };
 }
 
-function start(port: number): void {
+function start(port?: number): void {
   const app = express();
   applyBaseMiddleware(app);
   // Create a universal context
