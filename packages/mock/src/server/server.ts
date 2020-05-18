@@ -27,8 +27,13 @@ export default function createMock({ host = "0.0.0.0", port = 4000 }): void {
 
 export function createExpressMiddleware(port) {
   const instance = new MockService({} as any, port, "127.0.0.1")
-  console.log(chalk.green(`mock服务运行在：http://127.0.0.1:${port}`))
-  console.log(chalk.green(`你可以在浏览器打开此地址以查看文档：http://127.0.0.1:${port}/__doc__`))
+  if (port) {
+    console.log(chalk.green(`mock服务运行在：http://127.0.0.1:${port}`))
+    console.log(chalk.green(`你可以在浏览器打开此地址以查看文档：http://127.0.0.1:${port}/__doc__`))
+  } else {
+    console.log(chalk.green(`mock服务已启动。`))
+    console.log(chalk.green(`你可以在浏览器打开此当前服务的：/__doc__地址查看文档。`))
+  }
   const apiCorsMiddleware = new ApiCorsService().createMiddleware()
   const staticMiddleware = serveStatic(resolve(__dirname, "../../dist"), { basePath: "__doc__" })
   const mockMiddleware = instance.createMiddleware()
