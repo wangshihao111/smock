@@ -45,6 +45,12 @@ smock -p 3333 # 指定运行端口
 }
 ```
 
+## 在umi中使用
+
+- 安装`@smock/umi-plugin-smock`
+
+再次启动即可自动应用。
+
 ### Features ✨
 
 ⚡️ **Simply**: 使用简单，自动生成文档。
