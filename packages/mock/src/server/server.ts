@@ -7,14 +7,6 @@ import { applyCors } from "./middlewares/cors.middleware"
 import chalk from "chalk"
 import { serveStatic } from "@smock/utils"
 
-export function runMock(app: Application, port: number, host: string): void {
-  app.use("/__doc", serveStatic(resolve(__dirname, "../../dist"), {}))
-  const mockInstance = new MockService(app, port, host)
-  const apiCorsService = new ApiCorsService(app)
-  mockInstance.init()
-  apiCorsService.init()
-}
-
 export default function createMock({ host = "0.0.0.0", port = 4000 }): void {
   const app: Application = express()
   app.all("*", applyCors)
