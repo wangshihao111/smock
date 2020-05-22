@@ -86,7 +86,7 @@ sproxy -p 10011 # 指定运行端口, 会覆盖.smockrc.js里的定义
 ```
 
 开发环境下，将api host设置成 `http://localhost:10011`即可。
-该地址直接可直接打开，为可视化页面。
+GUI操作界面：打开`http://localhost:10011/__interceptor`即可查看可视化操作页面。
 
 ## 在umi中使用（仅支持umi3.X）
 
