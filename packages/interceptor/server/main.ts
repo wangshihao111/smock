@@ -61,12 +61,6 @@ export function createExpressMiddleware(port?: number) {
 function start(port?: number): void {
   const app = express();
   applyBaseMiddleware(app);
-  // Create a universal context
-  // const ctx = new GlobalContext(app, port);
-  // const proxyServer = new ProxyServerController(ctx);
-  // const uiController = new UIController(ctx);
-  // uiController.run();
-  // proxyServer.run();
   const { middleware, ctx } = createExpressMiddleware(port);
   app.use(middleware);
   app.listen(ctx.config.workPort);
