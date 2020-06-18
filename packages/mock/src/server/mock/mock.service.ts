@@ -222,7 +222,7 @@ export class MockService {
       }
     }
     ;(obj.apis || []).forEach((api) => {
-      const hash = objectHash({ url: api.url, method: api.method.toLowerCase() })
+      const hash = objectHash({ url: api.url, method: (api.method || "").toLowerCase() })
       this.jsApiMap.set(hash, createHandler(api))
     })
   }
