@@ -79,7 +79,7 @@ export class MockService {
     const mockTsFiles = glob.sync(`**/**/${mockFilePrefix}.ts`, globOptions)
     const mockFiles = glob.sync(`**/**/${mockFilePrefix}.js`, globOptions)
     this.watchedDirs = glob
-      .sync("**/smock", globOptions)
+      .sync(`**/${mockFilePrefix}`, globOptions)
       .concat(liveMocks)
       .concat(mockFiles)
       .concat(mockTsFiles)
