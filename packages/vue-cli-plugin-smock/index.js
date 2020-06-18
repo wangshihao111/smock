@@ -26,7 +26,7 @@ module.exports = (api, projectOptions) => {
   //   } : webpackConfig;
   // })
 
-  if(!process.env.NO_SMOCK || process.env.NO_SMOCK !== 'false') {
+  if(!process.env.NO_SMOCK && process.env.NO_SMOCK !== 'false') {
     api.configureDevServer((app) => {
       app.use(createExpressMiddleware());
     });
