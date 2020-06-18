@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "lerna run build",
+    "transpile": "cd packages/utils && yarn prepublish && lerna run prepublish",
     "start:mock": "cd packages/mock && yarn test-start",
     "start:mock-dev": "cd packages/mock && yarn dev",
     "start:int": "cd packages/interceptor && yarn start",
@@ -39,6 +40,9 @@
       "eslint --quiet --fix ",
       "git add"
     ]
+  },
+  "resolutions": {
+    "@babel/preset-env": "7.9.5"
   },
   "husky": {
     "hooks": {
