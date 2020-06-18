@@ -11,18 +11,22 @@ export const meta = {
 // -- Travis includes the author in the repo slug,
 //    so if there's a /, we need to get everything after it.
 let repoName = (process.env.TRAVIS_REPO_SLUG || "").split("/").pop()
-export const routerBase =
-  process.env.DEPLOY_ENV === "GH_PAGES"
-    ? {
-        router: {
-          base: `/${repoName}/`,
-        },
-      }
-    : {
-        router: {
-          base: "/__doc__/",
-        },
-      }
+export const routerBase = {
+  router: {
+    base: "/__doc__",
+  },
+}
+  // process.env.DEPLOY_ENV === "GH_PAGES"
+  //   ? {
+  //       router: {
+  //         base: `/${repoName}/`,
+  //       },
+  //     }
+  //   : {
+  //       router: {
+  //         base: "/__doc__",
+  //       },
+  //     }
 export default {
   mode: "spa",
   /*
