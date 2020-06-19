@@ -1,5 +1,5 @@
-const execa = require('execa');
-const path = require('path');
+// const execa = require('execa');
+// const path = require('path');
 // const kill = require('tree-kill');
 const { createExpressMiddleware, default: createMock } = require('@smock/mock/lib/server/server');
 
@@ -26,7 +26,7 @@ module.exports = (api, projectOptions) => {
   //   } : webpackConfig;
   // })
 
-  if(!process.env.NO_SMOCK && process.env.NO_SMOCK !== 'false') {
+  if(!process.env.NO_SMOCK || process.env.NO_SMOCK === 'false') {
     api.configureDevServer((app) => {
       app.use(createExpressMiddleware());
     });
