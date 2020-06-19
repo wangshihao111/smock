@@ -19,15 +19,23 @@ npm i -g @smock/interceptor
 #或
 yarn add global @smock/interceptor
 ```
+
+## 新加特性
+
+- 更改配置自动刷新服务，不必每次更改文件后重启服务。
+
 ## 命令可用选项：
 
 - `-p` , `--port`, 指定端口。示例： `sproxy -port 8000`
-- `-i`, `--init`，是否在运行时生成一个默认配置文件。
+- `-i`, `--init`，生成一个默认配置文件。
 - `-V`, `--version` 查看版本
 - `-h` 显示帮助信息。
 
 ## 配置文件示例：
 在启动命令的目录创建`.smockrc.js`文件, 加入如下形式的配置：
+> 可以运行`sproxy --init`创建一个默认配置文件。
+该文件也会在首次运行时自动创建。
+
 (下面包含所有可配置项)
 ```js
 module.exports = {
