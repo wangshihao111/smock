@@ -1,6 +1,6 @@
 {
   "name": "@smock/umi-plugin-sproxy",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "private": false,
   "main": "index.js",
   "description": "umi cli plugin of @smock/sproxy",
@@ -22,7 +22,7 @@
     "prepublish": "tsc"
   },
   "dependencies": {
-    "@smock/interceptor": "^0.1.11"
+    "@smock/interceptor": "^0.1.12"
   },
   "files": [
     "index.js",
