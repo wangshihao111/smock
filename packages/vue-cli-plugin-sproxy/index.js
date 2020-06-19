@@ -1,9 +1,9 @@
-const execa = require('execa');
-const kill = require('tree-kill');
-const path  = require('path');
+// const execa = require('execa');
+// const kill = require('tree-kill');
+// const path  = require('path');
 var startIntercept = require('@smock/interceptor/lib/main').default;
 
-const scriptPath = path.resolve(__dirname, 'sproxy.js');
+// const scriptPath = path.resolve(__dirname, 'sproxy.js');
 
 module.exports = (api, projectOptions) => {
 
