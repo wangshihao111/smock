@@ -25,11 +25,12 @@ module.exports = (api, projectOptions) => {
   //     }
   //   } : webpackConfig;
   // })
-
-  if(!process.env.NO_SMOCK || process.env.NO_SMOCK === 'false') {
+  
+  if(process.env.NODE_ENV === 'development' && (!process.env.NO_SMOCK || process.env.NO_SMOCK === 'false')) {
     api.configureDevServer((app) => {
       app.use(createExpressMiddleware());
     });
+    global.__smock_mock = true;
   }
 
   api.registerCommand('smock', {
@@ -37,7 +38,9 @@ module.exports = (api, projectOptions) => {
       '-p --port <port>': 'specify working port<指定运行端口>'
     }
   }, args => {
-    createMock({port: args.port})
+    if (global.__smock_mock) {
+      createMock({port: args.port})
+    }
     // const cwd = process.cwd();
     // console.log('work dir:', cwd)
     // const cmd = `node ${scriptPath} -p ${args.port || 4000}`;

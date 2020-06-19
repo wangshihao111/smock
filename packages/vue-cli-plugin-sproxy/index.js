@@ -12,7 +12,7 @@ module.exports = (api, projectOptions) => {
     // 或返回通过 webpack-merge 合并的配置对象
   })
 
-  if (!process.env.NO_INTERCEPTOR || NO_INTERCEPTOR === 'false') {
+  if (process.env.NODE_ENV==='development' && (!process.env.NO_INTERCEPTOR || NO_INTERCEPTOR === 'false')) {
     startIntercept();
   }
 
