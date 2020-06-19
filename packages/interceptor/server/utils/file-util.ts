@@ -72,6 +72,8 @@ export class FileUtil {
     try {
       // eslint-disable-next-line
       const config = require(configFilePath);
+      // 删除缓存，确保配置文件发生变化时能加载到正确配置
+      delete require.cache[configFilePath];
       return {
         ...defaultConfig,
         ...(config as ProxyConfig),
