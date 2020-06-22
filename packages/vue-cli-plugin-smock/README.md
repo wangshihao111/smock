@@ -8,7 +8,7 @@ npm i @smock/vue-cli-plugin-smock
 
 ### 使用方式
 
-> 注意：本插件只有在process.env.NODE_ENV等于development时生效。
+> 注意：本插件只有在process.env.NODE_ENV等于development或不定义时生效。
 
 该服务会在运行`npm run serve` 或 `yarn serve`时自动运行。
 运行地址与`vue`开发服务地址一致。

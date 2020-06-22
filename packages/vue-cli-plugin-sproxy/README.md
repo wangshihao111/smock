@@ -8,7 +8,7 @@ npm i @smock/vue-cli-plugin-sproxy
 
 ### 使用方式
 
-> 该服务会在任何vue子命令启动时启动。
+> 该服务会在任何vue子命令启动时启动。(只有在process.env.NODE_ENV为development时或未定义时生效。)
 
 例如：
 该服务会在运行`npm run serve` 或 `yarn serve`时自动运行。
