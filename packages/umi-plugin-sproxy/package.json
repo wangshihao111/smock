@@ -1,6 +1,6 @@
 {
   "name": "@smock/umi-plugin-sproxy",
-  "version": "0.1.14",
+  "version": "0.1.15",
   "private": false,
   "main": "index.js",
   "description": "umi cli plugin of @smock/sproxy",
