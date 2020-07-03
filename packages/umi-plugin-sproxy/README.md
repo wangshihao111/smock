@@ -10,10 +10,12 @@ npm i @smock/umi-plugin-sproxy
 yarn add @smock/umi-plugin-sproxy
 ```
 
-指定NO_PROXY环境变量可禁用拦截工具
+指定NO_SPROXY或NO_INTERCEPTOR环境变量可禁用拦截工具
 例如:
 ```bash
 export NO_SPROXY=true
+# 或
+export NO_INTERCEPTOR=true
 ```
 
 拦截工具参考文档：
