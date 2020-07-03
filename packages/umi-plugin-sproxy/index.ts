@@ -2,7 +2,12 @@
 import startProxy from '@smock/interceptor/lib/main';
 
 module.exports = (api) => {
-  if (api.env === "development" && !process.env.NO_INTERCEPTOR && !process.env.NO_SPROXY) {
+  const {NO_INTERCEPTOR, NO_SPROXY} = process.env || {};
+  
+  if (NO_INTERCEPTOR === 'true' || NO_SPROXY=== 'true') {
+    return;
+  }
+  if (api.env === "development") {
     if (!(global as any)['__smock/proxy']) {
       startProxy();
       (global as any)['__smock/proxy'] = true;
