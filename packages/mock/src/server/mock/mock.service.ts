@@ -213,16 +213,22 @@ export class MockService {
 
   public applyJsDefinition(obj: JsDefinition): void {
     this.jsDefinitions.set(obj.name, obj)
-    const createHandler = (api: JsApiItem): RequestHandler => (
+    const createHandler = (api: JsApiItem): RequestHandler => async (
       req: Request,
       res: Response
-    ): void => {
+    ): Promise<void> => {
       const result = api.handle(req, res)
       // 有返回体时，将其发送给客户端
       if (result) {
-        const { status = 200, data } = result
-        res.status(status)
-        res.send(data)
+        const { status = 200, delay, data } = result
+        let delayTime = 0
+        if (delay !== undefined) {
+          delayTime = MockUtil.getDelayTime(String(delay))
+        }
+        setTimeout(() => {
+          res.status(status)
+          res.send(data)
+        }, delayTime * 1000)
       }
     }
     ;(obj.apis || []).forEach((api) => {

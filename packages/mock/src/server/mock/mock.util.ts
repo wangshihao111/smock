@@ -185,4 +185,31 @@ export class MockUtil {
     }
     return result
   }
+
+  /**
+   * 支持定义方式：
+   *  3
+   *  3-5
+   *  < 3
+   * @param str
+   */
+  public static getDelayTime(str: string): number {
+    if (Number(str)) {
+      return Number(str)
+    }
+    const middle = str.split("-")
+    if (middle.length === 2) {
+      const [first, second] = middle
+      return Number(
+        (
+          Math.min(Number(first), Number(second)) +
+          Math.random() * Math.abs(Number(first) - Number(second))
+        ).toFixed(2)
+      )
+    }
+    if (str.match(/\s*<\s*(\d+)/)) {
+      return Number((Math.random() * Number(RegExp.$1)).toFixed(2))
+    }
+    return 0
+  }
 }
