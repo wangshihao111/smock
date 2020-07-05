@@ -23,9 +23,11 @@ const axiosWithProxy = async (req, { state }) => {
 const axiosWithoutProxy = async (req, _store) => {
   // console.log(req)
   // const res = await axios(req)
+  // console.log(req, _store)
   const requestUrl = `${baseUrl}/__api-proxy`;
   const res = await axios.post(requestUrl, {
     ...(req || {}),
+    url: `${_store.state.request.url}${_store.state.request.path}`,
     headers: getFilteredHeaders(req)
   })
   return res
