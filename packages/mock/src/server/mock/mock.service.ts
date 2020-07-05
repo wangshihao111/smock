@@ -191,7 +191,7 @@ export class MockService {
     if (typeof body === "string") {
       return mockData.find((v) => v.body === body)
     }
-    let mock = mockData.find((m) => {
+    const mockList = mockData.filter((m) => {
       const queryEqual = isEqual(MockUtil.changeQueryToString(m.query), query)
       const bodyEqual = isEqual(m.body, body)
       if (m.body && m.query) {
@@ -201,8 +201,12 @@ export class MockService {
       if (m.body) return bodyEqual
       return false
     })
-    if (!mock) {
+    let mock
+    if (!mockList) {
       mock = mockData.find((v) => !v.body && !v.query)
+    } else {
+      const index = Math.floor(mockList.length * Math.random())
+      mock = mockList[index]
     }
     return mock
   }
