@@ -117,8 +117,12 @@ export default {
     },
     goTest() {
       const { method, url } = this.apiDef;
+      let port = this.port;
+      if (!port) {
+        port = window.location.port;
+      }
       this.setState({attribute: 'method', value: method});
-      this.setState({attribute: 'url', value: `http://localhost:${this.port}`});
+      this.setState({attribute: 'url', value: `http://localhost:${port}`});
       this.setState({attribute: 'path', value: url});
       this.$emit('api-test')
     }
