@@ -4,3 +4,4 @@ lib
 dist
 .vscode
 .idea
+_smock
