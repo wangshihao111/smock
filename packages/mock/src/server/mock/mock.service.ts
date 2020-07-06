@@ -199,7 +199,7 @@ export class MockService {
       }
       if (m.query) return queryEqual
       if (m.body) return bodyEqual
-      return false
+      return true
     })
     let mock
     if (!mockList) {
