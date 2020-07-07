@@ -8,20 +8,26 @@ import { ParamType } from "../enums/ParamType"
 import { JsDefinition } from "../domain/JsDefinition"
 import { config } from "../config/variables"
 import { getVariableType } from "../../utils/utils"
-import glob, { IOptions } from "glob"
+import glob from "glob"
 import BabelRegister from "@smock/utils/lib/BabelRegister"
-import { mockFilePrefix, mockDir } from "./_constant"
+import { mockFilePrefix, mockDir, globOptions } from "./_constant"
+import { MockConfigType } from "../domain/config"
 
-const globOptions: IOptions = {
-  ignore: ["**/node_modules/**"],
-  root: process.cwd(),
-}
-function getFileFromExt(ext: string): string[] {
-  return [...glob.sync(`**/${mockDir}/**/*.${ext}`, { ...globOptions })]
+function getFileFromExt(ext: string, excludes?: string[]): string[] {
+  return [
+    ...glob.sync(`**/${mockDir}/**/*.${ext}`, {
+      ...globOptions,
+      ignore: [...globOptions.ignore, ...(excludes || [])],
+    }),
+  ]
 }
 
-function getAllFiles(): string[] {
-  return [...getFileFromExt("json5"), ...getFileFromExt("json"), ...getFileFromExt("js")]
+function getAllFiles(excludes: string[] = []): string[] {
+  return [
+    ...getFileFromExt("json5", excludes),
+    ...getFileFromExt("json", excludes),
+    ...getFileFromExt("js", excludes),
+  ]
 }
 
 export class MockUtil {
@@ -29,32 +35,46 @@ export class MockUtil {
 
   private static jsDefMap = new Map<string, JsDefinition>()
 
+  private static config: MockConfigType
+
+  private static init() {
+    const dirPath = process.cwd()
+    if (!this.config) {
+      try {
+        this.config = require(resolve(dirPath, ".smockrc.js"))
+      } catch (error) {
+        this.config = {}
+      }
+    }
+  }
+
   /**
    * 读取本地文件
    * @param path
    */
-  public static readLocalFile(
-    path: string
-  ): [Map<string, MockFileContent>, Map<string, JsDefinition>] {
+  public static readLocalFile(): [Map<string, MockFileContent>, Map<string, JsDefinition>] {
+    this.init()
     const dirPath = process.cwd()
     const tsFiles = [
-      ...getFileFromExt("ts"),
+      ...getFileFromExt("ts", this.config.mockExcludes),
       ...glob.sync(`**/**/${mockFilePrefix}.ts`, globOptions),
     ]
     let files: string[] = [
+      // TODO: 移除live_mock在后续版本
       ...glob.sync("live-mock/**/*.json5", globOptions),
       ...glob.sync("live-mock/**/*.json", globOptions),
       ...glob.sync("live-mock/**/*.js", globOptions),
       ...glob.sync(`**/**/${mockFilePrefix}.js`, globOptions),
       ...tsFiles,
     ]
+
     const register = new BabelRegister()
     register.setOnlyMap({
       key: "smock",
       value: tsFiles,
     })
     register.register()
-    files = files.concat(getAllFiles())
+    files = files.concat(getAllFiles(this.config.mockExcludes))
     files.forEach((file) => {
       const isJs = /^.+\.js$/.test(file)
       const isJson = /^.+(\.json|\.json5)$/.test(file)
@@ -78,7 +98,7 @@ export class MockUtil {
         const obj = parse(content) as MockFileContent
         this.jsonDefMap.set(obj.name, obj)
       } else if (isDirectory) {
-        this.readLocalFile(filePath)
+        this.readLocalFile()
       }
     })
     return [this.jsonDefMap, this.jsDefMap]

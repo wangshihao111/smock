@@ -66,6 +66,18 @@ smock -p 3333 # 指定运行端口
 
 🔥 **命令行工具**: 使用命令一键启动(`$ smock -p 3333`)
 
+### 忽略某些文件
+
+如果要忽略某些文件（即这些文件不会被当做mock定义文件），则可以在启动文件夹下新建.smockrc.js，加入配置项:mockExcludes，改配置项为一个数组，包含一些列glob路径，例如：
+当我们想在_smock文件夹下保存一些配置文件或工具函数，这些文件不能被当做mock文件来加载，假设我们要忽略_data和_utils文件夹，那我们可以指定如下配置：
+```js
+// .smockrc.js
+module.exports = {
+  // ...
+  mockExcludes: ['**/_smock/_data/**', '**/_smock/_utils_/**']
+}
+```
+
 ### 可用类型（type字段）
 
 - [x] string 字符串类型

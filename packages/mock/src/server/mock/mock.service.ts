@@ -2,7 +2,6 @@ import { Request, Response, Application, RequestHandler, NextFunction } from "ex
 import { isEqual, toLower } from "lodash"
 import { JsDefinition, JsApiItem } from "../domain/JsDefinition"
 import { MockFileContent, ApiItem } from "../domain/JsonFile"
-import { config } from "../config/variables"
 import { MockUtil } from "./mock.util"
 import prettier from "prettier"
 import objectHash from "object-hash"
@@ -13,7 +12,7 @@ import asyncGlob from "@smock/utils/lib/asyncGlob"
 import { mockFilePrefix, mockDir, globOptions } from "./_constant"
 
 async function getWatchLength() {
-  const dirs = await asyncGlob(`**/${mockDir}`, globOptions)
+  const dirs = await asyncGlob(`**/${mockDir}/**`, globOptions)
   const files = await asyncGlob(`**/**/${mockFilePrefix}.ts`, globOptions)
   const tsFiles = await asyncGlob(`**/**/${mockFilePrefix}.js`, globOptions)
   return dirs.length + files.length + tsFiles.length
@@ -68,7 +67,10 @@ export class MockService {
         this.reset()
       }
     }, 1000)
-    watch(process.cwd(), watchHandler)
+    const watcher = watch(process.cwd(), { recursive: true }, watchHandler)
+    watcher.on("error", (e) => {
+      console.log(e)
+    })
   }
 
   private watchMockFiles(callback: (event: string, filename: string) => void): void {
@@ -79,7 +81,7 @@ export class MockService {
     const mockTsFiles = glob.sync(`**/**/${mockFilePrefix}.ts`, globOptions)
     const mockFiles = glob.sync(`**/**/${mockFilePrefix}.js`, globOptions)
     this.watchedDirs = glob
-      .sync(`**/${mockFilePrefix}`, globOptions)
+      .sync(`**/${mockFilePrefix}/**`, globOptions)
       .concat(liveMocks)
       .concat(mockFiles)
       .concat(mockTsFiles)
@@ -141,7 +143,7 @@ export class MockService {
   }
 
   private getLocalDefinition(): void {
-    const [jsonDefs, jsDefs] = MockUtil.readLocalFile(config.base)
+    const [jsonDefs, jsDefs] = MockUtil.readLocalFile()
     this.jsonDefinitions = jsonDefs
     this.jsDefinitions = jsDefs
   }
