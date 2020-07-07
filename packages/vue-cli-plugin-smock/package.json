@@ -1,6 +1,6 @@
 {
   "name": "@smock/vue-cli-plugin-smock",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "private": false,
   "main": "index.js",
   "description": "Vue cli plugin of @smock/mock",
@@ -20,7 +20,7 @@
   "homepage": "https://github.com/wangshihao111/smock/tree/master/packages/vue-cli-plugin-smock",
   "scripts": {},
   "dependencies": {
-    "@smock/mock": "^0.2.11"
+    "@smock/mock": "^0.2.12"
   },
   "browserslist": {
     "production": [
