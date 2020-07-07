@@ -120,6 +120,7 @@ export SMOCK_IGNORE="[\"**/_smock/_data/**\", \"**/_smock/_utils_/**\"]" # 注�
     desc:"if user login success, will get a token",
     method: "POST",
     url:"/login",
+    delay: "5",  // 可用定义形式 3 或者 3-5 或者 < 5 诸如此种形式
     body:{
       username: {desc: "username", type: "string", $$mock: "name", required: true},
       password: {desc: "password", type: 'string'},
@@ -197,6 +198,7 @@ module.exports = {
         返回体示例如下：
         return {
           status: 200, // http状态码
+          delay: "3", // 可用定义形式 3 或者 3-5 或者 < 5 诸如此种形式
           data: {
             message: 'hello world.',
           }

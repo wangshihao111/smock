@@ -184,8 +184,6 @@ export class MockService {
         // 其它情况，返回模拟数据
         sendData = MockUtil.getMockedData(response, {})
       }
-      console.log(delayTime)
-
       setTimeout(() => {
         res.send(sendData)
       }, delayTime * 1000)
