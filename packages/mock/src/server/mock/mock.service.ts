@@ -3,7 +3,7 @@ import { isEqual, toLower } from "lodash"
 import { JsDefinition, JsApiItem } from "../domain/JsDefinition"
 import { MockFileContent, ApiItem } from "../domain/JsonFile"
 import { MockUtil } from "./mock.util"
-import prettier from "prettier"
+import prettier, { resolveConfig } from "prettier"
 import objectHash from "object-hash"
 import glob from "glob"
 import { watch, unwatchFile } from "fs-extra"
@@ -149,7 +149,7 @@ export class MockService {
   }
 
   private createController(api: ApiItem, jsonName: string): any {
-    const { url, method, response, responseType } = api
+    const { url, method, response, responseType, delay = "" } = api
     const handleRequest = (req: Request, res: Response, next): void => {
       const { body, query } = req
       const hasMatch = this.jsonDefinitions
@@ -157,6 +157,8 @@ export class MockService {
         .apis.find((a) => a.url === url && toLower(a.method) === toLower(method))
       const queryValid = MockUtil.validateParams(api.query || {}, query, true)
       const bodyValid = MockUtil.validateParams(api.body || {}, body)
+      const delayTime = MockUtil.getDelayTime(String(delay))
+      let sendData: any
       if (responseType) {
         res.type(responseType)
       }
@@ -167,22 +169,26 @@ export class MockService {
       const data = this.findOne(body, query, api)
       // 将数据中需要mock的数据换成mock数据
       if (data) {
-        const responseData = MockUtil.getMockedData(response, data.response)
-        res.send(responseData)
-        return
-      }
-      // 如果参数类型不匹配
-      if (!queryValid || !bodyValid) {
+        sendData = MockUtil.getMockedData(response, data.response)
+        // res.send(responseData)
+        // return
+      } else if (!queryValid || !bodyValid) {
+        // 如果参数类型不匹配
         res.status(400)
-        res.send({
+        sendData = {
           status: 400,
           message: "参时不匹配，请检查数据类型",
-        })
-        return
+        }
+        // return
+      } else {
+        // 其它情况，返回模拟数据
+        sendData = MockUtil.getMockedData(response, {})
       }
-      // 其它情况，返回模拟数据
-      const mocked = MockUtil.getMockedData(response, {})
-      res.send(mocked)
+      console.log(delayTime)
+
+      setTimeout(() => {
+        res.send(sendData)
+      }, delayTime * 1000)
     }
     const hash = objectHash({ url, method: method.toLowerCase() })
     return [hash, handleRequest]
