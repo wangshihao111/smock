@@ -14,10 +14,17 @@ import { mockFilePrefix, mockDir, globOptions } from "./_constant"
 import { MockConfigType } from "../domain/config"
 
 function getFileFromExt(ext: string, excludes?: string[]): string[] {
+  const smockIgnore = []
+  try {
+    const is = JSON.parse(process.env.SMOCK_IGNORE)
+    smockIgnore.push(...is)
+  } catch (error) {
+    process.env.SMOCK_IGNORE && smockIgnore.push(process.env.SMOCK_IGNORE)
+  }
   return [
     ...glob.sync(`**/${mockDir}/**/*.${ext}`, {
       ...globOptions,
-      ignore: [...globOptions.ignore, ...(excludes || [])],
+      ignore: [...globOptions.ignore, ...(excludes || []), ...smockIgnore],
     }),
   ]
 }

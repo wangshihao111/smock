@@ -78,6 +78,14 @@ module.exports = {
 }
 ```
 
+也可以指定环境变量，例如：
+
+```bash
+export SMOCK_IGNORE="**/_smock/_data/**"
+# 或
+export SMOCK_IGNORE="[\"**/_smock/_data/**\", \"**/_smock/_utils_/**\"]" # 注意：使用数组时，必须为可以使用JSON.parse序列化的值
+```
+
 ### 可用类型（type字段）
 
 - [x] string 字符串类型
