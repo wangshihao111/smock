@@ -123,6 +123,7 @@ export default {
       }
       this.setState({attribute: 'method', value: method});
       this.setState({attribute: 'url', value: `http://localhost:${port}`});
+      this.setState({attribute: 'uri', value: `http://localhost:${port}${url}`});
       this.setState({attribute: 'path', value: url});
       this.$emit('api-test')
     }
