@@ -2385,7 +2385,7 @@ export default {
       history.replaceState(
         window.location.href,
         "",
-        `/?${encodeURI(
+        `/__doc__/?${encodeURI(
           flats
             .concat(deeps, bodyParams)
             .join("")
