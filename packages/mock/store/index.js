@@ -1,24 +1,38 @@
-import Vuex from "vuex"
-import state from "./state"
+// import Vuex from "vuex"
+// import state from "./state"
 import VuexPersist from "vuex-persist"
 
-export default {
-  install(Vue) {
-    Vue.use(Vuex)
+// export default {
+//   install(Vue) {
+//     Vue.use(Vuex)
 
-    const vuexLocalStorage = new VuexPersist({
-      key: "vuex",
-      storage: window.localStorage,
-      reducer: ({ ...request }) => ({
-        ...request,
-      }),
-    })
+//     const vuexLocalStorage = new VuexPersist({
+//       key: "vuex",
+//       storage: window.localStorage,
+//       reducer: ({ ...request }) => ({
+//         ...request,
+//       }),
+//     })
 
-    const store = new Vuex.Store({
-      state,
-      plugins: [vuexLocalStorage.plugin],
-    })
+//     const store = new Vuex.Store({
+//       state,
+//       plugins: [vuexLocalStorage.plugin],
+//     })
 
-    Vue.prototype.$store = store
-  },
-}
+//     Vue.prototype.$store = store
+//   },
+// }
+
+export const plugins = [
+  new VuexPersist({
+    key: "vuex",
+    storage: window.localStorage,
+    reducer: ({ ...request }) => ({
+      ...request,
+    }),
+  }).plugin
+]
+
+export const mutations = require('./mutations').default;
+
+export const state = require('./state').default;
