@@ -1,6 +1,6 @@
 {
   "name": "@smock/mock",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "description": "A useful mock tool.",
   "author": "王世豪<913003120@qq.com>",
   "license": "MIT",
@@ -54,8 +54,8 @@
     "axios": "0.19.2",
     "body-parser": "^1.19.0",
     "chalk": "^2.4.2",
-    "commander": "^5.0.0",
     "chokidar": "^3.4.0",
+    "commander": "^5.0.0",
     "execa": "^4.0.0",
     "express": "^4.17.1",
     "fs-extra": "^8.1.0",
