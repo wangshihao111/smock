@@ -5,10 +5,7 @@ import { MockFileContent, ApiItem } from "../domain/JsonFile"
 import { MockUtil } from "./mock.util"
 import prettier from "prettier"
 import objectHash from "object-hash"
-// import glob from "glob"
-// import { watch } from "fs-extra"
 import { debounce } from "lodash"
-// import asyncGlob from "@smock/utils/lib/asyncGlob"
 import { mockFilePrefix } from "./_constant"
 import chokidar from "chokidar"
 
@@ -27,8 +24,6 @@ export class MockService {
   private jsApiMap: Map<string, RequestHandler>
   private docMap: Map<string, RequestHandler>
   private docHandler: RequestHandler
-  // private watchedDirs: string[]
-  // private watchHandler: any
 
   constructor(app: Application, port: number, host: string) {
     this.jsonDefinitions = new Map()
@@ -39,8 +34,6 @@ export class MockService {
     this.app = app
     this.port = port
     this.host = host
-    // this.watchedDirs = []
-    // this.watchHandler = null
     this.docHandler = this.createDocMiddleware()
   }
 
@@ -50,40 +43,24 @@ export class MockService {
   }
 
   private async seUpWatcher() {
+    MockUtil.init()
+    const config = MockUtil.config
     const watchHandler = debounce(async (fileName: string) => {
       console.log(`检测到文件夹变动或${mockFilePrefix}文件变动, 重新加载文件`)
       this.reset()
     }, 1000)
-    // watch(process.cwd(), { recursive: true }, watchHandler)
-    const watcher = chokidar.watch(["./**/_smock/**", "./**/_smock.[jt]s", "./**/live-mock"], {
-      ignored: ["node_modules/**"],
-      persistent: true,
-      cwd: process.cwd(),
-    })
+    const watcher = chokidar.watch(
+      ["./**/_smock/**", "./**/_smock.[jt]s", "./**/_smock.json5", "./**/_smock.json"],
+      {
+        ignored: ["node_modules/**"],
+        persistent: true,
+        cwd: config.mockCwd || process.cwd(),
+      }
+    )
     watcher.on("all", (path) => {
       watchHandler(path)
     })
   }
-
-  // private watchMockFiles(callback: (event: string, filename: string) => void): void {
-  //   const liveMocks = glob.sync("**/live-mock", {
-  //     ignore: ["**/node_modules/**"],
-  //     root: process.cwd(),
-  //   })
-  //   const mockTsFiles = glob.sync(`**/**/${mockFilePrefix}.ts`, globOptions)
-  //   const mockFiles = glob.sync(`**/**/${mockFilePrefix}.js`, globOptions)
-  //   this.watchedDirs = glob
-  //     .sync(`**/${mockFilePrefix}/**`, globOptions)
-  //     .concat(liveMocks)
-  //     .concat(mockFiles)
-  //     .concat(mockTsFiles)
-  //   this.watchHandler = debounce((event: string, filename: string) => {
-  //     callback(event, filename)
-  //   }, 800)
-  //   this.watchedDirs.forEach((dir: string) => {
-  //     watch(dir, this.watchHandler)
-  //   })
-  // }
 
   public createMiddleware() {
     this.seUpWatcher()
@@ -113,7 +90,7 @@ export class MockService {
   public createControllers(): any {
     this.getLocalDefinition()
     this.jsonDefinitions.forEach((definition) => {
-      const { name, apis } = definition
+      const { name, apis = [] } = definition
       apis
         .map((api) => this.createController(api, name))
         .forEach(([hash, c]) => {

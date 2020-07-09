@@ -1,19 +1,24 @@
 import { readFileSync, statSync } from "fs-extra"
 import { resolve } from "path"
 import { parse } from "json5"
-import { isArray, isObject, isString, isNumber } from "lodash"
+import { isArray, isObject, isString, isNumber, uniq } from "lodash"
 import { Random } from "mockjs"
 import { MockFileContent } from "../domain/JsonFile"
 import { ParamType } from "../enums/ParamType"
 import { JsDefinition } from "../domain/JsDefinition"
 import { config } from "../config/variables"
 import { getVariableType } from "../../utils/utils"
-import glob from "glob"
+import globby from "globby"
 import BabelRegister from "@smock/utils/lib/BabelRegister"
-import { mockFilePrefix, mockDir, globOptions } from "./_constant"
+import { mockFilePrefix, mockDir } from "./_constant"
 import { MockConfigType } from "../domain/config"
 
-function getFileFromExt(ext: string, excludes?: string[]): string[] {
+const globbyOptions = {
+  ignore: ["**/node_modules/**"],
+}
+
+function getGlobOptions(config: MockConfigType): globby.GlobbyOptions {
+  const { mockExcludes: excludes = [], mockCwd } = config
   const smockIgnore = []
   try {
     const is = JSON.parse(process.env.SMOCK_IGNORE)
@@ -21,19 +26,38 @@ function getFileFromExt(ext: string, excludes?: string[]): string[] {
   } catch (error) {
     process.env.SMOCK_IGNORE && smockIgnore.push(process.env.SMOCK_IGNORE)
   }
+  return {
+    cwd: mockCwd || process.cwd(),
+    ignore: [...globbyOptions.ignore, ...(excludes || []), ...smockIgnore],
+  }
+}
+
+function getFileFromExt(ext: string, config: MockConfigType): string[] {
+  const { mockDirs = [] } = config
+
+  const globStr = mockDirs.length
+    ? mockDirs
+    : [`**/${mockDir}/**/*.${ext}`, `**/**/${mockFilePrefix}.${ext}`]
   return [
-    ...glob.sync(`**/${mockDir}/**/*.${ext}`, {
-      ...globOptions,
-      ignore: [...globOptions.ignore, ...(excludes || []), ...smockIgnore],
-    }),
+    ...globby
+      .sync(globStr, getGlobOptions(config) as any)
+      .filter((v) => v.indexOf(mockFilePrefix) > -1),
   ]
 }
 
-function getAllFiles(excludes: string[] = []): string[] {
+function readConfigFile(base: string): MockConfigType | boolean {
+  try {
+    return require(resolve(base, ".smockrc.js"))
+  } catch (e) {
+    return false
+  }
+}
+
+function getAllFiles(config: MockConfigType): string[] {
   return [
-    ...getFileFromExt("json5", excludes),
-    ...getFileFromExt("json", excludes),
-    ...getFileFromExt("js", excludes),
+    ...getFileFromExt("json5", config),
+    ...getFileFromExt("json", config),
+    ...getFileFromExt("js", config),
   ]
 }
 
@@ -42,16 +66,25 @@ export class MockUtil {
 
   private static jsDefMap = new Map<string, JsDefinition>()
 
-  private static config: MockConfigType
+  public static config: MockConfigType
 
-  private static init() {
+  public static init() {
     const dirPath = process.cwd()
     if (!this.config) {
-      try {
-        this.config = require(resolve(dirPath, ".smockrc.js"))
-      } catch (error) {
-        this.config = {}
+      let config = readConfigFile(dirPath)
+
+      if (!config) {
+        config = readConfigFile(resolve(dirPath, "../"))
       }
+      if (!config) {
+        config = readConfigFile(resolve(dirPath, "../../"))
+      }
+      if (!config) {
+        config = {
+          mockCwd: dirPath,
+        } as MockConfigType
+      }
+      this.config = config as MockConfigType
     }
   }
 
@@ -61,19 +94,10 @@ export class MockUtil {
    */
   public static readLocalFile(): [Map<string, MockFileContent>, Map<string, JsDefinition>] {
     this.init()
-    const dirPath = process.cwd()
-    const tsFiles = [
-      ...getFileFromExt("ts", this.config.mockExcludes),
-      ...glob.sync(`**/**/${mockFilePrefix}.ts`, globOptions),
-    ]
-    let files: string[] = [
-      // TODO: 移除live_mock在后续版本
-      ...glob.sync("live-mock/**/*.json5", globOptions),
-      ...glob.sync("live-mock/**/*.json", globOptions),
-      ...glob.sync("live-mock/**/*.js", globOptions),
-      ...glob.sync(`**/**/${mockFilePrefix}.js`, globOptions),
-      ...tsFiles,
-    ]
+    const dirPath = this.config.mockCwd || process.cwd()
+    const tsFiles = getFileFromExt("ts", this.config)
+
+    let files: string[] = [...tsFiles]
 
     const register = new BabelRegister()
     register.setOnlyMap({
@@ -81,7 +105,7 @@ export class MockUtil {
       value: tsFiles,
     })
     register.register()
-    files = files.concat(getAllFiles(this.config.mockExcludes))
+    files = uniq(files.concat(getAllFiles(this.config))) // 去除重复值
     files.forEach((file) => {
       const isJs = /^.+\.js$/.test(file)
       const isJson = /^.+(\.json|\.json5)$/.test(file)
@@ -102,8 +126,10 @@ export class MockUtil {
         }
       } else if (!isDirectory && isJson) {
         const content = readFileSync(resolve(dirPath, file), "utf8")
-        const obj = parse(content) as MockFileContent
-        this.jsonDefMap.set(obj.name, obj)
+        try {
+          const obj = parse(content) as MockFileContent
+          this.jsonDefMap.set(obj.name, obj)
+        } catch (error) {}
       } else if (isDirectory) {
         this.readLocalFile()
       }
