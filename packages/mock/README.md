@@ -8,7 +8,7 @@ A mock tool with UI. Powered by Postwoman and Mock.js.
 相比0.1.x版本，mock文件夹变为_smock（为了不与业务代码冲突）
 
 ## Usage
-(工具会以当前启动命令的文件夹作为根路径。扫描_smock文件夹内所有文件(不区分文件名)，也会扫描所有_smock.js或_smock.ts文件)
+(工具会以当前启动命令的文件夹作为根路径。扫描_smock文件夹内所有文件(不区分文件名)，也会扫描所有_smock.js或_smock.ts、_smock.json、_smock.json5文件)
 
 安装：
 ```bash
@@ -19,7 +19,6 @@ yarn add global @smock/mock
 ```
 
 如果启动命令的目录中不存在_smock文件夹，工具会自动创建_smock文件夹，并创建demo文件。
-(原来的live-mock文件夹仍然支持，但可能会在后续的版本中去除。)
 
 启动mock服务：
 ```bash
