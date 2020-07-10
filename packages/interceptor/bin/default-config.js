@@ -1,4 +1,8 @@
 module.exports = {
+
+  /* 拦截工具cwd */
+  cwd: __dirname,
+
   /* 代理目标设置（真实的接口地址）*/
   target: "http://xxxxx.com",
 
