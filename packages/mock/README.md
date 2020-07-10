@@ -51,6 +51,13 @@ smock -p 3333 # 指定运行端口
 
 再次启动即可自动应用。
 
+## 配置
+> 在.smockrc.js中的配置项。如果没有配置文件，可以手动创建。
+
+- mockExcludes: string[]  需要排除的文件夹或文件，glob 字符串数组。
+- mockCwd: string         mock服务扫描的根路径，需要是全路径（例如：`__dirname`或`path.resolve(__dirname, '../')`）
+- mockDirs: string[]      手动配置mock扫描路径（glob字符串数组），mock服务将只会扫描这些路径下的符合命名规则的文件。
+
 ### Features ✨
 
 ⚡️ **Simply**: 使用简单，自动生成文档。
