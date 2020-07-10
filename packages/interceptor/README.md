@@ -22,6 +22,7 @@ yarn add global @smock/interceptor
 
 ## 新加特性
 
+- 支持加载启动目录向上两级的目录的配置文件（优先加载启动目录的配置文件，如未加载到则向上查找两级）
 - 更改配置自动刷新服务，不必每次更改文件后重启服务。
 
 ## 命令可用选项：
@@ -74,6 +75,7 @@ module.exports = {
 ### 默认配置
 ```js
 module.exports = {
+  cwd: process.cwd(),
   target: "http://localhost:4000",
   workDir: ".smock",
   workPort: 10011,
