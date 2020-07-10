@@ -5,7 +5,6 @@ import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from "axios";
 import { RequestUtil } from "../utils/request-util";
 import { AbstractController } from "../definitions/AbstractController";
 import { Hooks } from "../utils/plugin-api";
-import { apiPrefix } from "../utils/constant";
 
 export class ProxyServerController extends AbstractController {
   private requestUtil: RequestUtil;
