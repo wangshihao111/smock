@@ -2,6 +2,7 @@ import { PluginApi } from "./plugin-api";
 import { FileUtil, ProxyConfig } from "./file-util";
 import { DbUtil } from "./db-util";
 import { Application, Request, Response } from "express";
+import { resolve } from "path";
 
 export interface GlobalContextInterface {
   app: Application;
@@ -24,13 +25,19 @@ export class GlobalContext implements GlobalContextInterface {
   public readonly config: ProxyConfig;
   public readonly cwd: string;
   public readonly pluginApi: PluginApi;
+  public configFilePath: string;
 
   constructor(app: Application, port?: number) {
     this.app = app;
     this.cwd = process.cwd();
     this.db = new DbUtil(this);
     this.file = new FileUtil(this);
+    // 顺序很重要，这个赋值必须在loadConfig之前
+    this.configFilePath = resolve(process.cwd(), ".smockrc.js");
     const config = this.file.loadConfig();
+    if (config.cwd) {
+      this.cwd = config.cwd;
+    }
     this.config = { ...config, workPort: port || config.workPort || 10011 };
     this.pluginApi = new PluginApi(this);
   }

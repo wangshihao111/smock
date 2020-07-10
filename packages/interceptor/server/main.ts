@@ -11,17 +11,7 @@ import { debounce } from "lodash";
 import serveStatic from "@smock/utils/lib/serveStatic";
 import { Hooks } from "./utils/plugin-api";
 import { apiPrefix } from "./utils/constant";
-import { initConfigFile } from "./utils/utils";
 import fs from "fs-extra";
-
-const watcher = (callback) => {
-  fs.watch(
-    path.resolve(process.cwd(), ".smockrc.js"),
-    debounce(() => {
-      callback();
-    }, 1000)
-  );
-};
 
 function applyBaseMiddleware(app: Application): void {
   app.use(applyCors);
@@ -33,11 +23,9 @@ function applyBaseMiddleware(app: Application): void {
   app.use(express.static(path.resolve(__dirname, "../dist")));
 }
 
-export function createExpressMiddleware(port?: number) {
-  // 初始化配置文件
-  initConfigFile();
+export function createExpressMiddleware(port?: number, app?: Application) {
   // Create a universal context
-  let ctx = new GlobalContext({} as Application, port);
+  let ctx = new GlobalContext(app as Application, port);
   let instance = new ProxyServerController(ctx);
   let uiController = new UIController(ctx);
   ctx.pluginApi.emit(Hooks.CREATED);
@@ -56,8 +44,17 @@ export function createExpressMiddleware(port?: number) {
   });
   let interceptorMiddleware = instance.asMiddleware();
   let uiMiddleware = uiController.asMiddleware();
+
+  const watcher = (callback: Function) => {
+    fs.watch(
+      ctx.configFilePath,
+      debounce(() => {
+        callback();
+      }, 1000)
+    );
+  };
   watcher(() => {
-    ctx = new GlobalContext({} as Application, port);
+    ctx = new GlobalContext(app as Application, port);
     instance = new ProxyServerController(ctx);
     uiController = new UIController(ctx);
     ctx.pluginApi.emit(Hooks.CREATED);
@@ -88,7 +85,10 @@ export function createExpressMiddleware(port?: number) {
 function start(port?: number): void {
   const app = express();
   applyBaseMiddleware(app);
-  const { middleware, ctx } = createExpressMiddleware(port);
+  const { middleware, ctx } = createExpressMiddleware(port, app) as {
+    middleware: any;
+    ctx: GlobalContext;
+  };
   app.use(middleware);
   app.listen(ctx.config.workPort);
 }

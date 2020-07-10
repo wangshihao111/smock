@@ -17,6 +17,7 @@ import { AxiosRequestConfig, AxiosResponse } from "axios";
 import path from "path";
 import hash from "object-hash";
 import { defaultConfig } from "../config/config";
+import { initConfigFile } from "./utils";
 
 export interface StoredRequest {
   path: string;
@@ -26,6 +27,7 @@ export interface StoredRequest {
 }
 
 export interface ProxyConfig {
+  cwd?: string;
   target: string;
   workDir: string;
   workPort: number;
@@ -68,22 +70,38 @@ export class FileUtil {
   }
 
   public loadConfig(): ProxyConfig {
-    const configFilePath = path.resolve(this.ctx.cwd, ".smockrc.js");
-    try {
-      // eslint-disable-next-line
-      const config = require(configFilePath);
-      // 删除缓存，确保配置文件发生变化时能加载到正确配置
-      delete require.cache[configFilePath];
-      return {
-        ...defaultConfig,
-        ...(config as ProxyConfig),
-      };
-    } catch (e) {
-      console.error("Load config error", e);
-      return {
-        ...defaultConfig,
-      } as ProxyConfig;
+    const readConfig = (dir = ""): ProxyConfig | false => {
+      try {
+        const configPath = path.resolve(process.cwd(), dir, ".smockrc.js");
+        const conf = require(configPath) as ProxyConfig;
+        delete require.cache[configPath];
+        this.ctx.configFilePath = configPath;
+        return conf;
+      } catch (error) {
+        return false;
+      }
+    };
+    let config;
+    config = readConfig();
+    console.log("config");
+
+    if (!config) {
+      console.log("1");
+      config = readConfig("../");
     }
+    if (!config) {
+      console.log("2");
+      config = readConfig("../../");
+    }
+    if (!config) {
+      console.log("3");
+      initConfigFile();
+      this.ctx.configFilePath = process.cwd();
+    }
+    return {
+      ...defaultConfig,
+      ...((config as ProxyConfig) || {}),
+    } as ProxyConfig;
   }
 
   public async addRequestLog(
