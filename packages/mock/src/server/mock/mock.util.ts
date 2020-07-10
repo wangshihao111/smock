@@ -13,7 +13,7 @@ import BabelRegister from "@smock/utils/lib/BabelRegister"
 import { mockFilePrefix, mockDir } from "./_constant"
 import { MockConfigType } from "../domain/config"
 
-const globbyOptions = {
+const globbyOptions: globby.GlobbyOptions = {
   ignore: ["**/node_modules/**"],
 }
 
@@ -41,7 +41,11 @@ function getFileFromExt(ext: string, config: MockConfigType): string[] {
   return [
     ...globby
       .sync(globStr, getGlobOptions(config) as any)
-      .filter((v) => v.indexOf(mockFilePrefix) > -1),
+      .filter(
+        (v) =>
+          v.indexOf(mockFilePrefix) > -1 &&
+          (v.endsWith(".js") || v.endsWith(".ts") || v.endsWith("json") || v.endsWith("json5"))
+      ),
   ]
 }
 
@@ -106,6 +110,7 @@ export class MockUtil {
     })
     register.register()
     files = uniq(files.concat(getAllFiles(this.config))) // 去除重复值
+
     files.forEach((file) => {
       const isJs = /^.+\.js$/.test(file)
       const isJson = /^.+(\.json|\.json5)$/.test(file)
@@ -131,7 +136,7 @@ export class MockUtil {
           this.jsonDefMap.set(obj.name, obj)
         } catch (error) {}
       } else if (isDirectory) {
-        this.readLocalFile()
+        // this.readLocalFile()
       }
     })
     return [this.jsonDefMap, this.jsDefMap]
