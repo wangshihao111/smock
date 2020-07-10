@@ -128,8 +128,6 @@ export class MockService {
       // 将数据中需要mock的数据换成mock数据
       if (data) {
         sendData = MockUtil.getMockedData(response, data.response)
-        // res.send(responseData)
-        // return
       } else if (!queryValid || !bodyValid) {
         // 如果参数类型不匹配
         res.status(400)
@@ -137,7 +135,6 @@ export class MockService {
           status: 400,
           message: "参时不匹配，请检查数据类型",
         }
-        // return
       } else {
         // 其它情况，返回模拟数据
         sendData = MockUtil.getMockedData(response, {})
