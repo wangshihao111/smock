@@ -3,6 +3,10 @@ A mock tool with UI. Powered by Postwoman and Mock.js.
 
 在使用过程中如果遇到问题，欢迎在github提issue, 非常感谢。
 
+## 新增特性
+
+- 支持最高向上查找两级目录加载.smockrc.js (如果当前目录未找到配置文件时)
+
 ## Break Changes
 
 相比0.1.x版本，mock文件夹变为_smock（为了不与业务代码冲突）
