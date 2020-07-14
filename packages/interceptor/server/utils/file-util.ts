@@ -85,15 +85,12 @@ export class FileUtil {
     config = readConfig();
 
     if (!config) {
-      console.log("1");
       config = readConfig("../");
     }
     if (!config) {
-      console.log("2");
       config = readConfig("../../");
     }
     if (!config) {
-      console.log("3");
       initConfigFile();
       this.ctx.configFilePath = process.cwd();
     }
