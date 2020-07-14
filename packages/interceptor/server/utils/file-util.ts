@@ -83,7 +83,6 @@ export class FileUtil {
     };
     let config;
     config = readConfig();
-    console.log("config");
 
     if (!config) {
       console.log("1");
