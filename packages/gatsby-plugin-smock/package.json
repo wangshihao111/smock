@@ -15,5 +15,14 @@
   "license": "ISC",
   "dependencies": {
     "@smock/mock": "^0.2.17"
-  }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangshihao111/smock.git"
+  },
+  "homepage": "https://github.com/wangshihao111/smock/tree/master/packages/gatsby-plugin-smock"
 }
