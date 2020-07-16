@@ -34,4 +34,3 @@ if (program.init) {
 
   startIntercept(port);
 }
-

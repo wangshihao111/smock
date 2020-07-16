@@ -10,8 +10,8 @@
 </template>
 
 <script>
-import SideNavContent from './APiSideNav'
 import ApiDocument from './ApiDocument';
+import SideNavContent from './ApiSideNav'
 import {baseUrl} from '../../assets/js/config'
 
 export default {
