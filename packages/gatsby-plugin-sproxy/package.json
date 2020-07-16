@@ -1,0 +1,15 @@
+{
+  "name": "@smock/gatsby-plugin-sproxy",
+  "version": "0.1.0",
+  "description": "interceotor plugin of gatsby",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["gatsby plugin", "interceptor", "proxy"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@smock/interceptor": "^0.1.13"
+  }
+}
