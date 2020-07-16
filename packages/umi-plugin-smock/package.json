@@ -1,6 +1,6 @@
 {
   "name": "@smock/umi-plugin-smock",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "private": false,
   "main": "index.js",
   "description": "umi cli plugin of @smock/mock",
@@ -22,7 +22,7 @@
     "prepublish": "tsc"
   },
   "dependencies": {
-    "@smock/mock": "^0.2.16"
+    "@smock/mock": "^0.2.17"
   },
   "files": [
     "index.js",
