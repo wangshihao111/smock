@@ -58,10 +58,9 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
   const [eh, setEh] = useState<number>(500);
   const [detail, setDetail] = useState<HistoryItem[]>([]);
   const [editStatusNum, setEditStatusNum] = useState<number>(0);
-  // const [showHeaderEdit, setShowHeaderEdit] = useState<boolean>(true);
   const fetchDetail = useCallback(
-    (saved = false) => {
-      getApiDetail(path)
+    (saved = false, reset = false) => {
+      getApiDetail(path, reset)
         .then((res) => {
           const data = parseResponseData(res.data);
           if (!saved) {
@@ -102,17 +101,12 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
   const handleAction = (type: string) => (): void => {
     const target = detail.find((v) => v.key === editKey);
     if (type === "reset") {
-      if (form !== target?.response.data) {
-        Modal.confirm({
-          title: "重置将放弃所有更改，确定吗？",
-          onOk: () => {
-            const target = detail.find((v) => v.key === editKey);
-            setForm(target?.response.data);
-            editHeaders = target?.response.headers;
-            setEditStatusNum(target?.response.status);
-          },
-        });
-      }
+      Modal.confirm({
+        title: "重置将放弃所有更改，确定吗？",
+        onOk: async () => {
+          fetchDetail(false, true);
+        },
+      });
     } else {
       try {
         const data = JSON.parse(form);
@@ -179,7 +173,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
   const getHeadersArr = (headers: any = {}) => {
     return Object.keys(headers).map((h) => ({ key: h, value: headers[h] }));
   };
-
+  const isDetail = (props.match?.params as any).detail === "true";
   return (
     <div className="page-edit">
       <header className="page-edit-header">
@@ -196,12 +190,14 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
           </Button>
           <Button
             type="link"
+            disabled={isDetail}
             icon={<SyncOutlined />}
             onClick={handleAction("reset")}
           >
             重置为初始值
           </Button>
           <Button
+            disabled={isDetail}
             type="link"
             icon={<SaveOutlined />}
             onClick={handleAction("save")}
@@ -220,6 +216,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
                     响应体编辑
                     <Form.Item label="响应状态码">
                       <InputNumber
+                        disabled={isDetail}
                         size="small"
                         value={editStatusNum}
                         onChange={(e: number | undefined): void => {
@@ -229,6 +226,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
                     </Form.Item>
                   </header>
                   <AceEditor
+                    readOnly={isDetail}
                     style={{
                       width: "100%",
                       height: eh,
@@ -254,6 +252,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
                 </div>
                 {
                   <HeadersEdit
+                    disabled={isDetail}
                     style={{ height: eh }}
                     headers={getHeadersArr(response.headers)}
                     onChange={handleHeadersChange}

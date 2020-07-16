@@ -59,9 +59,14 @@ export class UIController extends AbstractController {
   @bind()
   private getApiDetail(req: Request, res: Response): void {
     const { query } = req;
-    const { api } = query as { api: string };
+    const { api, reset } = query as { api: string; reset: string };
     try {
-      const json = this.ctx.file.getOneHistory(api) as any;
+      const interceptedList: string[] = this.ctx.db.get("interceptList") || [];
+
+      const json = this.ctx.file.getOneHistory(
+        api,
+        reset === "true" ? false : interceptedList.includes(api)
+      ) as any;
       const data: any = {};
       for (const key in json) {
         const value = json[key];

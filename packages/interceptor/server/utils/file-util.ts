@@ -12,12 +12,21 @@ import {
   writeJSONSync,
   removeSync,
   writeFile,
+  readJSONSync,
 } from "fs-extra";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import path from "path";
 import hash from "object-hash";
 import { defaultConfig } from "../config/config";
 import { initConfigFile } from "./utils";
+
+async function readJsonFile(file: string): Promise<any> {
+  try {
+    return await readJSON(file);
+  } catch (error) {
+    return undefined;
+  }
+}
 
 export interface StoredRequest {
   path: string;
@@ -136,36 +145,56 @@ export class FileUtil {
       );
     }
   }
-
+  // 获取本地缓存：优先从customize文件夹获取
   public async getRequestLog(
     path: string,
     req: AxiosRequestConfig
   ): Promise<any> {
     const key = this.getUniqueKeyFromRequest(req, path);
     const filePath = this.getFilePath(path);
-    try {
-      const json = await readJSON(filePath);
-      if (json) {
-        return json[key];
-      }
-    } catch (error) {
-      return undefined;
+    const customizePath = this.getFilePath(path, false, true);
+
+    const customizeJson = await readJsonFile(customizePath);
+    let result;
+    if (customizeJson && customizeJson[key]) {
+      result = customizeJson[key];
+    } else {
+      const json = await readJsonFile(filePath);
+      result = json && json[key];
     }
+    return result;
   }
 
-  public getFilePath(url: string, asset?: boolean): string {
+  public getFilePath(
+    url: string,
+    asset?: boolean,
+    customize?: boolean
+  ): string {
     const fileName = this.getFileName(url);
+    let dir = "history";
+    if (asset) dir = "static";
+    if (customize) dir = "customize";
+
     return path.resolve(
       this.ctx.cwd,
-      `${this.ctx.config.workDir}/${!asset ? "history" : "static"}/${fileName}${
-        asset ? "" : ".json"
-      }`
+      `${this.ctx.config.workDir}/${dir}/${fileName}${asset ? "" : ".json"}`
     );
   }
 
-  public getOneHistory(api: string): any {
+  public getOneHistory(api: string, intercept?: boolean): any {
     const path = this.getFilePath(api);
-    return readJsonSync(path);
+    const customizePath = this.getFilePath(api, false, true);
+    let result;
+    if (intercept) {
+      try {
+        result = readJsonSync(customizePath);
+      } catch (error) {
+        result = readJSONSync(path);
+      }
+    } else {
+      result = readJSONSync(path);
+    }
+    return result;
   }
 
   public deleteOneLog(api: string): void {
@@ -184,15 +213,17 @@ export class FileUtil {
     this.ctx.db.set("interceptList", interceptList);
   }
 
+  // 更改本地缓存后将其放入customize文件夹
   public async updateRequestLog(data: any): Promise<void> {
     const { path, key, response } = data;
     try {
       const filePath = this.getFilePath(path);
+      const targetPath = this.getFilePath(path, false, true);
       const json = await readJSON(filePath);
       if (json) {
         const target = json[key];
         await writeJSON(
-          filePath,
+          targetPath,
           {
             ...json,
             [key]: {
@@ -226,7 +257,8 @@ export class FileUtil {
     const rootDir = path.resolve(process.cwd(), config.workDir);
     const historyDir = path.resolve(rootDir, "history");
     const staticDir = path.resolve(rootDir, "static");
-    const dirs = [rootDir, historyDir, staticDir];
+    const customizeDir = path.resolve(rootDir, "customize");
+    const dirs = [rootDir, historyDir, staticDir, customizeDir];
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
       try {

@@ -7,7 +7,8 @@ import { ColumnsType } from "antd/lib/table";
 interface HeadersEditProps {
   headers: any;
   onChange?: (value: any) => any;
-  style: any;
+  style?: any;
+  disabled?: boolean;
 }
 
 export type RowData = {
@@ -18,7 +19,6 @@ export type RowData = {
 const HeadersEdit: FC<HeadersEditProps> = (props) => {
   const [tableData, setTableData] = useState<RowData[]>([]);
   useEffect(() => {
-    console.log(props.headers);
     setTableData(props.headers);
   }, [props.headers]);
   const handleRowChange = (key: string, value: string) => {
@@ -100,6 +100,7 @@ const HeadersEdit: FC<HeadersEditProps> = (props) => {
       title: "Value",
       render: (text, record) => (
         <Input
+          disabled={props.disabled}
           value={text}
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             handleRowChange(record.key, e.target.value)
@@ -112,6 +113,7 @@ const HeadersEdit: FC<HeadersEditProps> = (props) => {
       title: "操作",
       render: (_, record) => (
         <Button
+          disabled={props.disabled}
           type="link"
           onClick={() => handleDelete(record.key)}
           icon={<DeleteOutlined />}
@@ -129,6 +131,7 @@ const HeadersEdit: FC<HeadersEditProps> = (props) => {
       <header className="headers-edit-header">
         <span>响应头编辑</span>
         <Button
+          disabled={props.disabled}
           size="small"
           type="primary"
           onClick={handleNewHeader}

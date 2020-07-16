@@ -85,7 +85,7 @@ export class RequestUtil {
     response.status(404);
     response.send();
   }
-
+  // TODO: 支持从定制化目录加载文件
   public async getResponseFromHistory(
     request: Request,
     response: Response,
