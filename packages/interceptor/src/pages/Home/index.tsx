@@ -77,7 +77,6 @@ const Home: FC<RouteChildrenProps> = (props) => {
     Modal.confirm({
       title: "确定删除吗？",
       onOk: () => {
-        console.log("delete", path);
         deleteHistory(path).then((res) => {
           fetchList();
         });
@@ -91,7 +90,6 @@ const Home: FC<RouteChildrenProps> = (props) => {
     });
   };
   const handleStatusChange = (e: RadioChangeEvent) => {
-    console.log(e.target.value);
     setFilter({
       ...filter,
       type: e.target.value,

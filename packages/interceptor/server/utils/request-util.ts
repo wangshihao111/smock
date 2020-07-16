@@ -75,7 +75,6 @@ export class RequestUtil {
       response.send(data);
       return;
     }
-    // console.log(error);
     if (this.ctx.config.cacheStatic && staticPattern.test(request.path)) {
       response.status(200);
       response.sendFile(this.ctx.file.getFilePath(request.path, true));
@@ -115,8 +114,6 @@ export class RequestUtil {
           this.ctx.config.target,
           `http://localhost:${this.ctx.config.workPort}${apiPrefix}`
         );
-        // console.log('原始的__:', headers.location);
-        // console.log('替换过的__:', loc)
         value = loc;
       }
       response.header(key, value);
