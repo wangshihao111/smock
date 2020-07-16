@@ -12,7 +12,7 @@ npm i -g @smock/mock
 ```
 
 ### 使用：
-在某个文件夹内新建live-mock文件夹，在该文件夹内运行以下命令：
+在某个文件夹内新建_smock_文件夹，在该文件夹内运行以下命令(首次启动会自动创建示例文件)：
 ```bash
 smock -p 3333 # 以命令行工具的形式启动mock服务
 ```
@@ -37,3 +37,17 @@ sproxy -p 10011
 ### 配置文件定义
 
 [详情参考（https://github.com/wangshihao111/smock/tree/master/packages/interceptor）](https://github.com/wangshihao111/smock/tree/master/packages/interceptor)
+
+
+## 插件化
+
+- [@smock/vue-cli-plugin-smock](https://www.npmjs.com/package/@smock/vue-cli-plugin-smock)
+
+- [@smock/vue-cli-plugin-sproxy](https://www.npmjs.com/package/@smock/vue-cli-plugin-sproxy)
+
+- [@smock/umi-plugin-smock](https://www.npmjs.com/package/@smock/umi-plugin-smock)
+
+- [@smock/umi-plugin-sproxy](https://www.npmjs.com/package/@smock/umi-plugin-sproxy)
+
+- [@smock/gatsby-plugin-smock](https://www.npmjs.com/package/@smock/gatsby-plugin-smock)
+- [@smock/gatsby-plugin-sproxy](https://www.npmjs.com/package/@smock/gatsby-plugin-sproxy)
