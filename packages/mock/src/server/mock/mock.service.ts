@@ -8,6 +8,7 @@ import { debounce } from "lodash"
 import { mockFilePrefix } from "./_constant"
 import chokidar from "chokidar"
 import { match } from "path-to-regexp"
+import chalk from "chalk"
 
 export interface IdObj {
   method: string
@@ -59,11 +60,16 @@ export class MockService {
     MockUtil.init()
     const config = MockUtil.config
     const watchHandler = debounce(async (fileName: string) => {
-      console.log(`检测到文件夹变动或${mockFilePrefix}文件变动, 重新加载文件`)
+      console.log(chalk.yellow(`检测到${mockFilePrefix}文件夹或${mockFilePrefix}文件, 加载文件.`))
       this.reset()
     }, 1000)
     const watcher = chokidar.watch(
-      ["./**/_smock/**", "./**/_smock.[jt]s", "./**/_smock.json5", "./**/_smock.json"],
+      [
+        `./**/${mockFilePrefix}/**`,
+        `./**/${mockFilePrefix}.[jt]s`,
+        `./**/${mockFilePrefix}.json5`,
+        `./**/${mockFilePrefix}.json`,
+      ],
       {
         ignored: ["node_modules/**"],
         persistent: true,
