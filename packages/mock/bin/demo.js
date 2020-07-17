@@ -28,6 +28,20 @@ module.exports = {
           }
         }
       }
+    },
+    {
+      name: 'hello pathVariable',
+      desc: 'example pathVariable',
+      method: 'get',
+      url: '/test-js-path/:id',
+      handle: (req, res) => {
+        return {
+          status: 200,
+          data: {
+            message: `hello smock js. Your id is ${req.params.id}`,
+          }
+        }
+      }
     }
   ],
 }

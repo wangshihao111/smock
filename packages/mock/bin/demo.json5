@@ -1,6 +1,6 @@
 {
-  name: "array-params-test",
-  desc: "user login and logout",
+  name: "JSON definition demo",
+  desc: "It is a demo",
   apis: [
     {
       name: "test array params",
@@ -85,6 +85,26 @@
         required: true,
         $$mock: "time",
       },
+    },
+    {
+      name: "json 路径参数测试",
+      desc: "测试单值情况",
+      method: "get",
+      url: "/json-path/:id",
+      response: {
+        type: "string",
+        required: true,
+        $$mock: "time",
+      },
+      mock_data: [
+        {
+          params: {id: "555"},
+          response: "hello, received id!"
+        },
+        {
+          response: "Not received id!"
+        }
+      ]
     },
   ],
 }
