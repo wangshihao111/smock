@@ -1,6 +1,6 @@
 {
   "name": "@smock/gatsby-plugin-sproxy",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "interceotor plugin of gatsby",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@smock/interceptor": "^0.1.15"
+    "@smock/interceptor": "^0.1.16"
   },
   "publishConfig": {
     "access": "public",
