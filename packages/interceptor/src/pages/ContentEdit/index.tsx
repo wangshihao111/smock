@@ -219,8 +219,8 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
                         disabled={isDetail}
                         size="small"
                         value={editStatusNum}
-                        onChange={(e: number | undefined): void => {
-                          setEditStatusNum(e || editStatusNum);
+                        onChange={(e: string | number | undefined): void => {
+                          setEditStatusNum(Number(e || editStatusNum));
                         }}
                       />
                     </Form.Item>
