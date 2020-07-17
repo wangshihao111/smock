@@ -12,9 +12,13 @@ import serveStatic from "@smock/utils/lib/serveStatic";
 import { Hooks } from "./utils/plugin-api";
 import { apiPrefix } from "./utils/constant";
 import fs from "fs-extra";
+import compress from "compression";
 
 function applyBaseMiddleware(app: Application): void {
   app.use(applyCors);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+  // @ts-ignore
+  app.use(compress());
   app.use(bodyParser.raw());
   app.use(bodyParser.text());
   app.use(bodyParser.json({ limit: "50mb" }));
