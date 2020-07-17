@@ -233,12 +233,12 @@ export class MockService {
         query: { name, apiName, type },
       } = req
       if (type === "json") {
-        const jsonDef = this.jsonDefinitions.get(name)
+        const jsonDef = this.jsonDefinitions.get(name as any)
         const api = jsonDef.apis.find((api) => api.name === apiName)
         return res.send(api)
       }
       if (type === "js") {
-        const jsDef = this.jsDefinitions.get(name)
+        const jsDef = this.jsDefinitions.get(name as any)
         const api = jsDef.apis.find((v) => v.name === apiName)
         let handleStr = api.handle.toString()
         handleStr = handleStr.startsWith("handle") ? `function ${handleStr}` : handleStr
