@@ -143,33 +143,31 @@ export class MockUtil {
   }
 
   public static getMockedData(typeDef, data): any {
-    let result = {} as any
+    const result = {} as any
     if (typeDef.type) {
-      if (!typeDef.required) return data
-      if (typeDef.required && typeDef.$$mock) {
+      if (data) return data
+      if (typeDef.$$mock) {
         return this.getOneMock(typeDef)
       }
+      return undefined
     }
     if (isArray(typeDef)) {
       if (isArray(data)) return data
-      result = []
       let length = config.defaultArrayMockLength
       const defLength = typeDef[0].length
       const isDefLength = isNumber(defLength)
       if (isDefLength) {
-        length = defLength
+        length = Number(defLength)
       }
-      Array.from({ length }).forEach(() => {
+      return Array.from({ length }).map(() => {
         let thisDef = typeDef[0]
         if (isDefLength) {
           const { length: _, ...rest } = typeDef[0]
           thisDef = rest
         }
-        result.push(this.getMockedData(thisDef, undefined))
+        return this.getMockedData(thisDef, undefined)
       })
-      return result
     }
-
     for (const key in typeDef) {
       const defValue = typeDef[key]
       const value = data ? data[key] : undefined
