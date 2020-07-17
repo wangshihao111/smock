@@ -64,7 +64,7 @@
     "lodash": "^4.17.15",
     "lodash-decorators": "6.0.1",
     "mockjs": "^1.1.0",
-    "object-hash": "^2.0.3",
+    "path-to-regexp": "^6.1.0",
     "prettier": "^1.19.1"
   },
   "devDependencies": {
