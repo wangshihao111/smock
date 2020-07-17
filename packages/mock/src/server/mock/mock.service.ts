@@ -4,10 +4,23 @@ import { JsDefinition, JsApiItem } from "../domain/JsDefinition"
 import { MockFileContent, ApiItem } from "../domain/JsonFile"
 import { MockUtil } from "./mock.util"
 import prettier from "prettier"
-import objectHash from "object-hash"
 import { debounce } from "lodash"
 import { mockFilePrefix } from "./_constant"
 import chokidar from "chokidar"
+import { match } from "path-to-regexp"
+
+export interface IdObj {
+  method: string
+  url: string
+}
+
+function keyGen(url: string, method: string): string {
+  return JSON.stringify({ url, method })
+}
+
+function decodeKey(key: string): IdObj {
+  return JSON.parse(key) as IdObj
+}
 
 export class MockService {
   private jsonDefinitions: Map<string, MockFileContent>
@@ -69,13 +82,24 @@ export class MockService {
   }
 
   private handle(req: Request, res: Response, next) {
-    const { path, method } = req
-    const hash = objectHash({ url: path, method: method.toLowerCase() })
-    const handler = this.jsonApiMap.get(hash) || this.jsApiMap.get(hash)
-    if (!handler) {
+    let matched
+    const processHandle = (val: RequestHandler, key: string) => {
+      const idObj = decodeKey(key)
+      if (toLower(idObj.method) !== toLower(req.method)) return
+      const mch = match(idObj.url, { decode: decodeURIComponent })(req.path)
+      if (mch) {
+        req.params = mch.params as any
+        matched = val
+      }
+    }
+    this.jsonApiMap.forEach(processHandle)
+    if (!matched) {
+      this.jsApiMap.forEach(processHandle)
+    }
+    if (!matched) {
       this.docHandler(req, res, next)
     } else {
-      handler(req, res, next)
+      matched(req, res, next)
     }
   }
 
@@ -109,7 +133,7 @@ export class MockService {
   private createController(api: ApiItem, jsonName: string): any {
     const { url, method, response, responseType, delay = "" } = api
     const handleRequest = (req: Request, res: Response, next): void => {
-      const { body, query } = req
+      const { body, query, params } = req
       const hasMatch = this.jsonDefinitions
         .get(jsonName)
         .apis.find((a) => a.url === url && toLower(a.method) === toLower(method))
@@ -124,7 +148,7 @@ export class MockService {
       if (!hasMatch) {
         return next()
       }
-      const data = this.findOne(body, query, api)
+      const data = this.findOne({ body, query, api, params })
       // 将数据中需要mock的数据换成mock数据
       if (data) {
         sendData = MockUtil.getMockedData(response, data.response)
@@ -143,24 +167,20 @@ export class MockService {
         res.send(sendData)
       }, delayTime * 1000)
     }
-    const hash = objectHash({ url, method: method.toLowerCase() })
-    return [hash, handleRequest]
+    const key = keyGen(url, toLower(method))
+    return [key, handleRequest]
   }
 
-  private findOne(body, query, api: ApiItem): any {
+  private findOne({ body, query, api, params }): any {
     const mockData = api.mock_data || []
-    if (typeof body === "string") {
-      return mockData.find((v) => v.body === body)
-    }
     const mockList = mockData.filter((m) => {
-      const queryEqual = isEqual(MockUtil.changeQueryToString(m.query), query)
-      const bodyEqual = isEqual(m.body, body)
-      if (m.body && m.query) {
-        return bodyEqual && queryEqual
+      const equals = {
+        body: isEqual(m.body, body),
+        query: isEqual(MockUtil.changeQueryToString(m.query), query),
+        params: isEqual(params, MockUtil.changeQueryToString(m.params || {})),
       }
-      if (m.query) return queryEqual
-      if (m.body) return bodyEqual
-      return true
+      const existKeys = [m.query && "query", m.body && "body", m.params && "params"].filter(Boolean)
+      return existKeys.length ? existKeys.map((k: string) => equals[k]).every((v) => v) : true
     })
     let mock
     if (!mockList) {
@@ -193,8 +213,8 @@ export class MockService {
       }
     }
     ;(obj.apis || []).forEach((api) => {
-      const hash = objectHash({ url: api.url, method: (api.method || "").toLowerCase() })
-      this.jsApiMap.set(hash, createHandler(api))
+      const key = keyGen(api.url, toLower(api.method))
+      this.jsApiMap.set(key, createHandler(api))
     })
   }
 
