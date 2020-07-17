@@ -5,14 +5,16 @@ A mock tool with UI. Powered by Postwoman and Mock.js.
 
 ## 新增特性
 
-- 支持最高向上查找两级目录加载.smockrc.js (如果当前目录未找到配置文件时)
+- `v0.2.18`开始支持`pathVariable`
+- 支持最高向上查找两级目录加载`.smockrc.js` (如果当前目录未找到配置文件时)
 
 ## Break Changes
 
-相比0.1.x版本，mock文件夹变为_smock（为了不与业务代码冲突）
+- `v0.2.18`起，定义了`$$mock`的字段可以不定义`required: true`
+- 相比`0.1.x`版本，`mock`文件夹变为`_smock`（为了不与业务代码冲突）
 
 ## Usage
-(工具会以当前启动命令的文件夹作为根路径。扫描_smock文件夹内所有文件(不区分文件名)，也会扫描所有_smock.js或_smock.ts、_smock.json、_smock.json5文件)
+(工具会以当前启动命令的文件夹作为根路径。扫描`_smock`文件夹内所有文件(不区分文件名)，也会扫描所有`_smock.js`或`_smock.ts`、`_smock.json`、`_smock.json5`文件)
 
 安装：
 ```bash
@@ -22,7 +24,7 @@ npm i -g @smock/mock
 yarn add global @smock/mock
 ```
 
-如果启动命令的目录中不存在_smock文件夹，工具会自动创建_smock文件夹，并创建demo文件。
+如果启动命令的目录中不存在`_smock`文件夹，工具会自动创建`_smock`文件夹，并创建`demo`文件。
 
 启动mock服务：
 ```bash
@@ -55,7 +57,7 @@ smock -p 3333 # 指定运行端口
 再次启动即可自动应用。
 
 ## 工具配置
-> 在.smockrc.js中的配置项。如果没有配置文件，可以手动创建。
+> 在`.smockrc.js`中的配置项。如果没有配置文件，可以手动创建。
 
 - mockExcludes: string[]  需要排除的文件夹或文件，glob 字符串数组。
 - mockCwd: string         mock服务扫描的根路径，需要是全路径（例如：`__dirname`或`path.resolve(__dirname, '../')`）
