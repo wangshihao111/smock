@@ -112,12 +112,13 @@ export SMOCK_IGNORE="[\"**/_smock/_data/**\", \"**/_smock/_utils_/**\"]" # 注�
 - 整个文件包含字段`name`、`desc`和`apis`，`apis`字段为一个数组，包含了一系列接口.
 - `apis`的每一项必须指定`method`、`url`和`response`参数.
 - 每个参数必须指定`type`字段来指定类型。
-- 需`mock`的数据需要定义`$$mock`字段。改字段的值为Mock.js的`Random`中的可用`mock`类型，使用`$$mock`时，必须指定`required: true`。[详细参考(https://github.com/nuysoft/Mock/wiki)](https://github.com/nuysoft/Mock/wiki)
+- 需`mock`的数据需要定义`$$mock`字段。该字段的值为Mock.js的`Random`中的可用`mock`类型。[详细参考(https://github.com/nuysoft/Mock/wiki)](https://github.com/nuysoft/Mock/wiki)
 - 可以为`mock`类型传递一些参数，只需加上`params`字段,该字段为一个数组，按顺序填入`Random`函数的参数即可。
 - 支持嵌套对象、数组以及原始类型。`query`不能使用原始类型，必须为对象类型或不定义。
 - 是数组类型时，可以多指定一个参数————`length`，标识数组的长度, 默认。
 - `desc`字段为文档展示所用。可以不定义，不影响接口功能但文档无法显示描述。
 - 可以为每个API指定一个`mock_data`选项，该选项中定义的字段会直接返回，未指定的`required`为`true`的且是`$$mock`的将会使用`Random`函数生产。
+
 示例：
 
 ```json5
@@ -130,7 +131,7 @@ export SMOCK_IGNORE="[\"**/_smock/_data/**\", \"**/_smock/_utils_/**\"]" # 注�
     desc:"if user login success, will get a token",
     method: "POST",
     url:"/login",
-    delay: "5",  // 可用定义形式 3 或者 3-5 或者 < 5 诸如此种形式
+    delay: "5",  // 可用定义形式可以为 3 或者 3-5 或者 < 5 诸如此种形式
     body:{
       username: {desc: "username", type: "string", $$mock: "name", required: true},
       password: {desc: "password", type: 'string'},
@@ -139,7 +140,6 @@ export SMOCK_IGNORE="[\"**/_smock/_data/**\", \"**/_smock/_utils_/**\"]" # 注�
       code: {desc:"response result code", type:"int"},
       msg: {desc:"response result message", type:"string"},
       token: {desc:"login success, get a user token; login failed, no token", type:"string"},
-
        /* 嵌套对象演示 */
       nestObj: {
         // mock 指定参数（params）：
@@ -168,7 +168,28 @@ export SMOCK_IGNORE="[\"**/_smock/_data/**\", \"**/_smock/_utils_/**\"]" # 注�
         response:{code:-1, msg:"password incorrect"}
       },
     ]
-  }
+  },
+  {
+    name: "json 路径参数测试",
+    desc: "测试单值情况",
+    method: "get",
+    url: "/json-path/:id", // 也可以使用路径参数
+    response: {
+      type: "string",
+      required: true,
+      $$mock: "time",
+    },
+    mock_data: [
+      {
+        params: {id: "555"}, //指定路径参数为该值时的返回体内容
+        response: "hello, received id!"
+      },
+      {
+        response: "Not received id!"
+      }
+    ]
+  },
+
 ]}
 
 ```
@@ -215,7 +236,23 @@ module.exports = {
         }
         */
       }
+    },
+    {
+      name: 'hello pathVariable',
+      desc: 'example pathVariable',
+      method: 'get',
+      url: '/test-js-path/:id', // 同样可以使用路径参数,可以通过req.params拿到路径参数
+      handle: (req, res) => {
+        return {
+          status: 200,
+          delay: '2-3',
+          data: {
+            message: `hello smock js. Your id is ${req.params.id}`,
+          }
+        }
+      }
     }
+
   ],
 }
 ```
