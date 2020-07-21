@@ -2,7 +2,7 @@ import { Request, Response, Application, RequestHandler, NextFunction } from "ex
 import { isEqual, toLower } from "lodash"
 import { JsDefinition, JsApiItem } from "../domain/JsDefinition"
 import { MockFileContent, ApiItem } from "../domain/JsonFile"
-import { MockUtil } from "./mock.util"
+import { MockUtil, getGlobOptions } from "./mock.util"
 import prettier from "prettier"
 import { debounce } from "lodash"
 import { mockFilePrefix } from "./_constant"
@@ -63,22 +63,30 @@ export class MockService {
       console.log(chalk.yellow(`检测到${mockFilePrefix}文件夹或${mockFilePrefix}文件, 加载文件.`))
       this.reset()
     }, 1000)
-    const watcher = chokidar.watch(
-      [
-        `./**/${mockFilePrefix}/**`,
-        `./**/${mockFilePrefix}.[jt]s`,
-        `./**/${mockFilePrefix}.json5`,
-        `./**/${mockFilePrefix}.json`,
-      ],
-      {
-        ignored: ["node_modules/**"],
-        persistent: true,
-        cwd: config.mockCwd || process.cwd(),
-      }
-    )
-    watcher.on("all", (path) => {
-      watchHandler(path)
-    })
+    const options = getGlobOptions(config)
+    try {
+      const watcher = chokidar.watch(
+        [
+          `./**/${mockFilePrefix}/**`,
+          `./**/${mockFilePrefix}.[jt]s`,
+          `./**/${mockFilePrefix}.json5`,
+          `./**/${mockFilePrefix}.json`,
+        ],
+        {
+          ignored: [...options.ignore],
+          persistent: true,
+          cwd: options.cwd,
+        }
+      )
+      watcher.on("all", (path) => {
+        watchHandler(path)
+      })
+      watcher.on("error", (e) => {
+        console.log(e)
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   public createMiddleware() {

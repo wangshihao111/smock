@@ -17,7 +17,7 @@ const globbyOptions: globby.GlobbyOptions = {
   ignore: ["**/node_modules/**"],
 }
 
-function getGlobOptions(config: MockConfigType): globby.GlobbyOptions {
+export function getGlobOptions(config: MockConfigType): globby.GlobbyOptions {
   const { mockExcludes: excludes = [], mockCwd } = config
   const smockIgnore = []
   try {
@@ -35,9 +35,7 @@ function getGlobOptions(config: MockConfigType): globby.GlobbyOptions {
 function getFileFromExt(ext: string, config: MockConfigType): string[] {
   const { mockDirs = [] } = config
 
-  const globStr = mockDirs.length
-    ? mockDirs
-    : [`**/${mockDir}/**/*.${ext}`, `**/**/${mockFilePrefix}.${ext}`]
+  const globStr = [...mockDirs, `**/${mockDir}/**/*.${ext}`, `**/**/${mockFilePrefix}.${ext}`]
   return [
     ...globby
       .sync(globStr, getGlobOptions(config) as any)
@@ -49,7 +47,7 @@ function getFileFromExt(ext: string, config: MockConfigType): string[] {
   ]
 }
 
-function readConfigFile(base: string): MockConfigType | boolean {
+export function readConfigFile(base: string): MockConfigType | boolean {
   try {
     return require(resolve(base, ".smockrc.js"))
   } catch (e) {
