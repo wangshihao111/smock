@@ -4,7 +4,7 @@ A mock tool with UI. Powered by Postwoman and Mock.js.
 在使用过程中如果遇到问题，欢迎在github提issue, 非常感谢。
 
 ## 新增特性
-
+- 工具默认情况下只会扫描根目录下的_smock文件夹、src、packages下的定义文件，如需扫描其它文件夹请在配置文件的mockDirs定义。
 - `v0.2.18`开始支持`pathVariable`
 - 支持最高向上查找两级目录加载`.smockrc.js` (如果当前目录未找到配置文件时)
 
