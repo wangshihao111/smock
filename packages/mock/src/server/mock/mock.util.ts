@@ -32,10 +32,17 @@ export function getGlobOptions(config: MockConfigType): globby.GlobbyOptions {
   }
 }
 
-function getFileFromExt(ext: string, config: MockConfigType): string[] {
+export function getFileFromExt(config: MockConfigType): string[] {
   const { mockDirs = [] } = config
 
-  const globStr = [...mockDirs, `**/${mockDir}/**/*.${ext}`, `**/**/${mockFilePrefix}.${ext}`]
+  const globStr = [
+    ...mockDirs,
+    "./_smock/**",
+    `./src/**/${mockFilePrefix}.*`,
+    `./packages/**/${mockFilePrefix}.*`,
+    `./src/**/${mockFilePrefix}/**`,
+    `./packages/**/${mockFilePrefix}/**`,
+  ]
   return [
     ...globby
       .sync(globStr, getGlobOptions(config) as any)
@@ -55,13 +62,13 @@ export function readConfigFile(base: string): MockConfigType | boolean {
   }
 }
 
-function getAllFiles(config: MockConfigType): string[] {
-  return [
-    ...getFileFromExt("json5", config),
-    ...getFileFromExt("json", config),
-    ...getFileFromExt("js", config),
-  ]
-}
+// export function getAllFiles(config: MockConfigType): string[] {
+//   return [
+//     ...getFileFromExt("json5", config),
+//     ...getFileFromExt("json", config),
+//     ...getFileFromExt("js", config),
+//   ]
+// }
 
 export class MockUtil {
   private static jsonDefMap = new Map<string, MockFileContent>()
@@ -97,9 +104,8 @@ export class MockUtil {
   public static readLocalFile(): [Map<string, MockFileContent>, Map<string, JsDefinition>] {
     this.init()
     const dirPath = this.config.mockCwd || process.cwd()
-    const tsFiles = getFileFromExt("ts", this.config)
-
-    let files: string[] = [...tsFiles]
+    const files: string[] = uniq(getFileFromExt(this.config))
+    const tsFiles = files.filter(v => v.endsWith('ts'))
 
     const register = new BabelRegister()
     register.setOnlyMap({
@@ -107,8 +113,6 @@ export class MockUtil {
       value: tsFiles,
     })
     register.register()
-    files = uniq(files.concat(getAllFiles(this.config))) // 去除重复值
-
     files.forEach((file) => {
       const isJs = /^.+\.js$/.test(file)
       const isJson = /^.+(\.json|\.json5)$/.test(file)

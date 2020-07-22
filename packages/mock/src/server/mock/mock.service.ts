@@ -4,7 +4,7 @@ import { JsDefinition, JsApiItem } from "../domain/JsDefinition"
 import { MockFileContent, ApiItem } from "../domain/JsonFile"
 import { MockUtil, getGlobOptions } from "./mock.util"
 import prettier from "prettier"
-import { debounce } from "lodash"
+import { debounce, flatten } from "lodash"
 import { mockFilePrefix } from "./_constant"
 import chokidar from "chokidar"
 import { match } from "path-to-regexp"
@@ -64,13 +64,15 @@ export class MockService {
       this.reset()
     }, 1000)
     const options = getGlobOptions(config)
+    const watchFiles = flatten(['js', 'ts', 'json5', 'json'].map(v => [`./src/**/${mockFilePrefix}.${v}`, `./packages/**/${mockFilePrefix}.${v}`]));
     try {
       const watcher = chokidar.watch(
         [
-          `./**/${mockFilePrefix}/**`,
-          `./**/${mockFilePrefix}.[jt]s`,
-          `./**/${mockFilePrefix}.json5`,
-          `./**/${mockFilePrefix}.json`,
+          ...(config.mockDirs || []),
+          './_smock/**',
+          `./src/**/${mockFilePrefix}/**`,
+          `./packages/**/${mockFilePrefix}`,
+          ...watchFiles,
         ],
         {
           ignored: [...options.ignore],
