@@ -1,4 +1,5 @@
 import { createExpressMiddleware } from "@smock/mock/lib/server/server";
+import { applyCors } from "@smock/mock/lib/server/middlewares/cors.middleware";
 import bodyParser from 'body-parser';
 
 module.exports = (api) => {
@@ -6,6 +7,7 @@ module.exports = (api) => {
     return;
   }
   if (api.env === 'development') {
+    api.addBeforeMiddewares(applyCors)
     api.addBeforeMiddewares(() => bodyParser.text())
     api.addBeforeMiddewares(() => bodyParser.json())
     api.addBeforeMiddewares(() => bodyParser.urlencoded({ extended: true }))
