@@ -7,7 +7,7 @@ module.exports = (api) => {
     return;
   }
   if (api.env === 'development') {
-    api.addBeforeMiddewares(applyCors)
+    api.addBeforeMiddewares(() => applyCors)
     api.addBeforeMiddewares(() => bodyParser.text())
     api.addBeforeMiddewares(() => bodyParser.json())
     api.addBeforeMiddewares(() => bodyParser.urlencoded({ extended: true }))
