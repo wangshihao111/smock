@@ -10,12 +10,12 @@
 </template>
 
 <script>
-import ApiDocument from './ApiDocument';
-import SideNavContent from './ApiSideNav'
-import {baseUrl} from '../../assets/js/config'
+import ApiDocument from "./ApiDocument"
+import SideNavContent from "./ApiSideNav"
+import { baseUrl } from "../../assets/js/config"
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     SideNavContent,
     ApiDocument,
@@ -27,13 +27,15 @@ export default {
     handleMenuChange(api) {
       this.fetchApiDefinition(api)
     },
-    fetchApiDefinition({name, apiName, type}) {
-      const url = `${baseUrl}/__api?name=${name}&apiName=${apiName}&type=${type}`;
-      fetch(url).then(res => res.json()).then(res => {
-        this.apiDefinition = res;
-      })
-    }
-  }
+    fetchApiDefinition({ key, apiName, type }) {
+      const url = `${baseUrl}/__api?key=${key}&apiName=${apiName}&type=${type}`
+      fetch(url)
+        .then(res => res.json())
+        .then(res => {
+          this.apiDefinition = res
+        })
+    },
+  },
 }
 </script>
 

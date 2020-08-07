@@ -10,7 +10,7 @@ import { config } from "../config/variables"
 import { getVariableType } from "../../utils/utils"
 import globby from "globby"
 import BabelRegister from "@smock/utils/lib/BabelRegister"
-import { mockFilePrefix, mockDir } from "./_constant"
+import { mockFilePrefix } from "./_constant"
 import { MockConfigType } from "../domain/config"
 
 const globbyOptions: globby.GlobbyOptions = {
@@ -62,14 +62,6 @@ export function readConfigFile(base: string): MockConfigType | boolean {
   }
 }
 
-// export function getAllFiles(config: MockConfigType): string[] {
-//   return [
-//     ...getFileFromExt("json5", config),
-//     ...getFileFromExt("json", config),
-//     ...getFileFromExt("js", config),
-//   ]
-// }
-
 export class MockUtil {
   private static jsonDefMap = new Map<string, MockFileContent>()
 
@@ -104,7 +96,7 @@ export class MockUtil {
   public static readLocalFile(): [Map<string, MockFileContent>, Map<string, JsDefinition>] {
     this.init()
     const dirPath = this.config.mockCwd || process.cwd()
-    const files: string[] = uniq(getFileFromExt(this.config))
+    const files: string[] = uniq(getFileFromExt(this.config).map(p => resolve(dirPath, p)))
     const tsFiles = files.filter(v => v.endsWith('ts'))
 
     const register = new BabelRegister()
@@ -113,11 +105,13 @@ export class MockUtil {
       value: tsFiles,
     })
     register.register()
+    console.log(files);
+
     files.forEach((file) => {
       const isJs = /^.+\.js$/.test(file)
       const isJson = /^.+(\.json|\.json5)$/.test(file)
       const isTsFile = /^.+\.tsx?$/.test(file)
-      const filePath = resolve(dirPath, file)
+      const filePath = file;
       const stat = statSync(filePath)
       const isDirectory = stat.isDirectory()
       if ((isJs || isTsFile) && !isDirectory) {
@@ -126,7 +120,7 @@ export class MockUtil {
           // eslint-disable-next-line @typescript-eslint/no-var-requires
           const jsDef = require(filePath)
           if (jsDef) {
-            this.jsDefMap.set(jsDef.name, jsDef)
+            this.jsDefMap.set(filePath, jsDef)
           }
         } catch (e) {
           console.log(e)
@@ -135,7 +129,7 @@ export class MockUtil {
         const content = readFileSync(resolve(dirPath, file), "utf8")
         try {
           const obj = parse(content) as MockFileContent
-          this.jsonDefMap.set(obj.name, obj)
+          this.jsonDefMap.set(filePath, obj)
         } catch (error) {}
       } else if (isDirectory) {
         // this.readLocalFile()

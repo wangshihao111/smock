@@ -209,7 +209,7 @@ export class MockService {
   }
 
   public applyJsDefinition(obj: JsDefinition): void {
-    this.jsDefinitions.set(obj.name, obj)
+    // this.jsDefinitions.set(obj.name, obj)
     const createHandler = (api: JsApiItem): RequestHandler => async (
       req: Request,
       res: Response
@@ -238,43 +238,50 @@ export class MockService {
     const { docMap } = this
     docMap.set("/__api-list", (req: Request, res: Response, next) => {
       const list = []
-      this.jsonDefinitions.forEach((def) => {
-        list.push({
-          name: def.name,
-          type: "json",
-          apiList: (def.apis || []).map((v) => ({
-            name: v.name,
-            url: v.url,
+      this.jsonDefinitions.forEach((def, key) => {
+        if (def && def.apis) {
+          list.push({
+            key,
+            name: def.name,
             type: "json",
-            method: v.method,
-          })),
-        })
+            apiList: (def.apis || []).map((v) => ({
+              name: v.name,
+              url: v.url,
+              type: "json",
+              method: v.method,
+            })),
+          })
+        }
       })
-      this.jsDefinitions.forEach((def) => {
-        list.push({
-          name: def.name,
-          type: "js",
-          apiList: (def.apis || []).map((v) => ({
-            name: v.name,
-            url: v.url,
+
+      this.jsDefinitions.forEach((def, key) => {
+        if (def && def.apis) {
+          list.push({
+            key,
+            name: def.name,
             type: "js",
-            method: v.method,
-          })),
-        })
+            apiList: (def.apis || []).map((v) => ({
+              name: v.name,
+              url: v.url,
+              type: "js",
+              method: v.method,
+            })),
+          })
+        }
       })
       return res.send(list)
     })
     docMap.set("/__api", (req: Request, res: Response) => {
       const {
-        query: { name, apiName, type },
+        query: { key, apiName, type },
       } = req
       if (type === "json") {
-        const jsonDef = this.jsonDefinitions.get(name as any)
+        const jsonDef = this.jsonDefinitions.get(key as any)
         const api = jsonDef.apis.find((api) => api.name === apiName)
         return res.send(api)
       }
       if (type === "js") {
-        const jsDef = this.jsDefinitions.get(name as any)
+        const jsDef = this.jsDefinitions.get(key as any)
         const api = jsDef.apis.find((v) => v.name === apiName)
         let handleStr = api.handle.toString()
         handleStr = handleStr.startsWith("handle") ? `function ${handleStr}` : handleStr
