@@ -105,7 +105,6 @@ export class MockUtil {
       value: tsFiles,
     })
     register.register()
-    console.log(files);
 
     files.forEach((file) => {
       const isJs = /^.+\.js$/.test(file)
