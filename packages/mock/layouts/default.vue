@@ -94,6 +94,9 @@ export default {
 </script>
 
 <style lang="scss">
+body {
+  font-family: PingFangSC-Regular;
+}
 .request-show-trigger {
   position: fixed;
   bottom: 20px;

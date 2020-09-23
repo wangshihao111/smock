@@ -257,6 +257,25 @@ export default {
 ::v-deep {
   .ace_editor {
     border-radius: 0;
+    &.ace-dracula {
+      background-color: $editor-bg;
+      box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.30);
+      margin: 0;
+    }
+    & > .ace_gutter {
+      width: 32px !important;
+      background-color: #14141A;
+      font-size: 12px;
+      color: #5D5D6B;
+      text-align: right;
+      line-height: 24px;
+      & > div {
+        width: 32px !important;
+        .ace_fold-widget {
+          margin: 0 -8px 0 -2px;
+        }
+      }
+    }
   }
 }
 </style>
