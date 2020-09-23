@@ -1,7 +1,7 @@
 <template>
   <div class="api-side-nav-content">
     <h2 class="list-title">
-      Api 列表
+      <img src="./img/logo.svg" alt />
     </h2>
     <ul class="list" v-if="apiList">
       <li class="list-item" v-for="item of apiList" :key="item.name">
@@ -9,9 +9,7 @@
           class="sub-api-title"
           :class="openNames.includes(item.key) ? 'list-open' : ''"
           @click="triggerListOpen(item)"
-        >
-          {{ item.name }}
-        </h3>
+        >{{ item.name }}</h3>
         <!-- <transition @before-enter="handExpandAnim($event, 'before-enter')" @enter="handExpandAnim($event, 'enter', item.apiList.length)" @leave="handExpandAnim($event, 'leave')"> -->
         <ul
           class="inner-api-list"
@@ -109,7 +107,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import "@/assets/css/variables.scss";
 ul,
 li {
   margin: 0;
@@ -121,88 +120,109 @@ li {
 .api-side-nav-content {
   width: 100%;
   height: 100%;
-  border-right: 1px solid #efefef;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 3px 5px 0 #666;
 }
 .list-title {
   font-size: 16px;
   text-align: center;
-  color: #0c8de2;
-  flex: 0 0 48px;
-  justify-content: center;
+  flex: 0 0 40px;
+  justify-content: flex-start;
+  background-image: linear-gradient(134deg, #f78249 0%, #e27279 100%);
+  & > img {
+    height: 20px;
+    margin-left: 16px;
+  }
 }
+
 .list {
   flex: 1;
   overflow-y: auto;
   padding: 0;
   margin: 0;
-}
-.list-item {
-  list-style-type: none;
-  text-align: left;
-  padding: 0 16px;
+  .list-item {
+    list-style-type: none;
+    text-align: left;
+  }
 }
 .sub-api-title {
-  font-size: 14px;
-  color: #333;
+  font-size: 12px;
+  text-indent: 16px;
+  color: $side-item-title-color;
   font-weight: normal;
-  font-family: "Times New Roman", Times, serif;
-  line-height: 42px;
-  border-bottom: 1px solid #f1f1f1;
-  line-height: 42px;
+  line-height: $side-item-title-height;
+  height: $side-item-title-height;
   padding: 0;
   margin: 0;
   position: relative;
   cursor: pointer;
   transition: all 0.3s;
+
+  &:after {
+    content: "";
+    position: absolute;
+    right: 8px;
+    top: calc(50% - 3px);
+    width: 6px;
+    height: 6px;
+    border-right: 1px solid #ababab;
+    border-bottom: 1px solid #ababab;
+    transform: rotateZ(-45deg);
+    transition: all 0.3s;
+  }
+
+  &.list-open {
+    color: $side-item-title-active-color;
+    &:after {
+      transform: rotate(45deg);
+    }
+  }
 }
-.sub-api-title.list-open {
-  color: #0c8de2;
-}
-.sub-api-title::after {
-  content: "";
-  position: absolute;
-  right: 0;
-  top: calc(50% - 3px);
-  width: 6px;
-  height: 6px;
-  border-right: 1px solid #ababab;
-  border-bottom: 1px solid #ababab;
-  transform: rotateZ(-45deg);
-  transition: all 0.3s;
-}
-.sub-api-title.list-open::after {
-  transform: rotate(45deg);
-}
+
 .inner-api-list {
   transition: all 0.5s;
   overflow: hidden;
+  background: $side-dropdown-bg;
+  .api-item {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-size: 12px;
+    padding-left: 24px;
+    flex-direction: row;
+    height: $side-item-height;
+    line-height: $side-item-height;
+    color: $side-item-color;
+    transition: all .3s;
+    cursor: pointer;
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3px;
+      height: 100%;
+      transform: scaleY(0);
+      background: $primary;
+      transition: all .3s;
+      transform-origin: center;
+    }
+    &.selected {
+      color: $size-item-active-color;
+      background-color: $side-dropdown-active-bg;
+      &:before {
+        transform: scaleY(1);
+      }
+    }
+  }
+  .api-method {
+    width: auto;
+    margin-right: 4px;
+    display: inline-block;
+  }
 }
-.api-item {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-direction: row;
-}
-.inner-api-list .api-method {
-  width: auto;
-  margin-right: 8px;
-  font-size: 12px;
-  display: inline-block;
-  color: #999;
-}
-.inner-api-list li {
-  padding-left: 8px;
-  line-height: 32px;
-  color: #666;
-  cursor: pointer;
-}
-.inner-api-list li.selected,
-.inner-api-list li.selected .api-method {
-  color: #0295ece8;
-}
+
 .expand-enter,
 .expand-leave-to {
   transform: scaleY(0);

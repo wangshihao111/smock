@@ -9,7 +9,8 @@
 // Dark is the default theme variant.
 @mixin darkTheme {
   // Background color
-  --bg-color: rgba(32, 33, 36, 1);
+  // --bg-color: rgba(32, 33, 36, 1);
+  --bg-color: #23232E;
   // Light Background color
   --bg-light-color: rgba(255, 255, 255, 0.02);
   // Dark Background color

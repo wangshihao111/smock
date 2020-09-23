@@ -259,6 +259,11 @@ export default {
       colors: [
         // If the color is vibrant, black is used as the active foreground color.
         {
+          color: "#E27279",
+          name: '虹珊瑚',
+          vibrant: true,
+        },
+        {
           color: "#50fa7b",
           name: this.$t("green"),
           vibrant: true,

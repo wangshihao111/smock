@@ -3,33 +3,33 @@
     <div class="api-documents">
       <MockApi @api-test="showRequest = true" />
     </div>
-    <div class="request-show-trigger" @click="triggerShowRequest">
+    <!-- <div class="request-show-trigger" @click="triggerShowRequest">
       <span v-if="!showRequest">Post</span>
-      <img v-else :src="require('../assets/icons/close.svg')" alt="close">
-    </div>
-      <div class="request-modal-wrapper" :class="{'modal-wrapper-show': showRequest}">
-        <div class="modal-mask" :class="showRequest ? 'modal-mask-show' : ''" @click="handleBgClick"></div>
-        <transition name="api" appear>
-          <div class="request-modal" v-show="showRequest">
-            <div class="content">
-              <div class="columns">
-                <sidenav />
-                <div class="main" id="main">
-                  <pw-header />
-                  <nuxt />
-                  <pw-footer />
-                </div>
-                <!-- <aside class="nav-second"></aside> -->
+      <img v-else :src="require('../assets/icons/close.svg')" alt="close" />
+    </div> -->
+    <div class="request-modal-wrapper" :class="{'modal-wrapper-show': showRequest}">
+      <div class="modal-mask" :class="showRequest ? 'modal-mask-show' : ''" @click="handleBgClick"></div>
+      <transition name="api" appear>
+        <div class="request-modal" v-show="showRequest">
+          <div class="content">
+            <div class="columns">
+              <sidenav />
+              <div class="main" id="main">
+                <pw-header />
+                <nuxt />
+                <pw-footer />
               </div>
+              <!-- <aside class="nav-second"></aside> -->
             </div>
           </div>
-        </transition>
-      </div>
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 
 <script>
-import MockApi from '../components/MockApi/MockApi'
+import MockApi from "../components/MockApi/MockApi"
 export default {
   components: {
     MockApi,
@@ -82,14 +82,14 @@ export default {
   },
   methods: {
     triggerShowRequest() {
-      this.showRequest = !this.showRequest;
+      this.showRequest = !this.showRequest
     },
     handleBgClick(e) {
-      this.showRequest = false;
+      this.showRequest = false
       e.stopPropagation()
       e.preventDefault()
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -116,12 +116,12 @@ export default {
 }
 .request-modal {
   background: var(--bg-color);
-  width: 90%;
-  height: 90%;
+  width: 100%;
+  height: 100%;
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(0.9);
   overflow: auto;
 }
 .modal-mask {
@@ -130,14 +130,14 @@ export default {
   position: absolute;
   top: 0;
   left: 0;
-  transition: all .2s;
+  transition: all 0.2s;
 }
 .request-modal-wrapper.modal-wrapper-show {
   width: 100%;
   height: 100vh;
 }
 .modal-mask-show {
-  background: rgba(15,16,17,.5);
+  background: rgba(15, 16, 17, 0.5);
 }
 .api-documents {
   width: 100%;
@@ -151,13 +151,16 @@ export default {
   top: 0;
   // background: rgba(15,16,17,0.2);
 }
-.api-enter, .api-leave-to {
+.api-enter,
+.api-leave-to {
   transform: translate(-50%, -50%) scale(0);
 }
-.api-leave, .api-enter-to {
-  transform: translate(-50%, -50%) scale(1);
+.api-leave,
+.api-enter-to {
+  transform: translate(-50%, -50%) scale(0.9);
 }
-.api-enter-active, .api-leave-active {
-  transition: all .2s;
+.api-enter-active,
+.api-leave-active {
+  transition: all 0.2s;
 }
 </style>

@@ -11,7 +11,8 @@
         v-tooltip.right="$t('home')"
         :aria-label="$t('home')"
       >
-        <logo alt class="material-icons" style="height: 24px;"></logo>
+        <!-- <logo alt class="material-icons" style="height: 24px;"></logo> -->
+        <div class="logo"><img src="@/assets/logo.svg" alt=""></div>
       </nuxt-link>
       <nuxt-link
         :to="localePath('realtime')"

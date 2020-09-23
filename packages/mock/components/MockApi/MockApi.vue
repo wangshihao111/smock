@@ -39,7 +39,8 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
+@import '@/assets/css/variables.scss';
 .mock-api {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -50,13 +51,15 @@ export default {
   height: 100vh;
   width: 100%;
   flex-direction: row;
-  background: #f1f1f1;
+  background: $body-bg;
 }
 .api-side-nav {
-  flex: 0 0 240px;
-  background: #fff;
+  flex: 0 0 200px;
+  background-color: $bg-color;
 }
 .api-content {
   flex: 1;
+  margin-left: 8px;
+  background-color: $bg-color;
 }
 </style>
