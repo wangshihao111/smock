@@ -64,12 +64,17 @@ export class MockService {
       this.reset()
     }, 1000)
     const options = getGlobOptions(config)
-    const watchFiles = flatten(['js', 'ts', 'json5', 'json'].map(v => [`./src/**/${mockFilePrefix}.${v}`, `./packages/**/${mockFilePrefix}.${v}`]));
+    const watchFiles = flatten(
+      ["js", "ts", "json5", "json"].map((v) => [
+        `./src/**/${mockFilePrefix}.${v}`,
+        `./packages/**/${mockFilePrefix}.${v}`,
+      ])
+    )
     try {
       const watcher = chokidar.watch(
         [
           ...(config.mockDirs || []),
-          './_smock/**',
+          "./_smock/**",
           `./src/**/${mockFilePrefix}/**`,
           `./packages/**/${mockFilePrefix}`,
           ...watchFiles,
@@ -150,19 +155,12 @@ export class MockService {
     const { url, method, response, responseType, delay = "" } = api
     const handleRequest = (req: Request, res: Response, next): void => {
       const { body, query, params } = req
-      const hasMatch = this.jsonDefinitions
-        .get(jsonName)
-        .apis.find((a) => a.url === url && toLower(a.method) === toLower(method))
       const queryValid = MockUtil.validateParams(api.query || {}, query, true)
       const bodyValid = MockUtil.validateParams(api.body || {}, body)
       const delayTime = MockUtil.getDelayTime(String(delay))
       let sendData: any
       if (responseType) {
         res.type(responseType)
-      }
-      // 如果没有匹配到的路由
-      if (!hasMatch) {
-        return next()
       }
       const data = this.findOne({ body, query, api, params })
       // 将数据中需要mock的数据换成mock数据
@@ -209,7 +207,6 @@ export class MockService {
   }
 
   public applyJsDefinition(obj: JsDefinition): void {
-    // this.jsDefinitions.set(obj.name, obj)
     const createHandler = (api: JsApiItem): RequestHandler => async (
       req: Request,
       res: Response
