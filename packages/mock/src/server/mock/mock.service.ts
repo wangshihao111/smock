@@ -171,7 +171,7 @@ export class MockService {
         res.status(400)
         sendData = {
           status: 400,
-          message: "参时不匹配，请检查数据类型",
+          message: "参数不匹配，请检查数据类型",
         }
       } else {
         // 其它情况，返回模拟数据
