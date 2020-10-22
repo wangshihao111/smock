@@ -1,20 +1,24 @@
 import React, { FC } from "react";
-import { NavLink } from "react-router-dom";
+// import { NavLink } from "react-router-dom";
+import logo from "../../assets/logo-white.svg";
 import "./index.scss";
 
 const Layout: FC = (props) => {
   return (
     <section className="basic-layout">
       <header className="basic-layout-header">
+        <div className="basic-layout-header-logo">
+          <img src={logo} alt="" />
+        </div>
         <h1 className="basic-layout-header-title">接口拦截工具</h1>
-        <div className="basic-layout-header-nav">
+        {/* <div className="basic-layout-header-nav">
           <NavLink to="/home">
             <nav>首页</nav>
           </NavLink>
           <NavLink to="/about">
             <nav>关于</nav>
           </NavLink>
-        </div>
+        </div> */}
       </header>
       <main className="basic-layout-body">{props.children}</main>
     </section>

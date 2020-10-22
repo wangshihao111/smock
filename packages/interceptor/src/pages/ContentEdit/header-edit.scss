@@ -1,14 +1,15 @@
+@import '../../assets/style/variables.scss';
+
 .headers-edit {
-  flex: 0 0 400px;
-  width: 400px;
+  flex: 0 0 475px;
+  width: 475px;
   height: 100%;
   box-sizing: border-box;
-  padding: 0 32px;
   overflow-y: auto;
   &-header {
     line-height: 42px;
     font-size: 14px;
-    color: #1890ff;
+    color: #fff;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -18,4 +19,10 @@
     width: 100%;
     box-sizing: border-box;
   }
+}
+
+.header-edit-opt {
+  color: $primary;
+  font-size: 14px;
+  margin-right: 12px;
 }

@@ -1,15 +1,30 @@
+@import '../../assets/style/variables.scss';
 .page-home {
   padding: 8px 16px;
-  width: 80%;
-  max-width: 1000px;
-  margin: 8px auto;
+  width: 100%;
   overflow: hidden;
-  background: #fff;
-  height: calc(100% - 16px);
+  background: $bg-shallow;
+  height: 100%;
   display: flex;
   flex-direction: column;
   &-header {
     flex-grow: 0;
+    &-title {
+      width: 100%;
+      font-family: PingFangSC-Medium;
+      font-size: 14px;
+      color: #FFFFFF;
+      height: 46px;
+      line-height: 46px;
+      border-bottom: 1px solid #14141A;
+    }
+  }
+  &-buttons {
+    justify-content: flex-end;
+    margin-bottom: 8px;
+    > .ant-btn {
+      margin-left: 16px;
+    }
   }
   &-list {
     flex: 1;
@@ -26,6 +41,12 @@
       .ant-btn {
         margin-right: 16px;
       }
+    }
+  }
+  &-table-actions {
+    > a {
+      font-size: 14px;
+      margin-right: 20px;
     }
   }
 }

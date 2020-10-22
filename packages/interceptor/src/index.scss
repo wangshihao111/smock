@@ -1,0 +1,72 @@
+@import './assets/style/variables.scss';
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  background: #333;
+}
+::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.ant-input-affix-wrapper {
+  .anticon {
+    color: #979797;
+  }
+}
+
+.anticon.ant-select-suffix {
+  color: #979797;
+}
+
+body {
+  .ant-table-thead > tr > th {
+    border: none;
+  }
+  .ant-table-tbody > tr > td {
+    border-color: #23232E;
+  }
+  .ant-pagination-disabled .ant-pagination-item-link, .ant-pagination-disabled:hover .ant-pagination-item-link, .ant-pagination-disabled:focus .ant-pagination-item-link {
+    color: #979797;
+  }
+  .ant-pagination {
+    width: 100%;
+    text-align: center;
+    .ant-pagination-item, .ant-pagination-item-link {
+      border: none;
+      background: none;
+    }
+    .ant-pagination-item a {
+      color: #9B9B9B;
+    }
+    .ant-pagination-item-active a {
+      color: $primary;
+    }
+  }
+  .ant-modal-confirm-body .ant-modal-confirm-title {
+    color: #fff;
+  }
+  .ant-table-thead > tr > th, .ant-table-tbody > tr > td, .ant-table tfoot > tr > th, .ant-table tfoot > tr > td {
+    padding: 9px 16px;
+  }
+}

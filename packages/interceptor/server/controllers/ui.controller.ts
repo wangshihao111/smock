@@ -38,9 +38,15 @@ export class UIController extends AbstractController {
 
   @bind()
   private deleteHistory(req: Request, res: Response): void {
-    const api = req.body.path as string;
+    const api = req.body.path;
     try {
-      this.ctx.file.deleteOneLog(api);
+      const toDelete: string[] = [];
+      if (typeof api === "string") {
+        toDelete.push(api);
+      } else {
+        toDelete.push(...api);
+      }
+      toDelete.forEach((url) => this.ctx.file.deleteOneLog(url));
       res.status(200);
       res.send({
         code: 0,

@@ -1,6 +1,13 @@
-import React, { FC, useEffect, useState, ChangeEvent } from "react";
+import React, {
+  FC,
+  useEffect,
+  useState,
+  ChangeEvent,
+  useMemo,
+  useCallback,
+} from "react";
 import { Input, Button, Table, Modal, Form, notification } from "antd";
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import "./header-edit.scss";
 import { ColumnsType } from "antd/lib/table";
 
@@ -14,19 +21,23 @@ interface HeadersEditProps {
 export type RowData = {
   key: string;
   value: string;
+  status?: string;
 };
+
+let newKey = "";
 
 const HeadersEdit: FC<HeadersEditProps> = (props) => {
   const [tableData, setTableData] = useState<RowData[]>([]);
   useEffect(() => {
     setTableData(props.headers);
   }, [props.headers]);
-  const handleRowChange = (key: string, value: string) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleRowChange = (key: string, value: string, record: any) => {
     setTableData((prev: RowData[]) => {
       const temp = [...prev];
       const index = prev.findIndex((v) => v.key === key);
       if (index > -1) {
-        const newValue = { key, value: value };
+        const newValue = { ...record, key, value: value };
         temp.splice(index, 1, newValue);
       }
       if (props.onChange) {
@@ -51,94 +62,116 @@ const HeadersEdit: FC<HeadersEditProps> = (props) => {
     });
   };
   const handleNewHeader = () => {
-    const form = {} as any;
-    Modal.confirm({
-      content: (
-        <>
-          <Form.Item label="键">
-            <Input
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                (form.key = e.target.value)
-              }
-            />
-          </Form.Item>
-          <Form.Item label="值">
-            <Input
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                (form.value = e.target.value)
-              }
-            />
-          </Form.Item>
-        </>
-      ),
-      onOk: () => {
-        setTableData((prev: RowData[]) => {
-          if (!prev.find((v) => v.key === form.key)) {
-            if (props.onChange) {
-              props.onChange([form, ...prev]);
-            }
-            return [form, ...prev];
-          } else {
-            notification.error({
-              message: "该key已经存在，不能重复创建。",
-            });
-            return prev;
-          }
-        });
-      },
-    });
+    if (tableData[0]?.status !== "new") {
+      setTableData([{ key: "", value: "", status: "new" }, ...tableData]);
+    }
   };
-  const columns: ColumnsType<any> = [
-    {
-      key: "key",
-      dataIndex: "key",
-      title: "Key",
-    },
-    {
-      key: "value",
-      dataIndex: "value",
-      title: "Value",
-      render: (text, record) => (
-        <Input
-          disabled={props.disabled}
-          value={text}
-          onChange={(e: ChangeEvent<HTMLInputElement>) =>
-            handleRowChange(record.key, e.target.value)
-          }
-        />
-      ),
-    },
-    {
+  const handleNewKeyChange = useCallback((e: any) => {
+    newKey = e.target.value;
+  }, []);
+
+  const handleNewDone = useCallback((type: "confirm" | "cancel") => {
+    if (!newKey && type === "confirm") return;
+    setTableData((prev) => {
+      const [first, ...rest] = prev;
+      if (type === "cancel") {
+        return rest;
+      } else if (type === "confirm") {
+        return [{ key: newKey, value: first.value }, ...rest];
+      }
+      newKey = "";
+      return prev;
+    });
+  }, []);
+  const columns: ColumnsType<any> = useMemo(
+    () => [
+      {
+        key: "key",
+        dataIndex: "key",
+        title: "Key",
+        render(value, record) {
+          return record.status === "new" ? (
+            <Input
+              placeholder="请输入键"
+              key="input-key"
+              type="text"
+              onChange={handleNewKeyChange}
+            />
+          ) : (
+            value
+          );
+        },
+      },
+      {
+        key: "value",
+        dataIndex: "value",
+        title: "Value",
+        render: (text, record) =>
+          props.disabled ? (
+            text
+          ) : (
+            <Input
+              disabled={props.disabled}
+              value={text}
+              placeholder="请输入值"
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                handleRowChange(record.key, e.target.value, record)
+              }
+            />
+          ),
+      },
+    ],
+    [handleNewKeyChange, handleRowChange, props.disabled]
+  );
+  if (!props.disabled) {
+    columns.push({
       key: "opt",
       title: "操作",
-      render: (_, record) => (
-        <Button
-          disabled={props.disabled}
-          type="link"
-          onClick={() => handleDelete(record.key)}
-          icon={<DeleteOutlined />}
-        >
-          删除
-        </Button>
-      ),
-    },
-  ];
+      width: 120,
+      render: (_, record) =>
+        record.status !== "new" ? (
+          <a
+            className="header-edit-opt"
+            onClick={() => !props.disabled && handleDelete(record.key)}
+          >
+            删除
+          </a>
+        ) : (
+          <>
+            <a
+              className="header-edit-opt"
+              onClick={() => handleNewDone("confirm")}
+            >
+              确定
+            </a>
+            <a
+              className="header-edit-opt"
+              onClick={() => handleNewDone("cancel")}
+            >
+              取消
+            </a>
+          </>
+        ),
+    });
+  }
   return (
     <section
       className="headers-edit"
       style={{ height: props.style.height + 42 }}
     >
       <header className="headers-edit-header">
-        <span>响应头编辑</span>
-        <Button
-          disabled={props.disabled}
-          size="small"
-          type="primary"
-          onClick={handleNewHeader}
-          icon={<PlusOutlined />}
-        >
-          新增
-        </Button>
+        <span>响应头{!props.disabled ? "编辑" : ""}</span>
+        {!props.disabled && (
+          <Button
+            disabled={props.disabled}
+            size="small"
+            type="primary"
+            onClick={handleNewHeader}
+            icon={<PlusOutlined />}
+          >
+            新增
+          </Button>
+        )}
       </header>
       <Table
         dataSource={tableData}

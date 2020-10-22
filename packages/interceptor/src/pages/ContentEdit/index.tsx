@@ -7,19 +7,15 @@ import React, {
   ReactElement,
 } from "react";
 import { RouteChildrenProps } from "react-router-dom";
-import { notification, Tabs, Button, Modal, Form, InputNumber } from "antd";
-import {
-  SyncOutlined,
-  SaveOutlined,
-  ArrowLeftOutlined,
-} from "@ant-design/icons";
+import { notification, Tabs, Button, Modal, Form, Input } from "antd";
+import { SyncOutlined, SaveOutlined, LeftOutlined } from "@ant-design/icons";
 import { AxiosError } from "axios";
 import "ace-builds";
 import AceEditor from "react-ace";
 import "ace-builds/webpack-resolver";
 import "ace-builds/src-noconflict/mode-html";
 import "ace-builds/src-noconflict/mode-json";
-import "ace-builds/src-noconflict/theme-tomorrow";
+import "ace-builds/src-noconflict/theme-dracula";
 
 import "./index.scss";
 import { getApiDetail, saveApiData } from "../../service/mock.service";
@@ -58,6 +54,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
   const [eh, setEh] = useState<number>(500);
   const [detail, setDetail] = useState<HistoryItem[]>([]);
   const [editStatusNum, setEditStatusNum] = useState<number>(0);
+  const [editingHeader, setEditingHeader] = useState<any>({});
   const fetchDetail = useCallback(
     (saved = false, reset = false) => {
       getApiDetail(path, reset)
@@ -67,6 +64,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
             setForm(data[0].response.data);
             setEditKey(data[0].key);
             editHeaders = data[0].response.headers;
+            setEditingHeader(editHeaders);
             setEditStatusNum(data[0].response.status);
           }
           setDetail(data);
@@ -96,6 +94,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
     setForm(target?.response.data);
     setEditKey(key);
     editHeaders = target?.response.headers;
+    setEditingHeader(editHeaders);
     setEditStatusNum(target?.response.status);
   };
   const handleAction = (type: string) => (): void => {
@@ -181,87 +180,90 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
           className="back-arrow"
           onClick={(): void => props.history.push("/home")}
         >
-          <ArrowLeftOutlined />
+          <LeftOutlined />
         </div>
         <h3 className="page-edit-header-title">接口编辑</h3>
-        <div className="operation-wrap">
-          <Button type="link" onClick={(): void => props.history.push("/home")}>
-            返回上一页
-          </Button>
-          <Button
-            type="link"
-            disabled={isDetail}
-            icon={<SyncOutlined />}
-            onClick={handleAction("reset")}
-          >
-            重置为初始值
-          </Button>
-          <Button
-            disabled={isDetail}
-            type="link"
-            icon={<SaveOutlined />}
-            onClick={handleAction("save")}
-          >
-            保存
-          </Button>
-        </div>
+        {!isDetail && (
+          <div className="operation-wrap">
+            <Button
+              type="default"
+              style={{ marginRight: 16 }}
+              disabled={isDetail}
+              icon={<SyncOutlined />}
+              onClick={handleAction("reset")}
+            >
+              重置为初始值
+            </Button>
+            <Button
+              disabled={isDetail}
+              type="primary"
+              icon={<SaveOutlined />}
+              onClick={handleAction("save")}
+            >
+              保存
+            </Button>
+          </div>
+        )}
       </header>
       <main className="page-edit-content">
-        <Tabs tabPosition="left" onChange={handleTabChange}>
-          {detail.map(({ key, request, response }) => (
-            <TabPane key={key} tab={renderTab(request)}>
-              <div className="history-tab-content">
-                <div className="content-edit">
-                  <header className="content-edit-title">
-                    响应体编辑
-                    <Form.Item label="响应状态码">
-                      <InputNumber
-                        disabled={isDetail}
-                        size="small"
-                        value={editStatusNum}
-                        onChange={(e: string | number | undefined): void => {
-                          setEditStatusNum(Number(e || editStatusNum));
-                        }}
-                      />
-                    </Form.Item>
-                  </header>
-                  <AceEditor
-                    readOnly={isDetail}
-                    style={{
-                      width: "100%",
-                      height: eh,
-                      boxShadow: "-1px -1px 5px 0 #ababab",
-                    }}
-                    placeholder="Placeholder Text"
-                    mode="json"
-                    theme="tomorrow"
-                    onChange={(v): void => handleContentChange(v)}
-                    fontSize={14}
-                    showPrintMargin={true}
-                    showGutter={true}
-                    highlightActiveLine={true}
-                    value={form}
-                    setOptions={{
-                      useWorker: false,
-                      enableBasicAutocompletion: false,
-                      enableSnippets: false,
-                      showLineNumbers: true,
-                      tabSize: 2,
+        <div className="history-tab-content">
+          <div className="content-edit">
+            <header className="content-edit-header">
+              <h2 className="content-edit-header-title">响应体编辑</h2>
+              <Form.Item label="响应状态码">
+                {isDetail ? (
+                  editStatusNum
+                ) : (
+                  <Input
+                    size="small"
+                    value={editStatusNum}
+                    onChange={(e): void => {
+                      setEditStatusNum(Number(e.target.value || editStatusNum));
                     }}
                   />
-                </div>
-                {
-                  <HeadersEdit
-                    disabled={isDetail}
-                    style={{ height: eh }}
-                    headers={getHeadersArr(response.headers)}
-                    onChange={handleHeadersChange}
-                  />
-                }
-              </div>
-            </TabPane>
-          ))}
-        </Tabs>
+                )}
+              </Form.Item>
+            </header>
+            <div className="content-edit-content">
+              <Tabs tabPosition="left" onChange={handleTabChange}>
+                {detail.map(({ key, request, response }) => (
+                  <TabPane key={key} tab={renderTab(request)}></TabPane>
+                ))}
+              </Tabs>
+              <AceEditor
+                readOnly={isDetail}
+                style={{
+                  width: "100%",
+                  height: eh,
+                }}
+                placeholder="Placeholder Text"
+                mode="json"
+                theme="dracula"
+                onChange={(v): void => handleContentChange(v)}
+                fontSize={14}
+                showPrintMargin={true}
+                showGutter={true}
+                highlightActiveLine={true}
+                value={form}
+                setOptions={{
+                  useWorker: false,
+                  enableBasicAutocompletion: false,
+                  enableSnippets: false,
+                  showLineNumbers: true,
+                  tabSize: 2,
+                }}
+              />
+            </div>
+          </div>
+          {
+            <HeadersEdit
+              disabled={isDetail}
+              style={{ height: eh }}
+              headers={getHeadersArr(editingHeader)}
+              onChange={handleHeadersChange}
+            />
+          }
+        </div>
       </main>
     </div>
   );

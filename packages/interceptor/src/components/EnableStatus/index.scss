@@ -1,0 +1,21 @@
+.api-enable-status {
+  position: relative;
+  display: inline-block;
+  font-size: 14px;
+  padding-left: 20px;
+  color: #9B9B9B;
+  &-enabled {
+    color: #48D2A0;
+  }
+  &:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: currentColor;
+    border-radius: 50%;
+  }
+}

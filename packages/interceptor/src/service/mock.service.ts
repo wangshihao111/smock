@@ -12,7 +12,7 @@ export function updateInterceptedList(list: string[]) {
   return axios.post("/update-intercept", list);
 }
 
-export function deleteHistory(api: string) {
+export function deleteHistory(api: string | string[]) {
   return axios.post("/delete-history", { path: api });
 }
 

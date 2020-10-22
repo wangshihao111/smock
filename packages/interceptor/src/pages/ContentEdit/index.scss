@@ -1,13 +1,12 @@
+@import '../../assets/style/variables.scss';
+
 .page-edit {
-  // width: 90%;
-  width: calc(100% - 32px);
-  height: calc(100% - 16px);
-  // max-width: 1200px;
-  margin: 8px auto;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
+  background-color: $bg-shallow;
   &-header {
     width: 100%;
     display: flex;
@@ -17,16 +16,18 @@
     padding-right: 16px;
     height: 46px;
     flex: 0 0 46px;
-    border-bottom: 1px solid #efefef;
+    border-bottom: 1px solid #14141A;
     position: relative;
     &-title {
       position: absolute;
-      left: 48px;
+      left: 36px;
+      margin: 0;
+      color: #fff;
     }
     .back-arrow {
       position: absolute;
       left: 0;
-      padding: 0 16px;
+      padding: 0 8px 0 16px;
       font-size: 16px;
       cursor: pointer;
     }
@@ -41,18 +42,41 @@
     flex: 1;
     overflow-y: auto;
     display: flex;
+    padding: 0 16px;
+    position: relative;
+   
   }
   .ant-tabs {
     height: 100%;
-    width: 100%;
+    margin-right: 16px;
+    overflow: visible;
+    // width: 180px;
+    .ant-tabs-nav {
+      // width: 100%;
+      .ant-tabs-tab {
+        padding: 0;
+        width: 180px;
+        &.ant-tabs-tab-active, &:hover {
+          color: #fff;
+          background-image: linear-gradient(90deg, #5C5C72 0%, #30303D 100%);
+          .ant-tabs-tab-btn {
+            color: #fff;
+          }
+        }
+      }
+    }
+    .ant-tabs-ink-bar {
+      display: none;
+    }
+    .ant-tabs-content-holder,
     .ant-tabs-tabpane {
       overflow: hidden;
+      display: none;
     }
   }
   .history-tab-item-tab {
-    width: 220px;
-    height: 180px;
-    background: #fff;
+    width: 180px;
+    height: 80px;
     border-bottom: 1px solid #ccc;
     pre {
       width: 100%;
@@ -71,6 +95,40 @@
     overflow: hidden;
     .content-edit {
       flex: 1;
+      padding-top: 60px;
+      position: relative;
+      margin-right: 16px;
+      &-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 60px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        &-title {
+          position: relative;
+          font-family: PingFangSC-Medium;
+          font-size: 14px;
+          color: #FFFFFF;
+          line-height: 14px;
+          margin: 0;
+          text-indent: 6px;;
+          &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: calc(50% - 7px);
+            width: 2px;
+            height: 14px;
+            background: $primary;
+          }
+        }
+        .ant-form-item {
+          margin: 0;
+        }
+      }
       &-title {
         color: #1890ff;
         line-height: 42px;
@@ -80,6 +138,9 @@
         .ant-form-item {
           margin: 5px 5px 0;
         }
+      }
+      &-content {
+        display: flex;
       }
     }
   }
