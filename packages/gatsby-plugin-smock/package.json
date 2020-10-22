@@ -1,6 +1,6 @@
 {
   "name": "@smock/gatsby-plugin-smock",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "smock plugin of gatsby",
   "main": "index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@smock/mock": "^0.2.21"
+    "@smock/mock": "^0.2.22"
   },
   "publishConfig": {
     "access": "public",
