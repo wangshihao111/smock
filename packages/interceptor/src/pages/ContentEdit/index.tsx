@@ -54,7 +54,6 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
   const [eh, setEh] = useState<number>(500);
   const [detail, setDetail] = useState<HistoryItem[]>([]);
   const [editStatusNum, setEditStatusNum] = useState<number>(0);
-  const [editingHeader, setEditingHeader] = useState<any>({});
   const fetchDetail = useCallback(
     (saved = false, reset = false) => {
       getApiDetail(path, reset)
@@ -64,7 +63,6 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
             setForm(data[0].response.data);
             setEditKey(data[0].key);
             editHeaders = data[0].response.headers;
-            setEditingHeader(editHeaders);
             setEditStatusNum(data[0].response.status);
           }
           setDetail(data);
@@ -94,7 +92,6 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
     setForm(target?.response.data);
     setEditKey(key);
     editHeaders = target?.response.headers;
-    setEditingHeader(editHeaders);
     setEditStatusNum(target?.response.status);
   };
   const handleAction = (type: string) => (): void => {
@@ -259,7 +256,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
             <HeadersEdit
               disabled={isDetail}
               style={{ height: eh }}
-              headers={getHeadersArr(editingHeader)}
+              headers={getHeadersArr(editHeaders)}
               onChange={handleHeadersChange}
             />
           }

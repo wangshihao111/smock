@@ -40,7 +40,7 @@ const HeadersEdit: FC<HeadersEditProps> = (props) => {
         const newValue = { ...record, key, value: value };
         temp.splice(index, 1, newValue);
       }
-      if (props.onChange) {
+      if (props.onChange && record.status !== "new") {
         props.onChange(temp);
       }
       return temp;
@@ -70,19 +70,26 @@ const HeadersEdit: FC<HeadersEditProps> = (props) => {
     newKey = e.target.value;
   }, []);
 
-  const handleNewDone = useCallback((type: "confirm" | "cancel") => {
-    if (!newKey && type === "confirm") return;
-    setTableData((prev) => {
-      const [first, ...rest] = prev;
-      if (type === "cancel") {
-        return rest;
-      } else if (type === "confirm") {
-        return [{ key: newKey, value: first.value }, ...rest];
-      }
-      newKey = "";
-      return prev;
-    });
-  }, []);
+  const handleNewDone = useCallback(
+    (type: "confirm" | "cancel") => {
+      if (!newKey && type === "confirm") return;
+      setTableData((prev) => {
+        const [first, ...rest] = prev;
+        if (type === "cancel") {
+          return rest;
+        } else if (type === "confirm") {
+          const result = [{ key: newKey, value: first.value }, ...rest];
+          if (props.onChange) {
+            props.onChange(result);
+          }
+          return result;
+        }
+        newKey = "";
+        return prev;
+      });
+    },
+    [props]
+  );
   const columns: ColumnsType<any> = useMemo(
     () => [
       {
@@ -176,7 +183,7 @@ const HeadersEdit: FC<HeadersEditProps> = (props) => {
       <Table
         dataSource={tableData}
         columns={columns}
-        pagination={{ pageSize: 7 }}
+        pagination={{ pageSize: 10 }}
       />
     </section>
   );
