@@ -7,13 +7,24 @@
   box-sizing: border-box;
   overflow-y: auto;
   &-header {
-    line-height: 42px;
+    position: relative;
+    line-height: 60px;
     font-size: 14px;
     color: #fff;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    text-indent: 6px;
+    &:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: calc(50% - 7px);
+      width: 2px;
+      height: 14px;
+      background-color: $primary;
+    }
   }
   .ant-row {
     width: 100%;

@@ -228,7 +228,7 @@ const Home: FC<RouteChildrenProps> = (props) => {
             <Select defaultValue="all" onChange={handleStatusChange}>
               <Select.Option value="all">全部</Select.Option>
               <Select.Option value="enabled">已启用</Select.Option>
-              <Select.Option value="disabled">未启用</Select.Option>
+              <Select.Option value="disabled">已禁用</Select.Option>
             </Select>
             {/* <Radio.Group
               defaultValue="all"
