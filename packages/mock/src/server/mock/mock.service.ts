@@ -215,9 +215,10 @@ export class MockService {
       // 有返回体时，将其发送给客户端
       if (result) {
         const { status = 200, delay, data } = result
+        const finalDelay = delay || api.delay
         let delayTime = 0
-        if (delay !== undefined) {
-          delayTime = MockUtil.getDelayTime(String(delay))
+        if (finalDelay !== undefined) {
+          delayTime = MockUtil.getDelayTime(String(finalDelay))
         }
         setTimeout(() => {
           res.status(status)

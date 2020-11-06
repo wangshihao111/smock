@@ -9,6 +9,7 @@ export interface HandleRet {
 export interface JsApiItem {
   name: string
   desc?: string
+  delay?: number | string
   url: string
   method: "POST" | "GET" | "DELETE" | "PUT" | "OPTIONS" | "HEAD" | "CONNECT" | "TRACE"
   handle: (req: Request, res: Response) => void | HandleRet
