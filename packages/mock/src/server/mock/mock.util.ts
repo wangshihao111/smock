@@ -71,6 +71,8 @@ export class MockUtil {
 
   public static init() {
     const dirPath = process.cwd()
+    this.jsonDefMap = new Map<string, MockFileContent>()
+    this.jsDefMap = new Map<string, JsDefinition>()
     if (!this.config) {
       let config = readConfigFile(dirPath)
 
@@ -96,8 +98,8 @@ export class MockUtil {
   public static readLocalFile(): [Map<string, MockFileContent>, Map<string, JsDefinition>] {
     this.init()
     const dirPath = this.config.mockCwd || process.cwd()
-    const files: string[] = uniq(getFileFromExt(this.config).map(p => resolve(dirPath, p)))
-    const tsFiles = files.filter(v => v.endsWith('ts'))
+    const files: string[] = uniq(getFileFromExt(this.config).map((p) => resolve(dirPath, p)))
+    const tsFiles = files.filter((v) => v.endsWith("ts"))
 
     const register = new BabelRegister()
     register.setOnlyMap({
@@ -110,14 +112,14 @@ export class MockUtil {
       const isJs = /^.+\.js$/.test(file)
       const isJson = /^.+(\.json|\.json5)$/.test(file)
       const isTsFile = /^.+\.tsx?$/.test(file)
-      const filePath = file;
+      const filePath = file
       const stat = statSync(filePath)
       const isDirectory = stat.isDirectory()
       if ((isJs || isTsFile) && !isDirectory) {
         try {
           delete require.cache[require.resolve(filePath)]
           // eslint-disable-next-line @typescript-eslint/no-var-requires
-          const jsDef = require(filePath)
+          const jsDef = require(filePath).default || require(filePath)
           if (jsDef) {
             this.jsDefMap.set(filePath, jsDef)
           }
