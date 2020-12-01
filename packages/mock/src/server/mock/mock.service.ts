@@ -76,7 +76,7 @@ export class MockService {
           ...(config.mockDirs || []),
           "./_smock/**",
           `./src/**/${mockFilePrefix}/**`,
-          `./packages/**/${mockFilePrefix}`,
+          `./packages/**/${mockFilePrefix}/**`,
           ...watchFiles,
         ],
         {
