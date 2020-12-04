@@ -85,7 +85,7 @@
     "firebase": "^7.10.0",
     "graphql": "^14.6.0",
     "graphql-language-service-interface": "^2.3.3",
-    "highlight.js": "^9.18.1",
+    "highlight.js": "^10.4.1",
     "husky": "^4.2.3",
     "lint-staged": "^10.0.8",
     "node-sass": "^4.13.1",
