@@ -62,15 +62,31 @@ export class RequestUtil {
     return parsedConfig;
   }
 
-  public processResponseError(
+  public async processResponseError(
     error: AxiosError,
     request: Request,
     response: Response,
     requestConfig: AxiosRequestConfig
-  ): void {
+  ): Promise<void> {
     // 处理axios错误
     if (error.response) {
       const { status, data } = error.response;
+      const resHis = await this.ctx.file.getRequestLog(
+        request.path,
+        requestConfig
+      );
+      if (!resHis) {
+        this.ctx.file.addRequestLog(request.path, requestConfig, {
+          path: request.path,
+          status,
+          headers: error.response.headers,
+          data,
+        });
+        const db = this.ctx.db.getDb();
+        const apiList = db.apiList || [];
+        this.ctx.db.addStringArrayItem(apiList, request.path);
+        this.ctx.db.set("apiList", apiList);
+      }
       response.status(status);
       response.send(data);
       return;

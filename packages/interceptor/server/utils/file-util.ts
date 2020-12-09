@@ -58,6 +58,7 @@ export class FileUtil {
 
   public getFileName(url: string): string {
     return encodeURIComponent(url);
+    // return url.replace(/(\\|\/|\:)/g, '_');
   }
 
   public getUniqueKeyFromRequest(
