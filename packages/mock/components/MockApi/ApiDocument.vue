@@ -262,6 +262,22 @@ export default {
       box-shadow: inset 0 2px 4px 0 rgba(0,0,0,0.30);
       margin: 0;
     }
+    .ace_gutter-cell {
+      text-align: center;
+      padding: 0 !important;
+    }
+    .ace_gutter-cell,
+    .ace_active-line,
+    .ace_line {
+      font-family: PingFangSC-Regular !important;
+      height: 24px !important;
+      line-height: 24px !important;
+      font-size: 12px !important;
+    }
+
+    .ace_scroller {
+      left: 32px !important;
+    }
     & > .ace_gutter {
       width: 32px !important;
       background-color: #14141A;
