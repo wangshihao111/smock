@@ -18,8 +18,8 @@ module.exports = {
   'input-border-color': 'transparent',
   'select-border-color': 'transparent',
   'input-hover-border-color': primary,
-  'select-item-selected-bg': '#f1bfc3',
-  'select-item-active-bg': '#f1bfc3',
+  'select-item-selected-bg': '#30303D',
+  'select-item-active-bg': '#30303D',
 
   // table
   'table-bg': '#30303D',
