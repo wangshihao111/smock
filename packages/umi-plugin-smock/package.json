@@ -28,7 +28,9 @@
     "index.js",
     "index.d.ts",
     "package.json",
-    "README.md"
+    "README.md",
+    "mock-icon.svg",
+    "plugin-config.js"
   ],
   "gitHead": "ebfedd46d09c100bdba49bfe36aeb846edff07e0"
 }
