@@ -75,4 +75,15 @@ body {
   .ant-notification-notice-message, .ant-notification-close-icon {
     color: #fff;
   }
+
+  .ant-empty-image {
+    height: 54px !important;
+    background-image: url(./assets/empty.png);
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    .ant-empty-img-simple {
+      display: none;
+    }
+  }
 }
