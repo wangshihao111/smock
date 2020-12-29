@@ -5,3 +5,4 @@ dist
 .vscode
 .idea
 _smock
+*.tgz
