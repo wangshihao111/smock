@@ -3,7 +3,7 @@
   "version": "0.1.35",
   "private": false,
   "main": "index.js",
-  "description": "umi cli plugin of @smock/mock",
+  "description": "模拟接口数据",
   "author": "王世豪<913003120@qq.com>",
   "license": "MIT",
   "keywords": [
