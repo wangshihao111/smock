@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/camelcase */
 module.exports = {
   createClientController() {
@@ -22,8 +23,8 @@ module.exports = {
     const { __global_handler } = global as any;
     if (__global_handler && __global_handler.onSocket) {
       __global_handler.onSocket(({ action, success }) => {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
         const { resolve } = require('path');
+        const { readFileSync } = require('fs')
         if (action.type === 'global/smock/sproxy-port') {
           const cwd = process.cwd();
           let port = 10011;
@@ -31,7 +32,7 @@ module.exports = {
           for (let i = 0; i < paths.length; i++) {
             const p = paths[i];
             try {
-              port = require(p).workPort;
+              port = eval(readFileSync(p, 'utf8')).workPort;
               break;
             } catch (error) { }
           }
