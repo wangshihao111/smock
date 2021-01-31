@@ -3931,7 +3931,7 @@
     "@umijs/utils" "3.2.10"
     core-js "3.6.5"
 
-"@umijs/babel-preset-umi@3.2.10", "@umijs/babel-preset-umi@^3.1.2":
+"@umijs/babel-preset-umi@3.2.10":
   version "3.2.10"
   resolved "https://registry.npm.taobao.org/@umijs/babel-preset-umi/download/@umijs/babel-preset-umi-3.2.10.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40umijs%2Fbabel-preset-umi%2Fdownload%2F%40umijs%2Fbabel-preset-umi-3.2.10.tgz#d89a6ba318312b42d5fa39db733a0cbc15cb8784"
   integrity sha1-2JproxgxK0LV+jnbczoMvBXLh4Q=

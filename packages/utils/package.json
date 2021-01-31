@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "@babel/register": "^7.9.0",
-    "@umijs/babel-preset-umi": "^3.1.2",
     "lodash": "4.17.15"
   },
   "files": [
