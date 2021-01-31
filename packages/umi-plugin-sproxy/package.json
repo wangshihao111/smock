@@ -1,6 +1,6 @@
 {
   "name": "@smock/umi-plugin-sproxy",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "private": false,
   "main": "index.js",
   "description": "拦截/代理真实接口，便于开发调试",
@@ -22,7 +22,7 @@
     "prepublish": "tsc"
   },
   "dependencies": {
-    "@smock/interceptor": "^0.1.20"
+    "@smock/interceptor": "^0.1.21"
   },
   "files": [
     "index.js",

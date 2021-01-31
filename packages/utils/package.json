@@ -1,6 +1,6 @@
 {
   "name": "@smock/utils",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "private": false,
   "main": "lib/index.js",
   "description": "Vue cli plugin of @smock/mock",
