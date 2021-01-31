@@ -70,7 +70,7 @@ export class RequestUtil {
   ): Promise<void> {
     // 处理axios错误
     if (error.response) {
-      const { status, data } = error.response;
+      const { status, data, headers } = error.response;
       const resHis = await this.ctx.file.getRequestLog(
         request.path,
         requestConfig
@@ -87,6 +87,7 @@ export class RequestUtil {
         this.ctx.db.addStringArrayItem(apiList, request.path);
         this.ctx.db.set("apiList", apiList);
       }
+      this.assignHeadersToResponse(headers, response);
       response.status(status);
       response.send(data);
       return;
@@ -111,6 +112,7 @@ export class RequestUtil {
     if (resHis) {
       const { status = 200, headers = {}, data } = resHis.response;
       response.status(status);
+      this.assignHeadersToResponse(headers, response);
       for (const key in headers) {
         response.header(key, headers[key]);
       }
@@ -131,6 +133,9 @@ export class RequestUtil {
           `http://localhost:${this.ctx.config.workPort}${apiPrefix}`
         );
         value = loc;
+      }
+      if (key === "access-control-allow-origin") {
+        continue;
       }
       response.header(key, value);
     }
