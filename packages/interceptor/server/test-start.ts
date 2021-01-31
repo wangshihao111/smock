@@ -1,3 +1,3 @@
-import startInterceptor from './main'
+import startInterceptor from "./main";
 
-startInterceptor(10011);
+startInterceptor();
