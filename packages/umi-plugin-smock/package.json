@@ -1,6 +1,6 @@
 {
   "name": "@smock/umi-plugin-smock",
-  "version": "0.1.37",
+  "version": "0.1.38",
   "private": false,
   "main": "index.js",
   "description": "模拟接口数据",
