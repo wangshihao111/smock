@@ -5,14 +5,17 @@ import axios, { AxiosRequestConfig, AxiosError, AxiosResponse } from "axios";
 import { RequestUtil } from "../utils/request-util";
 import { AbstractController } from "../definitions/AbstractController";
 import { Hooks } from "../utils/plugin-api";
+import { Scheduler } from "../utils/Scheduler";
 
 export class ProxyServerController extends AbstractController {
   private requestUtil: RequestUtil;
+  private scheduler: Scheduler;
 
   constructor(ctx: GlobalContext) {
     super(ctx);
     this.requestMiddleware = this.requestMiddleware.bind(this);
     this.requestUtil = new RequestUtil(ctx);
+    this.scheduler = new Scheduler();
   }
 
   private requestMiddleware(req: Request, res: Response, next: any): void {
@@ -42,12 +45,16 @@ export class ProxyServerController extends AbstractController {
             this.ctx.config.matchRegexp.test(req.path) &&
             !staticPattern.test(req.path)
           ) {
-            this.ctx.file.addRequestLog(req.path, requestConfig, {
-              path: req.path,
-              status,
-              headers,
-              data,
-            });
+            const logTask = async () => {
+              await this.ctx.file.addRequestLog(req.path, requestConfig, {
+                path: req.path,
+                status,
+                headers,
+                data,
+              });
+            };
+            (logTask as any).rand = Math.random();
+            this.scheduler.addQueue(req.path, logTask);
           }
           if (this.ctx.config.cacheStatic && staticPattern.test(req.path)) {
             this.ctx.file.storageStatic(req.path, axiosRes);
