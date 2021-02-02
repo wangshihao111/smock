@@ -42,6 +42,13 @@ function getDisplayList(
     });
 }
 
+const paginationOptions = {
+  showQuickJumper: true,
+  defaultPageSize: 10,
+  showSizeChanger: true,
+  pageSizeOptions: ["10", "50", "100", "500", "1000"],
+};
+
 const Home: FC<RouteChildrenProps> = (props) => {
   const [list, setList] = useState<string[]>([]);
   const [intercepted, setIntercepted] = useState<string[]>([]);
@@ -261,22 +268,25 @@ const Home: FC<RouteChildrenProps> = (props) => {
         <Button onClick={handleGroupOperate("disable")}>批量禁用</Button>
         <Button onClick={handleGroupOperate("delete")}>批量删除</Button>
       </Row>
-      <Table
-        loading={loading}
-        dataSource={dataSource}
-        columns={columns}
-        rowSelection={rowSelection}
-        rowKey={(v) => v.url}
-        onRow={(record: any) => ({
-          style: {
-            cursor: "pointer",
-          },
-          title: "点击进入详情或编辑",
-          onClick: (e) => {
-            handleEditClick(record.url);
-          },
-        })}
-      />
+      <main className="page-home-main-table">
+        <Table
+          loading={loading}
+          dataSource={dataSource}
+          columns={columns}
+          rowSelection={rowSelection}
+          pagination={paginationOptions}
+          rowKey={(v) => v.url}
+          onRow={(record: any) => ({
+            style: {
+              cursor: "pointer",
+            },
+            title: "点击进入详情或编辑",
+            onClick: (e) => {
+              handleEditClick(record.url);
+            },
+          })}
+        />
+      </main>
     </section>
   );
 };

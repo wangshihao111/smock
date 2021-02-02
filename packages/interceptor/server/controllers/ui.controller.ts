@@ -1,4 +1,6 @@
 import { Request, Response, RequestHandler } from "express";
+// import {readdir} from 'fs-extra';
+// import path from 'path';
 import { AbstractController } from "../definitions/AbstractController";
 import { bind } from "lodash-decorators";
 
@@ -9,8 +11,9 @@ const baseUrl = "/__ui_api";
 
 export class UIController extends AbstractController {
   @bind()
-  private getApiTree(req: Request, res: Response): void {
+  private async getApiTree(req: Request, res: Response) {
     const apiList = this.ctx.db.get("apiList") || [];
+    // const apiList = (await readdir(path.resolve(this.ctx.config.workDir, 'history'))).map(f => decodeURIComponent(f).replace('.json', ''))
     res.status(200);
     res.send(apiList);
   }

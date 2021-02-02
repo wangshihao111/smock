@@ -30,7 +30,6 @@ export class GlobalContext implements GlobalContextInterface {
   constructor(app: Application, port?: number) {
     this.app = app;
     this.cwd = process.cwd();
-    this.db = new DbUtil(this);
     this.file = new FileUtil(this);
     // 顺序很重要，这个赋值必须在loadConfig之前
     this.configFilePath = resolve(process.cwd(), ".smockrc.js");
@@ -39,6 +38,7 @@ export class GlobalContext implements GlobalContextInterface {
       this.cwd = config.cwd;
     }
     this.config = { ...config, workPort: port || config.workPort || 10011 };
+    this.db = new DbUtil(this);
     this.pluginApi = new PluginApi(this);
   }
 }

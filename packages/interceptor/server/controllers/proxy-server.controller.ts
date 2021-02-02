@@ -69,12 +69,12 @@ export class ProxyServerController extends AbstractController {
   }
 
   public asMiddleware(): RequestHandler {
-    this.ctx.file.initFolder();
+    // this.ctx.file.initFolder();
     return this.requestMiddleware.bind(this);
   }
 
   public run(): void {
-    this.ctx.file.initFolder();
+    // this.ctx.file.initFolder();
     this.ctx.app.use(this.requestMiddleware);
   }
 }

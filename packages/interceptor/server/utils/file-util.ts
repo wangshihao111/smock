@@ -13,6 +13,8 @@ import {
   removeSync,
   writeFile,
   readJSONSync,
+  statSync,
+  mkdirSync,
 } from "fs-extra";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import path from "path";
@@ -51,9 +53,12 @@ export interface ProxyConfig {
 
 export class FileUtil {
   private ctx: GlobalContext;
+  private config: any;
 
   constructor(ctx: GlobalContext) {
     this.ctx = ctx;
+    this.config = this.loadConfig();
+    this.initFolder();
   }
 
   public getFileName(url: string): string {
@@ -253,8 +258,8 @@ export class FileUtil {
     }
   }
 
-  public async initFolder(): Promise<void> {
-    const { config } = this.ctx;
+  public initFolder() {
+    const { config } = this;
     const rootDir = path.resolve(process.cwd(), config.workDir);
     const historyDir = path.resolve(rootDir, "history");
     const staticDir = path.resolve(rootDir, "static");
@@ -263,19 +268,19 @@ export class FileUtil {
     for (let i = 0; i < dirs.length; i++) {
       const dir = dirs[i];
       try {
-        const fldStat = await stat(dir);
+        const fldStat = statSync(dir);
         if (!fldStat.isDirectory()) {
-          await mkdir(dir);
+          mkdirSync(dir);
         }
       } catch (error) {
-        await mkdir(dir);
+        mkdirSync(dir);
       }
     }
     const settingFile = path.resolve(rootDir, "settings.json");
     try {
-      await readJson(settingFile);
+      readJsonSync(settingFile);
     } catch (e) {
-      writeJSON(settingFile, {});
+      writeJSONSync(settingFile, {});
     }
   }
 
@@ -287,7 +292,7 @@ export class FileUtil {
 
   public setSettings(json: any): void {
     return writeJSONSync(
-      path.resolve(this.ctx.cwd, this.ctx.config.workDir, "settings.json"),
+      path.resolve(this.ctx.cwd, this.config.workDir, "settings.json"),
       json,
       { spaces: 2 }
     );
