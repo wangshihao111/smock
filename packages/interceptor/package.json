@@ -1,6 +1,6 @@
 {
   "name": "@smock/interceptor",
-  "version": "0.1.21",
+  "version": "0.1.22-alpha.0",
   "private": false,
   "main": "lib/index.js",
   "description": "Api interceptor, based on proxy.",
