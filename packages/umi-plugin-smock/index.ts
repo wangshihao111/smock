@@ -6,7 +6,7 @@ module.exports = (api) => {
   if (process.env.NO_SMOCK === 'true') {
     return;
   }
-  if (api.env === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     api.addBeforeMiddewares(() => applyCors)
     api.addBeforeMiddewares(() => bodyParser.text())
     api.addBeforeMiddewares(() => bodyParser.json())
