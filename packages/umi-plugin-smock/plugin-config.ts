@@ -14,17 +14,18 @@ module.exports = {
   // node controller
   createNodeController() {
     return function ({ enable = true } = {}) {
-      Object.defineProperties(process.env, {
-        NO_SMOCK: {
-          get() {
-            return enable ? "" : "true";
-          },
-          // 这里设定的优先级最高
-          set() {
-            this.value = enable ? "" : "true";
-          },
-        },
-      });
+      process.env.NO_SMOCK = enable ? "" : "true";
+      // Object.defineProperties(process.env, {
+      //   NO_SMOCK: {
+      //     get() {
+      //       return enable ? "false" : "true";
+      //     },
+      //     // 这里设定的优先级最高
+      //     set() {
+      //       this.value = enable ? "false" : "true";
+      //     },
+      //   },
+      // });
     };
   },
 };

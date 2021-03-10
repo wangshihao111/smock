@@ -42,17 +42,19 @@ module.exports = {
     }
 
     return function ({ enable = true } = {}) {
-      Object.defineProperties(process.env, {
-        NO_SPROXY: {
-          get() {
-            return enable ? "" : "true";
-          },
-          // 这里设定的优先级最高
-          set() {
-            this.value = enable ? "" : "true";
-          },
-        },
-      });
+      process.env.NO_INTERCEPTOR = process.env.NO_SPROXY = enable ? "" : "true";
+
+      // Object.defineProperties(process.env, {
+      //   NO_SPROXY: {
+      //     get() {
+      //       return enable ? "" : "true";
+      //     },
+      //     // 这里设定的优先级最高
+      //     set() {
+      //       this.value = enable ? "" : "true";
+      //     },
+      //   },
+      // });
     };
   },
 };
