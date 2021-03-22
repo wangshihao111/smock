@@ -260,7 +260,7 @@ export default {
         // If the color is vibrant, black is used as the active foreground color.
         {
           color: "#E27279",
-          name: '虹珊瑚',
+          name: '虹码珊瑚',
           vibrant: true,
         },
         {
