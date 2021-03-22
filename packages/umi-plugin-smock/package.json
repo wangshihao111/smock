@@ -1,6 +1,6 @@
 {
   "name": "@smock/umi-plugin-smock",
-  "version": "0.1.39",
+  "version": "0.1.40",
   "private": false,
   "main": "index.js",
   "description": "模拟接口数据",
@@ -22,7 +22,7 @@
     "prepublish": "tsc"
   },
   "dependencies": {
-    "@smock/mock": "^0.2.26"
+    "@smock/mock": "^0.2.27"
   },
   "files": [
     "index.js",
