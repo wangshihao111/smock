@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 // import { NavLink } from "react-router-dom";
-import logo from "../../assets/logo-white.svg";
+import logo from "../../assets/logo.svg";
 import "./index.scss";
 
 const Layout: FC = (props) => {

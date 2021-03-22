@@ -1,7 +1,7 @@
 <template>
   <div class="api-side-nav-content">
     <h2 class="list-title">
-      <img src="./img/logo.svg" alt />
+      <img src="./img/logo-with-title.png" alt />
     </h2>
     <ul class="list" v-if="apiList">
       <li class="list-item" v-for="item of apiList" :key="item.name">
@@ -130,7 +130,7 @@ li {
   justify-content: flex-start;
   background-image: linear-gradient(134deg, #f78249 0%, #e27279 100%);
   & > img {
-    height: 20px;
+    height: 26px;
     margin-left: 16px;
   }
 }
