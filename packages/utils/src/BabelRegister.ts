@@ -19,10 +19,10 @@ export default class BabelRegister {
         .map(winPath)
     );
     register({
-      presets: [require.resolve("@umijs/babel-preset-umi/node")],
+      presets: [require.resolve("@babel/preset-typescript")],
       ignore: [/node_modules/],
       only,
-      extensions: [".jsx", ".js", ".ts", ".tsx"],
+      extensions: [".js", ".ts"],
       babelrc: false,
       cache: false,
     });

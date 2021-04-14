@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@babel/register": "^7.9.0",
+    "@babel/preset-typescript": "^7.13.0",
     "lodash": "4.17.15"
   },
   "files": [
