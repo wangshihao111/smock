@@ -12,7 +12,7 @@
         :aria-label="$t('home')"
       >
         <!-- <logo alt class="material-icons" style="height: 24px;"></logo> -->
-        <div class="logo"><img src="@/assets/logo.svg" alt=""></div>
+        <div class="logo" style="width: 24px;height: 24px;background: var(--ac-color)"><img style="width: 100%;" src="@/assets/logo.svg" alt=""></div>
       </nuxt-link>
       <nuxt-link
         :to="localePath('realtime')"
