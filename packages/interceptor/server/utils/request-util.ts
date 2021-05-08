@@ -16,13 +16,14 @@ export class RequestUtil {
   public parseRequest(req: Request): AxiosRequestConfig {
     const { body, query, method, headers, path } = req;
     const { config } = this.ctx;
+    const targetUrl = new URL(config.target);
     const passedHeaders = {
       ...headers,
       referer: (headers.referer || "")
         .replace(/^https?:\/\/.*:\d+/, config.target)
         .replace(apiPrefix, ""),
-      origin: config.target,
-      host: config.target.replace(/^https?:\/\//, ""),
+      origin: targetUrl.origin,
+      host: targetUrl.host,
       // host: (headers.origin as string).replace(/^https?:\/\//, ''),
       "user-agent":
         "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
@@ -46,7 +47,7 @@ export class RequestUtil {
       data = body;
     }
     const parsedConfig: AxiosRequestConfig = {
-      url: `${config.target}${getRequestPath(path)}`,
+      url: `${config.target.replace(/\/$/, "")}${getRequestPath(path)}`,
       method: method as Method,
       headers: passedHeaders,
       params: query,
