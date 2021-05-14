@@ -39,7 +39,7 @@ export class ProxyServerController extends AbstractController {
       axios(requestConfig)
         .then((axiosRes: AxiosResponse) => {
           const { status, headers, data } = axiosRes;
-          this.requestUtil.assignHeadersToResponse(headers, res);
+          this.requestUtil.assignHeadersToResponse(headers, res, req);
           // 正则匹配到的将缓存到本地
           if (
             this.ctx.config.matchRegexp.test(req.path) &&

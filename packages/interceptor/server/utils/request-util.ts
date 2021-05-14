@@ -88,7 +88,7 @@ export class RequestUtil {
         this.ctx.db.addStringArrayItem(apiList, request.path);
         this.ctx.db.set("apiList", apiList);
       }
-      this.assignHeadersToResponse(headers, response);
+      this.assignHeadersToResponse(headers, response, request);
       response.status(status);
       response.send(data);
       return;
@@ -113,7 +113,7 @@ export class RequestUtil {
     if (resHis) {
       const { status = 200, headers = {}, data } = resHis.response;
       response.status(status);
-      this.assignHeadersToResponse(headers, response);
+      this.assignHeadersToResponse(headers, response, request);
       for (const key in headers) {
         response.header(key, headers[key]);
       }
@@ -125,12 +125,22 @@ export class RequestUtil {
     response.send();
   }
 
-  public assignHeadersToResponse(headers: any, response: Response): void {
+  public assignHeadersToResponse(
+    headers: any,
+    response: Response,
+    req?: Request
+  ): void {
     for (const key in headers) {
       let value: string = headers[key];
       if (key === "location") {
+        const { origin } = new URL(this.ctx.config.target);
+        let toReplace = this.ctx.config.target;
+        if (req && req.path.indexOf("/oauth") > -1) {
+          toReplace = origin;
+        }
         const loc = value.replace(
-          this.ctx.config.target,
+          // this.ctx.config.target,
+          toReplace,
           `http://localhost:${this.ctx.config.workPort}${apiPrefix}`
         );
         value = loc;

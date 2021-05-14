@@ -125,7 +125,7 @@ export class FileUtil {
     try {
       const json = await readJSON(filePath);
       if (json) {
-        writeJSON(
+        await writeJSON(
           filePath,
           {
             ...json,
@@ -139,7 +139,7 @@ export class FileUtil {
         );
       }
     } catch (error) {
-      writeJSON(
+      await writeJSON(
         filePath,
         {
           [key]: {
