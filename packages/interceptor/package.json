@@ -1,6 +1,6 @@
 {
   "name": "@smock/interceptor",
-  "version": "0.1.25",
+  "version": "0.1.26",
   "private": false,
   "main": "lib/index.js",
   "description": "Api interceptor, based on proxy.",
@@ -32,7 +32,7 @@
     "test": "node scripts/test.js"
   },
   "dependencies": {
-    "@smock/utils": "^0.1.9",
+    "@smock/utils": "^0.1.10",
     "@types/object-hash": "^1.3.1",
     "axios": "^0.19.2",
     "chalk": "^2.4.2",
