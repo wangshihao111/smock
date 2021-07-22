@@ -65,7 +65,7 @@
     "lodash-decorators": "6.0.1",
     "mockjs": "^1.1.0",
     "path-to-regexp": "^6.1.0",
-    "prettier": "^1.19.1"
+    "prettier": "^2.0.0"
   },
   "devDependencies": {
     "@nuxtjs/axios": "^5.9.5",
