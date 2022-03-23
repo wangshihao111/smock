@@ -15,6 +15,7 @@ import {
   readJSONSync,
   statSync,
   mkdirSync,
+  existsSync,
 } from "fs-extra";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import path from "path";
@@ -225,7 +226,7 @@ export class FileUtil {
     try {
       const filePath = this.getFilePath(path);
       const targetPath = this.getFilePath(path, false, true);
-      const json = await readJSON(filePath);
+      const json = await readJSON( existsSync(targetPath) ? targetPath : filePath);
       if (json) {
         const target = json[key];
         await writeJSON(

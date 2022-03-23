@@ -8,10 +8,14 @@ import { multipartMiddleware } from "./middlewares/multipart.middleware";
 import { applyCors } from "./middlewares/cors.middleware";
 import chalk from "chalk";
 import { debounce } from "lodash";
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
 import serveStatic from "@smock/utils/lib/serveStatic";
 import { Hooks } from "./utils/plugin-api";
 import { apiPrefix } from "./utils/constant";
 import fs from "fs-extra";
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
 import compress from "compression";
 
 function applyBaseMiddleware(app: Application): void {
