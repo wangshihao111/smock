@@ -135,13 +135,13 @@ export class RequestUtil {
       if (key === "location") {
         const { origin } = new URL(this.ctx.config.target);
         let toReplace = this.ctx.config.target;
-        if (req && req.path.indexOf("/oauth") > -1) {
+        if (req && req.path.startsWith(`/oauth`)) {
           toReplace = origin;
         }
         const loc = value.replace(
           // this.ctx.config.target,
           toReplace,
-          `http://localhost:${this.ctx.config.workPort}${apiPrefix}`
+          `//${req?.headers?.['host'] || `localhost:${this.ctx.config.workPort}` }${apiPrefix}`
         );
         value = loc;
       }
