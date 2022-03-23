@@ -3,8 +3,9 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  useLayoutEffect,
+  // useLayoutEffect,
   ReactElement,
+  useMemo,
 } from "react";
 import { RouteChildrenProps } from "react-router-dom";
 import { notification, Tabs, Button, Modal, Form, Input } from "antd";
@@ -20,6 +21,7 @@ import "ace-builds/src-noconflict/theme-dracula";
 import "./index.scss";
 import { getApiDetail, saveApiData } from "../../service/mock.service";
 import HeadersEdit, { RowData } from "./HeadersEdit";
+import { API_HOST } from "src/config/config";
 
 const { TabPane } = Tabs;
 
@@ -47,11 +49,14 @@ function parseResponseData(data: any): HistoryItem[] {
 // 正在编辑的头信息，中间变量
 let editHeaders = {};
 
-const ContentEdit: FC<RouteChildrenProps> = (props) => {
-  const path = decodeURIComponent((props.match?.params as any).api);
+const ContentEdit: FC<RouteChildrenProps> = (props: any) => {
+  const path = useMemo(
+    () => decodeURIComponent((props.match?.params as any).api),
+    [props.match]
+  );
   const [form, setForm] = useState<string>("");
   const [editKey, setEditKey] = useState<string>("");
-  const [eh, setEh] = useState<number>(500);
+  // const [eh, setEh] = useState<number>(600);
   const [detail, setDetail] = useState<HistoryItem[]>([]);
   const [editStatusNum, setEditStatusNum] = useState<number>(0);
   const fetchDetail = useCallback(
@@ -94,6 +99,26 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
     editHeaders = target?.response.headers;
     setEditStatusNum(target?.response.status);
   };
+
+  const pathParamsStr = useMemo(() => {
+    if (!editKey) {
+      return path;
+    }
+
+    const target = detail.find((v) => v.key === editKey);
+    if (!target?.request) {
+      return path;
+    }
+
+    const requestData = JSON.parse(target?.request as any);
+
+    if (!requestData.params || Object.keys(requestData.params).length === 0) {
+      return path;
+    }
+
+    return `${path}?${new URLSearchParams(requestData.params).toString()}`;
+  }, [editKey, path, detail]);
+
   const handleAction = (type: string) => (): void => {
     const target = detail.find((v) => v.key === editKey);
     if (type === "reset") {
@@ -146,22 +171,28 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
     values.forEach((v) => (headers[v.key] = v.value));
     editHeaders = headers;
   };
-  function fitEditorHeight(): void {
-    const height = window.innerHeight;
-    const editorHeight = height - 60 - 16 - 8 - 46 - 42;
-    setEh(editorHeight);
-  }
-  useLayoutEffect(() => {
-    fitEditorHeight();
-    window.addEventListener("resize", fitEditorHeight);
-    return (): void => {
-      window.removeEventListener("resize", fitEditorHeight);
-    };
-  }, []);
+  // function fitEditorHeight(): void {
+  //   const height = window.innerHeight;
+  //   const editorHeight = height - 60 - 16 - 8 - 46 - 42;
+  //   setEh(editorHeight);
+  // }
+  // useLayoutEffect(() => {
+  //   fitEditorHeight();
+  //   window.addEventListener("resize", fitEditorHeight);
+  //   return (): void => {
+  //     window.removeEventListener("resize", fitEditorHeight);
+  //   };
+  // }, []);
   const renderTab = (request: any): ReactElement => {
+    const data = JSON.parse(request);
+    const dataStr = JSON.stringify(data, null, 2);
     return (
-      <div className="history-tab-item-tab">
-        <pre>{request}</pre>
+      <div
+        style={{ maxHeight: "100px" }}
+        title={dataStr}
+        className="history-tab-item-tab"
+      >
+        <pre>{dataStr}</pre>
       </div>
     );
   };
@@ -204,9 +235,19 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
       </header>
       <main className="page-edit-content">
         <div className="history-tab-content">
-          <div className="content-edit">
+          <div className="content-edit" style={{ height: "100%" }}>
             <header className="content-edit-header">
               <h2 className="content-edit-header-title">响应体编辑</h2>
+              <Form.Item label="接口地址">
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={`${API_HOST}${pathParamsStr}`}
+                >
+                  <span style={{ color: "red" }}>{API_HOST}</span>
+                  <span style={{ color: "yellow" }}>{pathParamsStr}</span>
+                </a>
+              </Form.Item>
               <Form.Item label="响应状态码">
                 {isDetail ? (
                   editStatusNum
@@ -221,7 +262,10 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
                 )}
               </Form.Item>
             </header>
-            <div className="content-edit-content">
+            <div
+              style={{ height: "calc(100% - 60px)" }}
+              className="content-edit-content"
+            >
               <Tabs tabPosition="left" onChange={handleTabChange}>
                 {detail.map(({ key, request, response }) => (
                   <TabPane key={key} tab={renderTab(request)}></TabPane>
@@ -231,7 +275,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
                 readOnly={isDetail}
                 style={{
                   width: "100%",
-                  height: eh,
+                  height: "100%",
                 }}
                 placeholder="Placeholder Text"
                 mode="json"
@@ -255,7 +299,7 @@ const ContentEdit: FC<RouteChildrenProps> = (props) => {
           {
             <HeadersEdit
               disabled={isDetail}
-              style={{ height: eh }}
+              // style={{ height: eh }}
               headers={getHeadersArr(editHeaders)}
               onChange={handleHeadersChange}
             />

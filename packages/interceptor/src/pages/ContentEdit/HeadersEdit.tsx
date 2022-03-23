@@ -164,7 +164,7 @@ const HeadersEdit: FC<HeadersEditProps> = (props) => {
   return (
     <section
       className="headers-edit"
-      style={{ height: props.style.height + 42 }}
+      // style={{ height: props.style.height + 42 }}
     >
       <header className="headers-edit-header">
         <span>响应头{!props.disabled ? "编辑" : ""}</span>

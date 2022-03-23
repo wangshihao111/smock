@@ -2,7 +2,7 @@ import { ProxyConfig } from "../utils/file-util";
 
 export const defaultConfig: ProxyConfig = {
   cwd: process.cwd(),
-  target: "http://localhost:4000",
+  target: "http://hzero-backend.open-front.hand-china.com",
   workDir: ".smock",
   workPort: 10011,
   matchRegexp: /.*/,
