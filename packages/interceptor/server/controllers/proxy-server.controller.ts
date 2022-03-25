@@ -38,7 +38,15 @@ export class ProxyServerController extends AbstractController {
     } else {
       axios(requestConfig)
         .then((axiosRes: AxiosResponse) => {
-          const { status, headers, data } = axiosRes;
+          const { status, headers } = axiosRes;
+          let data: any = axiosRes.data;
+
+          if(this.requestUtil.isStringResponse(headers['content-type'])) {
+            data = data.toString();
+          } else {
+            data = data.toString('base64');
+          }
+
           this.requestUtil.assignHeadersToResponse(headers, res, req);
           // 正则匹配到的将缓存到本地
           if (
@@ -65,7 +73,7 @@ export class ProxyServerController extends AbstractController {
             this.ctx.db.addStringArrayItem(apiList, req.path);
             this.ctx.db.set("apiList", apiList);
           }
-          const transformedData = this.ctx.pluginApi.applyTransformer(data);
+          const transformedData = this.ctx.pluginApi.applyTransformer(axiosRes.data);
           res.status(status).send(transformedData);
         })
         .catch((e: AxiosError) => {

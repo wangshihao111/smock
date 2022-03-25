@@ -57,10 +57,17 @@ export class RequestUtil {
       validateStatus: (status): boolean =>
         (status > 100 && status < 300) || status === 302,
     };
-    if (binaryPattern.test(req.path)) {
-      parsedConfig.responseType = "arraybuffer";
-    }
+    parsedConfig.responseType = "arraybuffer";
+    // if (binaryPattern.test(req.path)) {
+    //   parsedConfig.responseType = "arraybuffer";
+    // }
     return parsedConfig;
+  }
+
+  public isStringResponse(contentType?: string){
+
+    return !contentType || ['javascript','text', 'json'].some(item => contentType.includes(item))
+
   }
 
   public async processResponseError(
@@ -111,13 +118,18 @@ export class RequestUtil {
   ): Promise<void> {
     const resHis = await this.ctx.file.getRequestLog(path, reqConfig);
     if (resHis) {
-      const { status = 200, headers = {}, data } = resHis.response;
+      const { status = 200, headers = {} } = resHis.response;
+      const data = resHis.response.data;
+
       response.status(status);
       this.assignHeadersToResponse(headers, response, request);
       for (const key in headers) {
         response.header(key, headers[key]);
       }
-      const transformedData = this.ctx.pluginApi.applyTransformer(data);
+      let transformedData = this.ctx.pluginApi.applyTransformer(data);
+      if(!this.isStringResponse(headers['content-type'])) {
+        transformedData = Buffer.from(transformedData, 'base64');
+      }
       response.send(transformedData);
       return;
     }
